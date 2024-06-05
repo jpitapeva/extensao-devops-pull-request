@@ -3,7 +3,7 @@ A task for Azure DevOps build pipelines to add GPT as PR reviewer
 
 ## Installation
 
-Installation can be done using [Visual Studio MarketPlace](https://marketplace.visualstudio.com/items?itemName=mustaphalarhrouch.GPTPullRequestReview).
+Installation can be done using [Visual Studio MarketPlace](https://marketplace.visualstudio.com/publishers/AzureOpenAIPullRequestReviewJPComp).
 
 ## Usage
 
@@ -46,8 +46,12 @@ In case you don't use Azure Open AI Service, you can choose which model to use, 
 
 ## Contributions
 
-Found and fixed a bug or improved on something? Contributions are welcome! Please target your pull request against the `main` branch or report an issue on [GitHub](https://github.com/mlarhrouch/azure-pipeline-gpt-pr-review/issues) so someone else can try and implement or fix it.
+Found and fixed a bug or improved on something? Contributions are welcome! Please target your pull request against the `main` branch or report an issue on [GitHub](https://github.com/jpitapeva/azure-pipeline-gpt-pr-review/issues) so someone else can try and implement or fix it.
 
 ## License
 
 [MIT](https://raw.githubusercontent.com/mlarhrouch/azure-pipeline-gpt-pr-review/main/LICENSE)
+
+
+## How publish
+[Devops Publish](https://learn.microsoft.com/en-us/azure/devops/extend/publish/overview?view=azure-devops)
