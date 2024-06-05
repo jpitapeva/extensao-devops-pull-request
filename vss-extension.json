@@ -1,9 +1,9 @@
 {
     "manifestVersion": 1,
-    "id": "AzureOpenAIPullRequestReviewBrazil",
-    "name": "Azure OpenAI PullRequest Review Brazil",
+    "id": "AzureDevopsPullRequestReviewsAzureOpenAi",
+    "name": "AzureDevopsPullRequestReviewsAzureOpenAi",
     "version": "1.0.0",
-    "publisher": "AzureOpenAIPullRequestReviewBrazil",
+    "publisher": "AzureDevopsPullRequestReviewsAzureOpenAi",
     "galleryFlags": [
         "Public",
         "Preview"
@@ -28,7 +28,7 @@
     ],
     "files": [
         {
-            "path": "GPTPullRequestReview"
+            "path": "AzureDevopsPullRequestReviewsAzureOpenAi"
         }
     ],
     "repository" : {
@@ -42,13 +42,13 @@
     },
     "contributions": [
         {
-            "id": "AzureOpenAIPullRequestReviewBrazil",
-            "type": "ms.vss-distributed-task.task",
+            "id": "AzureDevopsPullRequestReviewsAzureOpenAi",
+            "type": "AzureDevopsPullRequestReviewsAzureOpenAi.vss-distributed-task.task",
             "targets": [
-                "ms.vss-distributed-task.tasks"
+                "AzureDevopsPullRequestReviewsAzureOpenAi.vss-distributed-task.tasks"
             ],
             "properties": {
-                "name": "AzureOpenAIPullRequestReviewBrazil"
+                "name": "AzureDevopsPullRequestReviewsAzureOpenAi"
             }
         }
     ]

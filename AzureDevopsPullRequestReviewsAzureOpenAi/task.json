@@ -1,6 +1,6 @@
 {
   "id": "1d7a7dff-d3d4-44ad-a356-fa32022b8292",
-  "name": "AzureOpenAIPullRequestReviewBrazil",
+  "name": "AzureDevopsPullRequestReviewsAzureOpenAi",
   "friendlyName": "Review PullRequest by GPT",
   "description": "This task use OpenAi GPT model to review PullRequests",
   "author": "Joao Antunes",
@@ -16,7 +16,7 @@
     "Patch": "0"
   },
   "minimumAgentVersion": "1.95.0",
-  "instanceNameFormat": "AzureOpenAIPullRequestReviewBrazil $(message)",
+  "instanceNameFormat": "AzureDevopsPullRequestReviewsAzureOpenAi $(message)",
   "inputs": [
     {
       "name": "api_key",
