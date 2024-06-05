@@ -1,9 +1,9 @@
 {
     "manifestVersion": 1,
-    "id": "GPTPullRequestReview",
-    "name": "GPT Pull Request Review",
-    "version": "0.12.3",
-    "publisher": "mustaphalarhrouch",
+    "id": "AzureOpenAIPullRequestReviewBrazil",
+    "name": "Azure OpenAI PullRequest Review Brazil",
+    "version": "1.0.0",
+    "publisher": "AzureOpenAIPullRequestReviewBrazil",
     "galleryFlags": [
         "Public",
         "Preview"
@@ -33,7 +33,7 @@
     ],
     "repository" : {
         "type" : "git",
-        "uri" : "https://github.com/mlarhrouch/azure-pipeline-gpt-pr-review"
+        "uri" : "https://github.com/jpitapeva/azure-pipeline-gpt-pr-review"
     },
     "content": {
         "details": {
@@ -42,13 +42,13 @@
     },
     "contributions": [
         {
-            "id": "GPTPullRequestReview",
+            "id": "AzureOpenAIPullRequestReviewBrazil",
             "type": "ms.vss-distributed-task.task",
             "targets": [
                 "ms.vss-distributed-task.tasks"
             ],
             "properties": {
-                "name": "GPTPullRequestReview"
+                "name": "AzureOpenAIPullRequestReviewBrazil"
             }
         }
     ]

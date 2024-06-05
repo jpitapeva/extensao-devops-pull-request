@@ -1,22 +1,22 @@
 {
-  "id": "b42fa530-c4a6-11ed-87f6-d1f44a1fead1",
-  "name": "GPTPullRequestReview",
+  "id": "1d7a7dff-d3d4-44ad-a356-fa32022b8292",
+  "name": "AzureOpenAIPullRequestReviewBrazil",
   "friendlyName": "Review PullRequest by GPT",
   "description": "This task use OpenAi GPT model to review PullRequests",
-  "author": "Mustapha Larhrouch",
-  "helpMarkDown": "[More Information](https://github.com/mlarhrouch/azure-pipeline-gpt-pr-review)",
+  "author": "Joao Antunes",
+  "helpMarkDown": "[More Information](https://github.com/jpitapeva/azure-pipeline-gpt-pr-review)",
   "category": "Utility",
   "visibility": [
     "Build"
   ],
   "demands": [],
   "version": {
-    "Major": "0",
-    "Minor": "12",
-    "Patch": "3"
+    "Major": "1",
+    "Minor": "0",
+    "Patch": "0"
   },
   "minimumAgentVersion": "1.95.0",
-  "instanceNameFormat": "GPTPullRequestReview $(message)",
+  "instanceNameFormat": "AzureOpenAIPullRequestReviewBrazil $(message)",
   "inputs": [
     {
       "name": "api_key",
@@ -58,7 +58,7 @@
   ],
   "execution": {
     "Node10": {
-      "target": "dist/index.js"
+      "target": "review.js"
     }
   }
 }
