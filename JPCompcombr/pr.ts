@@ -26,7 +26,7 @@ export async function addCommentToPR(fileName: string, comment: string, httpsAge
     agent: httpsAgent
   });
 
-  console.log(`New comment added.`);
+  console.log(`Novo comentario adicionado.`);
 }
 
 export async function deleteExistingComments(httpsAgent: Agent) {
@@ -65,7 +65,7 @@ export async function deleteExistingComments(httpsAgent: Agent) {
     }
   }
 
-  console.log("Existing comments deleted.");
+  console.log("Deletando comentarios pre existentes.");
 }
 
 function getCollectionName(collectionUri: string) {
