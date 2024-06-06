@@ -17,8 +17,8 @@ async function run() {
     const supportSelfSignedCertificate = tl.getBoolInput('support_self_signed_certificate');
     const apiKey = tl.getInput('api_key', true);
     const aoiEndpoint = tl.getInput('aoi_endpoint', true);
-	const tokenMax = tl.getInput('aoi_tokenMax', true);
-	const temperature = tl.getInput('aoi_temperature', true);
+    const tokenMax = tl.getInput('aoi_tokenMax', true);
+    const temperature = tl.getInput('aoi_temperature', true);
 
     if (apiKey == undefined) {
       tl.setResult(tl.TaskResult.Failed, 'No Api Key provided!');
