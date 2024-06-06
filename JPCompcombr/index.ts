@@ -9,14 +9,16 @@ import https from 'https';
 async function run() {
   try {
     if (tl.getVariable('Build.Reason') !== 'PullRequest') {
-      tl.setResult(tl.TaskResult.Skipped, "This task should be run only when the build is triggered from a Pull Request.");
+      tl.setResult(tl.TaskResult.Skipped, "Esta tarefa deve ser executada somente quando o build for acionado atraves de uma solicitacao pr.");
       return;
     }
 
     let openai: OpenAIApi | undefined;
     const supportSelfSignedCertificate = tl.getBoolInput('support_self_signed_certificate');
     const apiKey = tl.getInput('api_key', true);
-    const aoiEndpoint = tl.getInput('aoi_endpoint');
+    const aoiEndpoint = tl.getInput('aoi_endpoint', true);
+	const tokenMax = tl.getInput('aoi_tokenMax', true);
+	const temperature = tl.getInput('aoi_temperature', true);
 
     if (apiKey == undefined) {
       tl.setResult(tl.TaskResult.Failed, 'No Api Key provided!');
@@ -47,7 +49,7 @@ async function run() {
     await deleteExistingComments(httpsAgent);
 
     for (const fileName of filesNames) {
-      await reviewFile(targetBranch, fileName, httpsAgent, apiKey, openai, aoiEndpoint)
+      await reviewFile(targetBranch, fileName, httpsAgent, apiKey, openai, aoiEndpoint, tokenMax, temperature)
     }
 
     tl.setResult(tl.TaskResult.Succeeded, "Pull Request reviewed.");

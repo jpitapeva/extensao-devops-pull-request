@@ -1,9 +1,9 @@
 {
     "manifestVersion": 1,
-    "id": "AzureDevopsPullRequestReviewsAzureOpenAi",
-    "name": "AzureDevopsPullRequestReviewsAzureOpenAi",
-    "version": "1.0.0",
-    "publisher": "AzureDevopsPullRequestReviewsAzureOpenAi",
+    "id": "JPCompcombr",
+    "name": "JPCompcombr",
+    "version": "6.0.0",
+    "publisher": "JPCompcombr",
     "galleryFlags": [
         "Public",
         "Preview"
@@ -28,7 +28,7 @@
     ],
     "files": [
         {
-            "path": "AzureDevopsPullRequestReviewsAzureOpenAi"
+            "path": "JPCompcombr"
         }
     ],
     "repository" : {
@@ -42,13 +42,13 @@
     },
     "contributions": [
         {
-            "id": "AzureDevopsPullRequestReviewsAzureOpenAi",
-            "type": "AzureDevopsPullRequestReviewsAzureOpenAi.vss-distributed-task.task",
+            "id": "JPCompcombr",
+            "type": "ms.vss-distributed-task.task",
             "targets": [
-                "AzureDevopsPullRequestReviewsAzureOpenAi.vss-distributed-task.tasks"
+                "ms.vss-distributed-task.tasks"
             ],
             "properties": {
-                "name": "AzureDevopsPullRequestReviewsAzureOpenAi"
+                "name": "JPCompcombr"
             }
         }
     ]
