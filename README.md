@@ -8,6 +8,8 @@ A instalação pode ser feita usando o [Visual Studio MarketPlace](https://marke
 Adicione as tarefas à sua definição de build.
 
 ## Setup
+## Serviço Azure Open AI
+Endpoint é o seguinte: https://{XXXXXXXX}.openai.azure.com/openai/deployments/{MODEL_NAME}/chat/completions?api-version={API_VERSION}
 
 ### Dê permissão ao agente de serviço de construção
 Antes de usar esta tarefa, certifique-se de que o serviço de compilação tenha permissões para contribuir com solicitações pull em seu repositório:
@@ -33,7 +35,7 @@ jobs:
     inputs:
       api_key: 'YOUR_TOKEN'
       model: 'gpt-4'
-      aoi_endpoint: 'https://LINK.azure.com/openai/deployments/DEPLOYMENT/chat/completions?api-version=API_VERSION'
+      aoi_endpoint: 'https://{XXXXXXXX}.azure.com/openai/deployments/{MODEL_NAME}/chat/completions?api-version={API_VERSION}'
       aoi_tokenMax: 1000
       aoi_temperature: 0
 ```
