@@ -52,7 +52,7 @@ async function run() {
       await reviewFile(targetBranch, fileName, httpsAgent, apiKey, openai, aoiEndpoint, tokenMax, temperature)
     }
 
-    tl.setResult(tl.TaskResult.Succeeded, "Pull Request reviewed.");
+    tl.setResult(tl.TaskResult.Succeeded, "Pull Request revisado.");
   }
   catch (err: any) {
     tl.setResult(tl.TaskResult.Failed, err.message);

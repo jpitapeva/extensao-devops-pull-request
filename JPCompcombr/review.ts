@@ -47,6 +47,7 @@ export async function reviewFile(targetBranch: string, fileName: string, httpsAg
         headers: { 'api-key': `${apiKey}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
           max_tokens: parseInt(`${tokenMax}`),
+		  temperature: parseInt(`${temperature}`),
           messages: [{
             role: "user",
             content: `${instructions}\n, patch : ${patch}}`
