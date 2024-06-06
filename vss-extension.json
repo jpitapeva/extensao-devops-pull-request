@@ -13,7 +13,7 @@
             "id": "Microsoft.VisualStudio.Services"
         }
     ],    
-    "description": "Task que revisa Pull Request usando o modelo GPT da OpenAI",
+    "description": "Esta tarefa usa o modelo AzureOpenAI para revisar PullRequests",
     "categories": [
         "Azure Pipelines"
     ],
@@ -24,7 +24,8 @@
         "OpenAI",
         "GPT",
         "pullRequest",
-        "review"
+        "review",
+        "AzureOpenAI"
     ],
     "files": [
         {
