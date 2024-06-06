@@ -4,14 +4,14 @@
   "friendlyName": "Review PullRequest by GPT",
   "description": "This task use OpenAi GPT model to review PullRequests",
   "author": "Joao Antunes",
-  "helpMarkDown": "[More Information](https://github.com/jpitapeva/azure-pipeline-gpt-pr-review)",
+  "helpMarkDown": "[More Information](https://github.com/jpitapeva/extensao-devops-pull-request)",
   "category": "Utility",
   "visibility": [
     "Build"
   ],
   "demands": [],
   "version": {
-    "Major": "6",
+    "Major": "7",
     "Minor": "0",
     "Patch": "0"
   },
