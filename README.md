@@ -1,57 +1,45 @@
-# Use OpenAI GPT model to review Pull Requests for Azure Devops
-A task for Azure DevOps build pipelines to add GPT as PR reviewer
+# Use o modelo OpenAI GPT para revisar solicitações pull para Azure Devops
+Uma tarefa para o Azure DevOps criar pipelines para adicionar GPT como revisor de relações públicas
 
-## Installation
+## Instalação
+A instalação pode ser feita usando o [Visual Studio MarketPlace](https://marketplace.visualstudio.com/publishers/jpcompcombr).
 
-Installation can be done using [Visual Studio MarketPlace](https://marketplace.visualstudio.com/publishers/AzureOpenAIPullRequestReviewJPComp).
-
-## Usage
-
-Add the tasks to your build definition.
+## Uso
+Adicione as tarefas à sua definição de build.
 
 ## Setup
 
-### Give permission to the build service agent
+### Dê permissão ao agente de serviço de construção
+Antes de usar esta tarefa, certifique-se de que o serviço de compilação tenha permissões para contribuir com solicitações pull em seu repositório:
+![contribute_to_pr](https://github.com/jpitapeva/extensao-devops-pull-request)
 
-before use this task, make sure that the build service has permissions to contribute to pull requests in your repository :
-
-![contribute_to_pr](https://github.com/mlarhrouch/azure-pipeline-gpt-pr-review/blob/main/images/contribute_to_pr.png?raw=true)
-
-### Allow Task to access the system token
-
-#### Yaml pipelines 
-
-Add a checkout section with persistCredentials set to true.
+### Permitir que a tarefa acesse o token do sistema
+#### Pipelines Yaml
+Adicione uma seção de checkout com persistCredentials definido como true.
 
 ```yaml
-steps:
-- checkout: self
-  persistCredentials: true
+jobs:
+- job:
+  displayName: "JPCompcombr code review"
+  pool:
+    vmImage: ubuntu-latest 
+ 
+  steps:
+  - checkout: self
+    persistCredentials: true
+
+  - task: JPCompcombr@6
+    displayName: GPTPullRequestReview
+    inputs:
+      api_key: 'YOUR_TOKEN'
+      model: 'gpt-4'
+      aoi_endpoint: 'https://LINK.azure.com/openai/deployments/DEPLOYMENT/chat/completions?api-version=API_VERSION'
+      aoi_tokenMax: 1000
+      aoi_temperature: 0
 ```
 
-#### Classic editors 
-
-Enable the option "Allow scripts to access the OAuth token" in the "Agent job" properties :
-
-![allow_access_token](https://github.com/mlarhrouch/azure-pipeline-gpt-pr-review/blob/main/images/allow_access_token.png?raw=true)
-
-### Azure Open AI service
-
-If you choose to use the Azure Open AI service, you must fill in the endpoint and API key of Azure OpenAI. The format of the endpoint is as follows: https://{XXXXXXXX}.openai.azure.com/openai/deployments/{MODEL_NAME}/chat/completions?api-version={API_VERSION}
-
-
-### OpenAI Models
-
-In case you don't use Azure Open AI Service, you can choose which model to use, the supported models are "gpt-4", "gpt-3.5-turbo" and "gpt-3.5-turbo-16k". if no model is selected the "gpt-3.5-turbo" is used.
-
-## Contributions
-
-Found and fixed a bug or improved on something? Contributions are welcome! Please target your pull request against the `main` branch or report an issue on [GitHub](https://github.com/jpitapeva/azure-pipeline-gpt-pr-review/issues) so someone else can try and implement or fix it.
-
 ## License
-
 [MIT](https://raw.githubusercontent.com/mlarhrouch/azure-pipeline-gpt-pr-review/main/LICENSE)
 
-
-## How publish
+## Plus
 [Devops Publish](https://learn.microsoft.com/en-us/azure/devops/extend/publish/overview?view=azure-devops)
