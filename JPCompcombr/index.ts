@@ -19,6 +19,7 @@ async function run() {
     const aoiEndpoint = tl.getInput('aoi_endpoint', true);
     const tokenMax = tl.getInput('aoi_tokenMax', true);
     const temperature = tl.getInput('aoi_temperature', true);
+    const additional_prompts = tl.getInput('additional_prompts', false)
 
     if (apiKey == undefined) {
       tl.setResult(tl.TaskResult.Failed, 'No Api Key provided!');
@@ -49,7 +50,7 @@ async function run() {
     await deleteExistingComments(httpsAgent);
 
     for (const fileName of filesNames) {
-      await reviewFile(targetBranch, fileName, httpsAgent, apiKey, openai, aoiEndpoint, tokenMax, temperature)
+      await reviewFile(targetBranch, fileName, httpsAgent, apiKey, openai, aoiEndpoint, tokenMax, temperature, additional_prompts)
     }
 
     tl.setResult(tl.TaskResult.Succeeded, "Pull Request revisado.");

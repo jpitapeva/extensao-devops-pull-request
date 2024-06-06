@@ -11,9 +11,9 @@
   ],
   "demands": [],
   "version": {
-    "Major": "10",
+    "Major": "12",
     "Minor": "0",
-    "Patch": "1"
+    "Patch": "0"
   },
   "minimumAgentVersion": "1.95.0",
   "instanceNameFormat": "JPCompcombr $(message)",
@@ -25,7 +25,7 @@
       "defaultValue": "",
       "required": true,
       "helpMarkDown": "Api key do Azure OpenAI."
-    },    
+    },
     {
       "name": "aoi_endpoint",
       "type": "string",
@@ -34,7 +34,7 @@
       "required": true,
       "helpMarkDown": "Endpoint do Azure OpenAI. (required)"
     },
-	{
+    {
       "name": "aoi_tokenMax",
       "type": "string",
       "label": "Azure OpenApi Endpoint",
@@ -42,13 +42,21 @@
       "required": true,
       "helpMarkDown": "O numero maximo de tokens a serem gerados na conclusao. A contagem de tokens da sua solicitacao mais max_tokens nao pode exceder o tamanho do contexto do modelo. (required)"
     },
-	{
+    {
       "name": "aoi_temperature",
       "type": "string",
       "label": "Temperatura de amostragem usar, entre 0 e 2.",
       "defaultValue": "",
       "required": true,
       "helpMarkDown": "Temperatura de amostragem usar, entre 0 e 2. Valores mais altos significam que o modelo corre mais riscos. Experimente 0,9 para aplicativos mais criativos e 0 para aqueles com uma resposta bem definida. (required)"
+    },    
+    {
+      "name": "additional_prompts",
+      "type": "string",
+      "label": "Additional Prompts",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Especifique prompts adicionais do AzureOpenAI. Exemplo. corrigir nomenclatura de variaveis, garantir recuo consistente, revisar abordagem de tratamento de erros\n```"
     },
     {
       "name": "support_self_signed_certificate",

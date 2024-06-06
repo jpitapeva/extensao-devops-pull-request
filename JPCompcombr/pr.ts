@@ -19,14 +19,24 @@ export async function addCommentToPR(fileName: string, comment: string, httpsAge
 
   const prUrl = `${tl.getVariable('SYSTEM.TEAMFOUNDATIONCOLLECTIONURI')}${tl.getVariable('SYSTEM.TEAMPROJECTID')}/_apis/git/repositories/${tl.getVariable('Build.Repository.Name')}/pullRequests/${tl.getVariable('System.PullRequest.PullRequestId')}/threads?api-version=5.1`
 
-  await fetch(prUrl, {
+  let response = await fetch(prUrl, {
     method: 'POST',
     headers: { 'Authorization': `Bearer ${tl.getVariable('SYSTEM.ACCESSTOKEN')}`, 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
     agent: httpsAgent
   });
 
-  console.log(`Novo comentario adicionado.`);
+
+  if (response.ok == false) {
+    if (response.status == 401) {
+      tl.setResult(tl.TaskResult.Failed, "The Build Service must have 'Contribute to pull requests' access to the repository. See https://stackoverflow.com/a/57985733 for more information");
+    }
+
+    tl.warning(response.statusText)
+  }
+  else {
+    console.log(`Novo comentario adicionado.`);
+  }
 }
 
 export async function deleteExistingComments(httpsAgent: Agent) {

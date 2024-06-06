@@ -5,20 +5,20 @@ import { addCommentToPR } from './pr';
 import { Agent } from 'https';
 import * as tl from "azure-pipelines-task-lib/task";
 
-export async function reviewFile(targetBranch: string, fileName: string, httpsAgent: Agent, apiKey: string, openai: OpenAIApi | undefined, aoiEndpoint: string | undefined, tokenMax: string | undefined, temperature: string | undefined) {
+export async function reviewFile(targetBranch: string, fileName: string, httpsAgent: Agent, apiKey: string, openai: OpenAIApi | undefined, aoiEndpoint: string | undefined, tokenMax: string | undefined, temperature: string | undefined, additional_prompts: string | undefined) {
   console.log(`Iniciando revisao ${fileName} ...`);
 
   const defaultOpenAIModel = 'gpt-3.5-turbo';
   const patch = await git.diff([targetBranch, '--', fileName]);
 
-  const instructions = `Atuar como revisor de código de uma solicitação pull, fornecendo feedback sobre possíveis bugs e problemas de código limpo.
-        Você recebe as alterações da solicitação pull em um formato de patch.
-        Cada entrada de patch tem a mensagem de commit na linha Assunto seguida pelas alterações de código (diffs) em formato unidiff.
-
-        Como revisor de código, sua tarefa é:
-                - Revise apenas linhas adicionadas, editadas ou excluídas.
-                - Se não houver bugs e as alterações estiverem corretas, escreva apenas 'Sem feedback'.
-                - Se houver erros ou alterações incorretas no código, não escreva 'Sem feedback'.`;
+  const instructions = `Sua tarefa é atuar como revisor de código de uma solicitação pull request.
+                - Use marcadores se você tiver vários comentários
+                ${additional_prompts ?? null}
+                - Se houver algum bug, destaque.
+                - Se houver grandes problemas de desempenho, destaque.
+                - Forneça detalhes sobre o não uso das melhores práticas.
+                - Forneça apenas instruções para melhorias.                
+                - Se não houver bugs e as alterações estiverem corretas, escreva apenas 'Sem feedback'.`;
 
   try {
     let choices: any;
