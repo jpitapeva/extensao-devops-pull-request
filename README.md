@@ -36,6 +36,7 @@ jobs:
       aoi_endpoint: 'https://{XXXXXXXX}.azure.com/openai/deployments/{MODEL_NAME}/chat/completions?api-version={API_VERSION}'
       aoi_tokenMax: 1000
       aoi_temperature: 0
+      additional_prompts: 'Revisar xxxxxxxxxxxxxxxx'
 ```
 
 ## License
