@@ -22,7 +22,14 @@ export async function reviewFile(targetBranch: string, fileName: string, httpsAg
 
   try {
     let choices: any;
-
+    if (tokenMax === undefined || tokenMax === '') {
+      tokenMax = '100';
+      console.log(`tokenMax setado para 100.`);
+    }
+    if (temperature === undefined || temperature === '' || parseInt(temperature) > 2) {
+      temperature = '0';
+      console.log(`temperature setado para 0.`);
+    }
     if (openai) {
       const response = await openai.createChatCompletion({
         model: tl.getInput('model') || defaultOpenAIModel,
@@ -42,33 +49,38 @@ export async function reviewFile(targetBranch: string, fileName: string, httpsAg
       choices = response.data.choices
     }
     else if (aoiEndpoint) {
-      const request = await fetch(aoiEndpoint, {
-        method: 'POST',
-        headers: { 'api-key': `${apiKey}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          max_tokens: parseInt(`${tokenMax}`),
-          temperature: parseInt(`${temperature}`),
-          messages: [{
-            role: "user",
-            content: `${instructions}\n, patch : ${patch}}`
-          }]
-        })
-      });
+      try {
+        const request = await fetch(aoiEndpoint, {
+          method: 'POST',
+          headers: { 'api-key': `${apiKey}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            max_tokens: parseInt(`${tokenMax}`),
+            temperature: parseInt(`${temperature}`),
+            messages: [{
+              role: "user",
+              content: `${instructions}\n, patch : ${patch}}`
+            }]
+          })
+        });
 
-      const response = await request.json();
+        const response = await request.json();
 
-      choices = response.choices;
+        choices = response.choices;
+      }
+      catch (responseError: any) {
+        console.log(`Encontrado erro, validar os parametros de entrada. ${responseError.response.status} ${responseError.response.message}`);
+      }
     }
 
     if (choices && choices.length > 0) {
       const review = choices[0].message?.content as string;
 
-      if (review.trim() !== "No feedback.") {
+      if (review.trim() !== "Sem feedback.") {
         await addCommentToPR(fileName, review, httpsAgent);
       }
     }
 
-    console.log(`Review of ${fileName} completed.`);
+    console.log(`Revisao ${fileName} completa.`);
   }
   catch (error: any) {
     if (error.response) {
