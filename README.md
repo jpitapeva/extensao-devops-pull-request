@@ -13,7 +13,8 @@ Endpoint é o seguinte: https://{XXXXXXXX}.openai.azure.com/openai/deployments/{
 
 ### Dê permissão ao agente de serviço de construção
 Antes de usar esta tarefa, certifique-se de que o serviço de compilação tenha permissões para contribuir com solicitações pull em seu repositório:
-![contribute_to_pr](https://github.com/jpitapeva/extensao-devops-pull-request)
+
+![contribute_to_pr](https://github.com/jpitapeva/extensao-devops-pull-request/blob/main/images/contribute_to_pr.png?raw=true)
 
 ### Permitir que a tarefa acesse o token do sistema
 #### Pipelines Yaml
