@@ -1,10 +1,10 @@
 {
   "id": "2572887e-809d-43b4-bab7-baaad9c8ec87",
   "name": "JPCompcombr",
-  "friendlyName": "Review PullRequest by GPT",
-  "description": "This task use OpenAi GPT model to review PullRequests",
+  "friendlyName": "Revisao de PullRequest by AzureOpenAI",
+  "description": "Esta tarefa usa o modelo AzureOpenAi para revisar PullRequests",
   "author": "Joao Antunes",
-  "helpMarkDown": "[More Information](https://github.com/jpitapeva/extensao-devops-pull-request)",
+  "helpMarkDown": "[Mais informacoes](https://github.com/jpitapeva/extensao-devops-pull-request)",
   "category": "Utility",
   "visibility": [
     "Build"

@@ -30,7 +30,7 @@ export async function addCommentToPR(fileName: string, comment: string, httpsAge
 }
 
 export async function deleteExistingComments(httpsAgent: Agent) {
-  console.log("Start deleting existing comments added by the previous Job ...");
+  console.log("Iniciando e deletando comentarios pre existentes ...");
 
   const threadsUrl = `${tl.getVariable('SYSTEM.TEAMFOUNDATIONCOLLECTIONURI')}${tl.getVariable('SYSTEM.TEAMPROJECTID')}/_apis/git/repositories/${tl.getVariable('Build.Repository.Name')}/pullRequests/${tl.getVariable('System.PullRequest.PullRequestId')}/threads?api-version=5.1`;
   const threadsResponse = await fetch(threadsUrl, {
