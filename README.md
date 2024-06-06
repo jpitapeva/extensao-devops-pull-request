@@ -1,5 +1,5 @@
 # Use o modelo OpenAI GPT para revisar solicitações pull para Azure Devops
-Uma tarefa para o Azure DevOps criar pipelines para adicionar GPT como revisor de relações públicas
+Uma task do Azure DevOps que adicionar comentários no PR com ajuda do GPT.
 
 ## Instalação
 A instalação pode ser feita usando o [Visual Studio MarketPlace](https://marketplace.visualstudio.com/publishers/jpcompcombr).
