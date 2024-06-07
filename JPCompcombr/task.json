@@ -11,7 +11,7 @@
   ],
   "demands": [],
   "version": {
-    "Major": "12",
+    "Major": "14",
     "Minor": "0",
     "Patch": "0"
   },
@@ -48,15 +48,31 @@
       "label": "Temperatura de amostragem usar, entre 0 e 2.",
       "defaultValue": "",
       "required": true,
-      "helpMarkDown": "Temperatura de amostragem usar, entre 0 e 2. Valores mais altos significam que o modelo corre mais riscos. Experimente 0,9 para aplicativos mais criativos e 0 para aqueles com uma resposta bem definida. (required)"
-    },    
+      "helpMarkDown": "Temperatura de amostragem, usar entre 0 e 2. Valores mais altos significam que o modelo corre mais riscos. Experimente 0.9 para aplicativos mais criativos e 0 para aqueles com uma resposta bem definida. (required)"
+    },
     {
       "name": "additional_prompts",
       "type": "string",
       "label": "Additional Prompts",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Especifique prompts adicionais do AzureOpenAI. Exemplo. corrigir nomenclatura de variaveis, garantir recuo consistente, revisar abordagem de tratamento de erros\n```"
+      "helpMarkDown": "Especifique prompts adicionais do AzureOpenAI como uma lista separada por virgulas para aprimorar o processo de revisao de codigo.\n\n- Adicione varios prompts separados por virgulas.\n- Esses prompts serao usados ​​em conjunto com os prompts principais de revisao de codigo.\n\n**Exemplo:**\n```texto simples\nCorrigir nomenclatura de variaveis, garantir identacao consistente, revisar abordagem de tratamento de erros\n```"
+    },
+    {
+      "name": "file_extensions",
+      "type": "string",
+      "label": "File Extensions",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Especifique uma lista separada por virgulas de extensoes de arquivo para as quais você deseja executar uma revisao de codigo. Essa entrada ajuda a restringir o escopo da revisao de codigo para tipos de arquivo especificos.\n\n**Exemplo:**\n```plaintext\n\".js,.ts,.css,.html\"\n```\n\nCertifique-se de fornecer as extensões dos arquivos sem espacos após as virgulas."
+    },
+    {
+      "name": "file_excludes",
+      "type": "string",
+      "label": "Files to exclude",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "## Arquivos a serem excluidos da configuracao\n\n### Descricao\nEspecifique uma lista separada por virgulas de nomes de arquivos que devem ser excluidos das revisoes de codigo. Isso é util para excluir arquivos confidenciais ou impedir que determinados arquivos sejam revisados.\n\n### Formato\nForneca uma lista de nomes de arquivos separados por virgulas. Por exemplo: `file1.js, file2.py, secret.txt`\n\n### Valor padrao\nSe nenhum arquivo for especificado, todos os arquivos serao considerados para revisao de codigo por padrao."
     },
     {
       "name": "support_self_signed_certificate",

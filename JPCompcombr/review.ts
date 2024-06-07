@@ -1,22 +1,17 @@
 import fetch from 'node-fetch';
 import { git } from './git';
-import { OpenAIApi } from 'openai';
 import { addCommentToPR } from './pr';
 import { Agent } from 'https';
-import * as tl from "azure-pipelines-task-lib/task";
 
-export async function reviewFile(targetBranch: string, fileName: string, httpsAgent: Agent, apiKey: string, openai: OpenAIApi | undefined, aoiEndpoint: string | undefined, tokenMax: string | undefined, temperature: string | undefined, additional_prompts: string | undefined) {
-  console.log(`Iniciando revisao ${fileName} ...`);
-
-  const defaultOpenAIModel = 'gpt-3.5-turbo';
-  const patch = await git.diff([targetBranch, '--', fileName]);
+export async function reviewFile(gitDiff: string, fileName: string, httpsAgent: Agent, apiKey: string, aoiEndpoint: string, tokenMax: string | undefined, temperature: string | undefined, additionalPrompts: string[] = []) {
+  console.log(`Iniciando revisao do arquivo: ${fileName} ...`);
 
   const instructions = `Sua tarefa é atuar como revisor de código de uma solicitação pull request.
-                - Use marcadores se você tiver vários comentários
-                ${additional_prompts ?? null}
+                - Use marcadores se você tiver vários comentários                 
                 - Se houver algum bug, destaque.
-                - Se houver grandes problemas de desempenho, destaque.
+                - Se houver grandes problemas de desempenho, destaque.                
                 - Forneça detalhes sobre o não uso das melhores práticas.
+                ${additionalPrompts.length > 0 ? additionalPrompts.map(str => `- ${str}`).join('\n') : null}
                 - Forneça apenas instruções para melhorias.                
                 - Se não houver bugs e as alterações estiverem corretas, escreva apenas 'Sem feedback'.`;
 
@@ -24,52 +19,33 @@ export async function reviewFile(targetBranch: string, fileName: string, httpsAg
     let choices: any;
     if (tokenMax === undefined || tokenMax === '') {
       tokenMax = '100';
-      console.log(`tokenMax setado para 100.`);
+      console.log(`tokenMax fora dos parametros, para proseguir com a task foi setado para 100.`);
     }
     if (temperature === undefined || temperature === '' || parseInt(temperature) > 2) {
       temperature = '0';
-      console.log(`temperature setado para 0.`);
+      console.log(`temperature fora dos parametros, para proseguir com a task foi setado para 0.`);
     }
-    if (openai) {
-      const response = await openai.createChatCompletion({
-        model: tl.getInput('model') || defaultOpenAIModel,
-        messages: [
-          {
-            role: "system",
-            content: instructions
-          },
-          {
+
+    try {
+      const request = await fetch(aoiEndpoint, {
+        method: 'POST',
+        headers: { 'api-key': `${apiKey}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          max_tokens: parseInt(`${tokenMax}`),
+          temperature: parseInt(`${temperature}`),
+          messages: [{
             role: "user",
-            content: patch
-          }
-        ],
-        max_tokens: parseInt(`${tokenMax}`)
+            content: `${instructions}\n, patch : ${gitDiff}}`
+          }]
+        })
       });
 
-      choices = response.data.choices
+      const response = await request.json();
+
+      choices = response.choices;
     }
-    else if (aoiEndpoint) {
-      try {
-        const request = await fetch(aoiEndpoint, {
-          method: 'POST',
-          headers: { 'api-key': `${apiKey}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            max_tokens: parseInt(`${tokenMax}`),
-            temperature: parseInt(`${temperature}`),
-            messages: [{
-              role: "user",
-              content: `${instructions}\n, patch : ${patch}}`
-            }]
-          })
-        });
-
-        const response = await request.json();
-
-        choices = response.choices;
-      }
-      catch (responseError: any) {
-        console.log(`Encontrado erro, validar os parametros de entrada. ${responseError.response.status} ${responseError.response.message}`);
-      }
+    catch (responseError: any) {
+      console.log(`Encontrado erro, validar os parametros de entrada. ${responseError.response.status} ${responseError.response.message}`);
     }
 
     if (choices && choices.length > 0) {

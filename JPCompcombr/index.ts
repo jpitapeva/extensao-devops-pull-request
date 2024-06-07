@@ -5,6 +5,7 @@ import { reviewFile } from './review';
 import { getTargetBranchName } from './utils';
 import { getChangedFiles } from './git';
 import https from 'https';
+import { Repository } from './repository';
 
 async function run() {
   try {
@@ -13,13 +14,15 @@ async function run() {
       return;
     }
 
-    let openai: OpenAIApi | undefined;
+    const _repository = new Repository();
     const supportSelfSignedCertificate = tl.getBoolInput('support_self_signed_certificate');
     const apiKey = tl.getInput('api_key', true);
     const aoiEndpoint = tl.getInput('aoi_endpoint', true);
     const tokenMax = tl.getInput('aoi_tokenMax', true);
     const temperature = tl.getInput('aoi_temperature', true);
-    const additional_prompts = tl.getInput('additional_prompts', false)
+    const additionalPrompts = tl.getInput('additional_prompts', false)?.split(',')
+    const fileExtensions = tl.getInput('file_extensions', false);
+    const filesToExclude = tl.getInput('file_excludes', false);
 
     if (apiKey == undefined) {
       tl.setResult(tl.TaskResult.Failed, 'No Api Key provided!');
@@ -27,13 +30,9 @@ async function run() {
     }
 
     if (aoiEndpoint == undefined) {
-      const openAiConfiguration = new Configuration({
-        apiKey: apiKey,
-      });
-
-      openai = new OpenAIApi(openAiConfiguration);
+      tl.setResult(tl.TaskResult.Failed, 'No Endpoint AzureOpenAi provided!');
+      return;
     }
-
     const httpsAgent = new https.Agent({
       rejectUnauthorized: !supportSelfSignedCertificate
     });
@@ -45,12 +44,19 @@ async function run() {
       return;
     }
 
-    const filesNames = await getChangedFiles(targetBranch);
-
     await deleteExistingComments(httpsAgent);
 
-    for (const fileName of filesNames) {
-      await reviewFile(targetBranch, fileName, httpsAgent, apiKey, openai, aoiEndpoint, tokenMax, temperature, additional_prompts)
+    let filesToReview = await _repository.GetChangedFiles(fileExtensions, filesToExclude);
+
+    tl.setProgress(0, 'Code Review');
+
+    for (let index = 0; index < filesToReview.length; index++) {
+      const fileToReview = filesToReview[index];
+      let diff = await _repository.GetDiff(fileToReview);
+
+      await reviewFile(diff, fileToReview, httpsAgent, apiKey, aoiEndpoint, tokenMax, temperature, additionalPrompts)
+
+      tl.setProgress((fileToReview.length / 100) * index, 'Code Review');
     }
 
     tl.setResult(tl.TaskResult.Succeeded, "Pull Request revisado.");

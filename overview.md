@@ -36,7 +36,9 @@ jobs:
       aoi_endpoint: 'https://{XXXXXXXX}.azure.com/openai/deployments/{MODEL_NAME}/chat/completions?api-version={API_VERSION}'
       aoi_tokenMax: 1000
       aoi_temperature: 0
-      additional_prompts: 'Revisar xxxxxxxxxxxxxxxx'
+      file_extensions: 'js,ts,css,html'
+      file_excludes: 'file1.js,file2.py,secret.txt'
+      additional_prompts: 'Prompt separado por virula, exemplo: corrija a nomenclatura de variaveis, garanta identacao consistente, revise a abordagem de tratamento de erros'
 ```
 
 ## License
