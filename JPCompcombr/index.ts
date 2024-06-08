@@ -15,6 +15,7 @@ async function run() {
     }
 
     const _repository = new Repository();
+    const pr_1 = require("./pr");
     const supportSelfSignedCertificate = tl.getBoolInput('support_self_signed_certificate');
     const apiKey = tl.getInput('api_key', true);
     const aoiEndpoint = tl.getInput('aoi_endpoint', true);
@@ -51,11 +52,22 @@ async function run() {
     tl.setProgress(0, 'Code Review');
 
     for (let index = 0; index < filesToReview.length; index++) {
+      
+      if (filesToReview.length === 0) {
+        console.info(`Nao encontrado codigo passivel de revisao, revise os parametros de entrada da tarefa.`)
+        tl.setResult(tl.TaskResult.SucceededWithIssues, "Nao encontrado codigo passivel de revisao, revise os parametros de entrada da tarefa.");
+        return
+      }
+      
       const fileToReview = filesToReview[index];
       let diff = await _repository.GetDiff(fileToReview);
+      let review = await reviewFile(diff, fileToReview, httpsAgent, apiKey, aoiEndpoint, tokenMax, temperature, additionalPrompts)
 
-      await reviewFile(diff, fileToReview, httpsAgent, apiKey, aoiEndpoint, tokenMax, temperature, additionalPrompts)
+      if (diff.indexOf('NO_COMMENT') < 0) {
+        await pr_1.addCommentToPR(fileToReview, review, httpsAgent);
+      }
 
+      console.info(`Completed review of file ${fileToReview}`)
       tl.setProgress((fileToReview.length / 100) * index, 'Code Review');
     }
 
