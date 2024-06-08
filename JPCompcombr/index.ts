@@ -47,19 +47,18 @@ async function run() {
 
     await deleteExistingComments(httpsAgent);
 
-    let filesToReview = await _repository.GetChangedFiles(fileExtensions, filesToExclude);
+    console.log(0, 'Iniciando Code Review');
+    tl.setProgress(0, 'Iniciando Code Review');
 
-    console.log(0, 'Code Review');
-    tl.setProgress(0, 'Code Review');
-    
-    for (let index = 0; index < filesToReview.length; index++) {
-      
-      if (filesToReview.length === 0) {        
-        console.log(`Nao encontrado codigo passivel de revisao, revise os parametros de entrada da tarefa.`)
-        tl.setResult(tl.TaskResult.SucceededWithIssues, "Nao encontrado codigo passivel de revisao, revise os parametros de entrada da tarefa.");
-        return
-      }
-      
+    let filesToReview = await _repository.GetChangedFiles(fileExtensions, filesToExclude);       
+    if (filesToReview.length === 0 || filesToReview.length == 0 ) {        
+      console.log(`Nao encontrado codigo passivel de revisao, revise os parametros de entrada da tarefa.`)
+      tl.setResult(tl.TaskResult.SucceededWithIssues, "Nao encontrado codigo passivel de revisao, revise os parametros de entrada da tarefa.");
+      return
+    }
+
+    for (let index = 0; index < filesToReview.length; index++) {     
+            
       const fileToReview = filesToReview[index];
       let diff = await _repository.GetDiff(fileToReview);
       let review = await reviewFile(diff, fileToReview, httpsAgent, apiKey, aoiEndpoint, tokenMax, temperature, additionalPrompts)
