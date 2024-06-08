@@ -47,12 +47,11 @@ async function run() {
 
     await deleteExistingComments(httpsAgent);
 
-    console.log(0, 'Iniciando Code Review');
-    tl.setProgress(0, 'Iniciando Code Review');
-
+    console.log('Iniciando Code Review');
+    
     let filesToReview = await _repository.GetChangedFiles(fileExtensions, filesToExclude);       
     if (filesToReview.length === 0 || filesToReview.length == 0 ) {        
-      console.log(`Nao encontrado codigo passivel de revisao, revise os parametros de entrada da tarefa.`)
+      console.log(`Nao encontrado codigo passivel de revisao, revise os parametros de entrada da tarefa.`);
       tl.setResult(tl.TaskResult.SucceededWithIssues, "Nao encontrado codigo passivel de revisao, revise os parametros de entrada da tarefa.");
       return
     }
@@ -67,13 +66,14 @@ async function run() {
         await pr_1.addCommentToPR(fileToReview, review, httpsAgent);
       }
 
-      console.log(`Completed review of file ${fileToReview}`)
-      tl.setProgress((fileToReview.length / 100) * index, 'Code Review');
+      console.log(`Revisao finalizada do arquivo ${fileToReview}`)
+      console.log(`----------------------------------`)
     }
 
-    console.log(tl.TaskResult.Succeeded, "Pull Request revisado.");
+    console.log("Task de Pull Request finalizada.");
   }
   catch (err: any) {
+    console.log("Encontrado erro", err.message);
     console.log(tl.TaskResult.Failed, err.message);
     tl.setResult(tl.TaskResult.Failed, err.message);
   }

@@ -27,12 +27,9 @@ export async function addCommentToPR(fileName: string, comment: string, httpsAge
   });
 
 
-  if (response.ok == false) {
-    if (response.status == 401) {
-      tl.setResult(tl.TaskResult.Failed, "The Build Service must have 'Contribute to pull requests' access to the repository. See https://stackoverflow.com/a/57985733 for more information");
-    }
-
-    tl.warning(response.statusText)
+  if (response.status == 401) {
+    console.log(tl.TaskResult.Failed, "O Build Service deve ter acesso 'Contribuir para pull requests' ao repositorio. Consulte https://stackoverflow.com/a/57985733 para obter mais informacoes, reveja tambem as permissoes do recurso como token e link do endpoint.");
+    tl.setResult(tl.TaskResult.Failed, "O Build Service deve ter acesso 'Contribuir para pull requests' ao repositorio. Consulte https://stackoverflow.com/a/57985733 para obter mais informacoes, reveja tambem as permissoes do recurso como token e link do endpoint.");
   }
   else {
     console.log(`Novo comentario adicionado.`);
@@ -40,7 +37,7 @@ export async function addCommentToPR(fileName: string, comment: string, httpsAge
 }
 
 export async function deleteExistingComments(httpsAgent: Agent) {
-  console.log("Iniciando e deletando comentarios pre existentes ...");
+  console.log("Iniciando ...");
 
   const threadsUrl = `${tl.getVariable('SYSTEM.TEAMFOUNDATIONCOLLECTIONURI')}${tl.getVariable('SYSTEM.TEAMPROJECTID')}/_apis/git/repositories/${tl.getVariable('Build.Repository.Name')}/pullRequests/${tl.getVariable('System.PullRequest.PullRequestId')}/threads?api-version=5.1`;
   const threadsResponse = await fetch(threadsUrl, {

@@ -23,7 +23,7 @@ export async function reviewFile(gitDiff: string, fileName: string, httpsAgent: 
     }
     if (temperature === undefined || temperature === '' || parseInt(temperature) > 2) {
       temperature = '0';
-      console.log(`temperature fora dos parametros, para proseguir com a task foi setado para 0.`);
+      console.log(`temperature fora dos parametros, para proseguir com a task foi setada para 0.`);
     }
 
     try {
