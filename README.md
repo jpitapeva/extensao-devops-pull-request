@@ -1,22 +1,21 @@
 # Use o modelo OpenAI GPT para revisar solicitações pull para Azure Devops
-Task do Azure DevOps que adiciona comentários em portugues nas solicitacoes de PullRequest com a ajuda do GPT.
+Task do Azure DevOps que adiciona comentários em portugues nas solicitações de PullRequest com a ajuda do ChatGPT.
 
 ## Instalação
-A instalação pode ser feita usando o [Visual Studio MarketPlace](https://marketplace.visualstudio.com/publishers/jpcompcombr).
+A instalação da tastk pode ser feita usando o [Visual Studio MarketPlace](https://marketplace.visualstudio.com/publishers/jpcompcombr).
 
-## Setup
 ## Serviço Azure Open AI
 A formatação do endpoint é a seguinte: https://{XXXXXXXX}.openai.azure.com/openai/deployments/{MODEL_NAME}/chat/completions?api-version={API_VERSION}
+[Documentação API REST](https://learn.microsoft.com/pt-br/azure/ai-services/openai/reference).
 
 ### Dê permissão ao agente de serviço de build
-Antes de usar esta task, certifique-se de que o serviço de build tenha permissoes para contribuir em seu REPOSITORIO:
-
+Antes de usar esta task, certifique-se de que o serviço de build tenha permissões para contribuir em seu REPOSITORIO:
 ![contribute_to_pr](https://github.com/jpitapeva/extensao-devops-pull-request/blob/main/images/contribute_to_pr.png?raw=true)
 
 ### Permitir que a tarefa acesse o token do sistema
-#### Pipelines Yaml
 Adicione uma secao de checkout com persistCredentials definido como true.
 
+#### Pipelines Yaml
 ```yaml
 jobs:
 - job:
