@@ -29,7 +29,7 @@ jobs:
   - checkout: self
     persistCredentials: true
 
-  - task: JPCompcombr@20
+  - task: JPCompcombr@21
     displayName: GPTPullRequestReview
     inputs:
       api_key: 'YOUR_TOKEN'
