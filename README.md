@@ -48,7 +48,7 @@ jobs:
 ## Plus
 [Devops Publish](https://learn.microsoft.com/en-us/azure/devops/extend/publish/overview?view=azure-devops)
 
-Steps</br>
+Developer plugin Steps</br>
 Into folder project, run command:  ```npm run build``` </br>
 Bump version in vss-extension.json and task.json</br>
 Run command for generate new package: ```npx tfx-cli extension create```</br>
