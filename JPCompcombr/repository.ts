@@ -1,6 +1,7 @@
 import * as tl from "azure-pipelines-task-lib/task";
 import { SimpleGit, SimpleGitOptions, simpleGit } from "simple-git";
 import binaryExtensions from "./binaryExtensions.json";
+import  minimatch  from "minimatch";
 
 export class Repository {
 
@@ -27,14 +28,15 @@ export class Repository {
         let filesToReview = files.filter(file => !binaryExtensions.includes(file.slice((file.lastIndexOf(".") - 1 >>> 0) + 2)));
 
         if(fileExtensions) {
-            let fileExtensionsToInclude = fileExtensions.trim().split(',');
-            filesToReview = filesToReview.filter(file => fileExtensionsToInclude.includes(file.substring(file.lastIndexOf('.'))));
+            let patternsToInclude = fileExtensions.trim().split(',');
+            filesToReview = filesToReview.filter(file => patternsToInclude.some(pattern => minimatch(file, pattern)));
+        }
+    
+        if(filesToExclude) {
+            let patternsToExclude = filesToExclude.trim().split(',');
+            filesToReview = filesToReview.filter(file => !patternsToExclude.some(pattern => minimatch(file, pattern)));
         }
 
-        if(filesToExclude) {
-            let fileNamesToExclude = filesToExclude.trim().split(',')
-            filesToReview = filesToReview.filter(file => !fileNamesToExclude.includes(file.split('/').pop()!.trim()))
-        }
 
         return filesToReview;
     }

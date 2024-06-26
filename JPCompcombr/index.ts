@@ -8,6 +8,7 @@ import { getChangedFiles } from './git';
 import * as https from 'https';
 import * as http from 'http';
 import { Repository } from './repository';
+import minimatch from 'minimatch';
 
 async function run() {
   try {

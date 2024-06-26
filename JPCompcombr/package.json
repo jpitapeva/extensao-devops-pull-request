@@ -17,6 +17,7 @@
     "simple-git": "^3.17.0"
   },
   "devDependencies": {
+    "@types/minimatch": "^5.1.2",
     "@types/node": "^18.15.3",
     "@types/node-fetch": "^2.6.4",
     "@types/q": "^1.5.5"
