@@ -48,7 +48,8 @@ jobs:
 ## Plus
 [Devops Publish](https://learn.microsoft.com/en-us/azure/devops/extend/publish/overview?view=azure-devops)
 
-Build project into folder, command:  ```npm run build``` </br>
+Steps</br>
+Into folder project, run command:  ```npm run build``` </br>
 Bump version in vss-extension.json and task.json</br>
-Run command: ```npx tfx-cli extension create```</br>
-Upload extension to marketplace https://marketplace.visualstudio.com/manage/a</br>
+Run command for generate new package: ```npx tfx-cli extension create```</br>
+Upload extension to marketplace: https://marketplace.visualstudio.com/manage/a</br>
