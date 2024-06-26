@@ -1,8 +1,9 @@
 import * as tl from "azure-pipelines-task-lib/task";
-import { Agent } from 'https';
+import * as https from 'https';
+import * as http from 'http';
 import fetch from 'node-fetch';
 
-export async function addCommentToPR(fileName: string, comment: string, httpsAgent: Agent) {
+export async function addCommentToPR(fileName: string, comment: string, agent: http.Agent | https.Agent) {
   const body = {
     comments: [
       {
@@ -23,7 +24,7 @@ export async function addCommentToPR(fileName: string, comment: string, httpsAge
     method: 'POST',
     headers: { 'Authorization': `Bearer ${tl.getVariable('SYSTEM.ACCESSTOKEN')}`, 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
-    agent: httpsAgent
+    agent: agent
   });
 
 
@@ -36,13 +37,13 @@ export async function addCommentToPR(fileName: string, comment: string, httpsAge
   }
 }
 
-export async function deleteExistingComments(httpsAgent: Agent) {
+export async function deleteExistingComments(agent: http.Agent | https.Agent) {
   console.log("Iniciando ...");
 
   const threadsUrl = `${tl.getVariable('SYSTEM.TEAMFOUNDATIONCOLLECTIONURI')}${tl.getVariable('SYSTEM.TEAMPROJECTID')}/_apis/git/repositories/${tl.getVariable('Build.Repository.Name')}/pullRequests/${tl.getVariable('System.PullRequest.PullRequestId')}/threads?api-version=5.1`;
   const threadsResponse = await fetch(threadsUrl, {
     headers: { Authorization: `Bearer ${tl.getVariable('SYSTEM.ACCESSTOKEN')}` },
-    agent: httpsAgent
+    agent: agent
   });
 
   const threads = await threadsResponse.json() as { value: [] };
@@ -56,7 +57,7 @@ export async function deleteExistingComments(httpsAgent: Agent) {
     const commentsUrl = `${tl.getVariable('SYSTEM.TEAMFOUNDATIONCOLLECTIONURI')}${tl.getVariable('SYSTEM.TEAMPROJECTID')}/_apis/git/repositories/${tl.getVariable('Build.Repository.Name')}/pullRequests/${tl.getVariable('System.PullRequest.PullRequestId')}/threads/${thread.id}/comments?api-version=5.1`;
     const commentsResponse = await fetch(commentsUrl, {
       headers: { Authorization: `Bearer ${tl.getVariable('SYSTEM.ACCESSTOKEN')}` },
-      agent: httpsAgent
+      agent: agent
     });
 
     const comments = await commentsResponse.json() as { value: [] };
@@ -67,7 +68,7 @@ export async function deleteExistingComments(httpsAgent: Agent) {
       await fetch(removeCommentUrl, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${tl.getVariable('SYSTEM.ACCESSTOKEN')}` },
-        agent: httpsAgent
+        agent: agent
       });
     }
   }

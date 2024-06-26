@@ -1,0 +1,64 @@
+{
+	"choices": [
+		{
+			"content_filter_results": {
+				"hate": {
+					"filtered": false,
+					"severity": "safe"
+				},
+				"self_harm": {
+					"filtered": false,
+					"severity": "safe"
+				},
+				"sexual": {
+					"filtered": false,
+					"severity": "safe"
+				},
+				"violence": {
+					"filtered": false,
+					"severity": "safe"
+				}
+			},
+			"finish_reason": "stop",
+			"index": 0,
+			"logprobs": null,
+			"message": {
+				"content": "- Corrija a nomenclatura da variável \"new_msg\" para \"newMsg\" seguindo a convenção de nomenclatura de variáveis em C#.\n- Adicione a identação correta em cada linha para garantir que o código esteja legível e consistente com o restante do código.\n- É necessário verificar a abordagem de tratamento de erros, uma vez que a função \"returnRegex\" não possui nenhum tratamento. Seria interessante adicionar uma exceção se o parâmetro \"text\" for nulo.",
+				"role": "assistant"
+			}
+		}
+	],
+	"created": 1719420643,
+	"id": "chatcmpl-9eQ8xzaY21nPqEe0SEyfqRabgaV21",
+	"model": "gpt-35-turbo",
+	"object": "chat.completion",
+	"prompt_filter_results": [
+		{
+			"prompt_index": 0,
+			"content_filter_results": {
+				"hate": {
+					"filtered": false,
+					"severity": "safe"
+				},
+				"self_harm": {
+					"filtered": false,
+					"severity": "safe"
+				},
+				"sexual": {
+					"filtered": false,
+					"severity": "safe"
+				},
+				"violence": {
+					"filtered": false,
+					"severity": "safe"
+				}
+			}
+		}
+	],
+	"system_fingerprint": null,
+	"usage": {
+		"completion_tokens": 120,
+		"prompt_tokens": 389,
+		"total_tokens": 509
+	}
+}
