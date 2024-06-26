@@ -50,5 +50,6 @@ Into folder project, run command:  ```npm run build``` </br>
 Bump version in vss-extension.json and task.json</br>
 Run command for generate new package: ```npx tfx-cli extension create```</br>
 Upload extension to marketplace: https://marketplace.visualstudio.com/manage/a</br>
-Author: Joao Paulo Moreira Antunes (jpitapeva@hotmail.com)</br>
+
+### Author: Joao Paulo Moreira Antunes (jpitapeva@hotmail.com)</br>
 
