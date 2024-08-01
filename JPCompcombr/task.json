@@ -1,6 +1,6 @@
 {
-  "id": "bfe3cd1b-dfb4-4c72-8f50-d0caea4f3db8",
-  "name": "IAPullRequestReview",
+  "id": "2572887e-809d-43b4-bab7-baaad9c8ec87",
+  "name": "JPCompcombr",
   "friendlyName": "Revisao de PullRequest by AzureOpenAI",
   "description": "Esta tarefa usa o modelo AzureOpenAi para revisar PullRequests",
   "author": "Joao Antunes",
@@ -11,12 +11,12 @@
   ],
   "demands": [],
   "version": {
-    "Major": "0",
+    "Major": "22",
     "Minor": "0",
-    "Patch": "2"
+    "Patch": "0"
   },
   "minimumAgentVersion": "1.95.0",
-  "instanceNameFormat": "IAPullRequestReview $(message)",
+  "instanceNameFormat": "JPCompcombr $(message)",
   "inputs": [
     {
       "name": "api_key",
@@ -33,27 +33,6 @@
       "defaultValue": "",
       "required": true,
       "helpMarkDown": "Endpoint do Azure OpenAI. (required)"
-    },
-    {
-      "name": "use_https",
-      "type": "boolean",
-      "label": "Use Agent HTTPS",
-      "defaultValue": "false",
-      "required": false,
-      "helpMarkDown": "Select this option to use HTTPS for the agent."
-    },
-    {
-      "name": "model",
-      "type": "pickList",
-      "label": "OpenAI model",
-      "required": false,
-      "options": {
-        "": "",
-        "gpt-4o": "GPT 4o",
-        "gpt-4-32k": "GPT 4 32K",
-        "gpt-3.5-turbo": "GPT 3.5 Turbo"
-      },
-      "helpMarkDown": "The OpenAI model to use. not used if you use Azure OpenAI. if no model is selected, the GPT 3.5 Turbo model is used."
     },
     {
       "name": "aoi_tokenMax",

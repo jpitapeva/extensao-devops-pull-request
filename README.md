@@ -29,7 +29,7 @@ jobs:
   - checkout: self
     persistCredentials: true
 
-  - task: JPCompcombr@21
+  - task: JPCompcombr@22
     displayName: GPTPullRequestReview
     inputs:
       api_key: 'YOUR_TOKEN'
@@ -38,7 +38,7 @@ jobs:
       aoi_tokenMax: 1000
       aoi_temperature: 0
       file_extensions: 'js,ts,css,html'
-      file_excludes: 'file1.js,file2.py,secret.txt'
+      file_excludes: 'file1.js,file2.py,secret.txt,*.csproj'
       additional_prompts: 'Prompt separado por virula, exemplo: corrija a nomenclatura de variaveis, garanta identacao consistente, revise a abordagem de tratamento de erros'
 ```
 

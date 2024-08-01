@@ -2,7 +2,7 @@
     "manifestVersion": 1,
     "id": "JPCompcombr",
     "name": "JPCompcombr",
-    "version": "21.0.2",
+    "version": "22.0.0",
     "publisher": "JPCompcombr",
     "galleryFlags": [
         "Public",
@@ -43,7 +43,7 @@
     },
     "contributions": [
         {
-            "id": "junior151280",
+            "id": "JPCompcombr",
             "type": "ms.vss-distributed-task.task",
             "targets": [
                 "ms.vss-distributed-task.tasks"
