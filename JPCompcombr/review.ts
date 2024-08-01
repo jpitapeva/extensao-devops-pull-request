@@ -16,7 +16,7 @@ export async function reviewFile(gitDiff: string, fileName: string, agent: http.
                         - Revisar apenas linhas adicionadas, editadas ou excluídas.
                         - Se não houver bugs e as alterações estiverem corretas, escreva apenas a frase 'Sem Feedback.'
                         - Se houver bug ou alterações de código incorretas, não escreva apenas a frase 'Sem Feedback.'
-                        -Forneça apenas instruções de melhoria.
+                        - Forneça apenas instruções de melhoria e correções de possiveis bugs ou vulnerabilidades conhecidas.
                 ${additionalPrompts.length > 0 ? additionalPrompts.map(str => `- ${str}`).join('\n') : null}`;
 
   try {
