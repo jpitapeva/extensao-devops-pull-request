@@ -13,7 +13,7 @@
   "version": {
     "Major": "22",
     "Minor": "0",
-    "Patch": "0"
+    "Patch": "1"
   },
   "minimumAgentVersion": "1.95.0",
   "instanceNameFormat": "JPCompcombr $(message)",
@@ -79,7 +79,7 @@
       "type": "boolean",
       "label": "Support self-signed certificate",
       "defaultValue": "false",
-      "required": false,
+      "required": true,
       "helpMarkDown": "Select this option to support self-signed certificate."
     }
   ],
