@@ -1,9 +1,9 @@
 {
     "manifestVersion": 1,
-    "id": "bfe3cd1b-dfb4-4c72-8f50-d0caea4f3db8",
-    "name": "IAPullRequestReview",
-    "version": "0.0.8",
-    "publisher": "junior151280",
+    "id": "JPCompcombr",
+    "name": "JPCompcombr",
+    "version": "21.0.2",
+    "publisher": "JPCompcombr",
     "galleryFlags": [
         "Public",
         "Preview"

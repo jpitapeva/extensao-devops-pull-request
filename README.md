@@ -29,7 +29,7 @@ jobs:
   - checkout: self
     persistCredentials: true
 
-  - task: JPCompcombr@20
+  - task: JPCompcombr@21
     displayName: GPTPullRequestReview
     inputs:
       api_key: 'YOUR_TOKEN'
@@ -45,5 +45,11 @@ jobs:
 ## License
 [MIT](https://raw.githubusercontent.com/mlarhrouch/azure-pipeline-gpt-pr-review/main/LICENSE)
 
-## Plus
-[Devops Publish](https://learn.microsoft.com/en-us/azure/devops/extend/publish/overview?view=azure-devops)
+## Developer plugin Steps</br>
+Into folder project, run command:  ```npm run build``` </br>
+Bump version in vss-extension.json and task.json</br>
+Run command for generate new package: ```npx tfx-cli extension create```</br>
+Upload extension to marketplace: https://marketplace.visualstudio.com/manage/a</br>
+
+### Author: Joao Paulo Moreira Antunes (jpitapeva@hotmail.com)</br>
+
