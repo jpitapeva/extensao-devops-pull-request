@@ -2,10 +2,13 @@ import * as tl from "azure-pipelines-task-lib/task";
 import { Configuration, OpenAIApi } from 'openai';
 import { deleteExistingComments } from './pr';
 import { reviewFile } from './review';
+import { consumeApi } from './review';
 import { getTargetBranchName } from './utils';
 import { getChangedFiles } from './git';
-import https from 'https';
+import * as https from 'https';
+import * as http from 'http';
 import { Repository } from './repository';
+import minimatch from 'minimatch';
 
 async function run() {
   try {
@@ -16,6 +19,7 @@ async function run() {
 
     const _repository = new Repository();
     const pr_1 = require("./pr");
+    const reviewTs = require("./review");
     const supportSelfSignedCertificate = tl.getBoolInput('support_self_signed_certificate');
     const apiKey = tl.getInput('api_key', true);
     const aoiEndpoint = tl.getInput('aoi_endpoint', true);
@@ -24,6 +28,8 @@ async function run() {
     const additionalPrompts = tl.getInput('additional_prompts', false)?.split(',')
     const fileExtensions = tl.getInput('file_extensions', false);
     const filesToExclude = tl.getInput('file_excludes', false);
+    const openaiModel = tl.getInput('model') || 'gpt-4-32k';
+    const useHttps = tl.getBoolInput('use_https', true);
 
     if (apiKey == undefined) {
       tl.setResult(tl.TaskResult.Failed, 'No Api Key provided!');
@@ -34,9 +40,16 @@ async function run() {
       tl.setResult(tl.TaskResult.Failed, 'No Endpoint AzureOpenAi provided!');
       return;
     }
-    const httpsAgent = new https.Agent({
-      rejectUnauthorized: !supportSelfSignedCertificate
-    });
+    
+    let Agent: http.Agent | https.Agent;
+
+    if(useHttps) {
+      Agent = new https.Agent({rejectUnauthorized: !supportSelfSignedCertificate});
+    }
+    else
+    {
+      Agent = new http.Agent();
+    }
 
     let targetBranch = getTargetBranchName();
 
@@ -45,7 +58,7 @@ async function run() {
       return;
     }
 
-    await deleteExistingComments(httpsAgent);
+    await deleteExistingComments(Agent);
 
     console.log('Iniciando Code Review');
 
@@ -62,13 +75,16 @@ async function run() {
 
       const fileToReview = filesToReview[index];
       let diff = await _repository.GetDiff(fileToReview);
-      let review = await reviewFile(diff, fileToReview, httpsAgent, apiKey, aoiEndpoint, tokenMax, temperature, additionalPrompts)
+      let review = await reviewFile(diff, fileToReview, Agent, apiKey, aoiEndpoint, tokenMax, temperature, additionalPrompts)
 
       if (diff.indexOf('NO_COMMENT') < 0) {
-        await pr_1.addCommentToPR(fileToReview, review, httpsAgent);
+        await pr_1.addCommentToPR(fileToReview, review, Agent);
       }
 
       console.log(`Revisao finalizada do arquivo ${fileToReview}`)
+      //gerar um console.log com o cosumo de tokens o consumo esta na variavel consumeApi gerada no arquivo review.ts
+      console.log(`----------------------------------`)
+      console.log(`Consumo de Tokens: ${consumeApi}`)
       console.log(`----------------------------------`)
     }
 
