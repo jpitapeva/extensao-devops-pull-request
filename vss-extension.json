@@ -1,56 +1,56 @@
 {
-    "manifestVersion": 1,
-    "id": "JPCompcombr",
-    "name": "JPCompcombr",
-    "version": "22.0.4",
-    "publisher": "JPCompcombr",
-    "galleryFlags": [
-        "Public",
-        "Preview"
-    ],
-    "targets": [
-        {
-            "id": "Microsoft.VisualStudio.Services"
-        }
-    ],    
-    "description": "Esta tarefa usa o modelo AzureOpenAI para revisar PullRequests",
-    "categories": [
-        "Azure Pipelines"
-    ],
-    "icons": {
-        "default": "images/icon.png"        
-    },
-    "tags": [
-        "OpenAI",
-        "GPT",
-        "pullRequest",
-        "review",
-        "AzureOpenAI"
-    ],
-    "files": [
-        {
-            "path": "JPCompcombr"
-        }
-    ],
-    "repository" : {
-        "type" : "git",
-        "uri" : "https://github.com/jpitapeva/extensao-devops-pull-request"
-    },
-    "content": {
-        "details": {
-            "path": "overview.md"
-        }
-    },
-    "contributions": [
-        {
-            "id": "JPCompcombr",
-            "type": "ms.vss-distributed-task.task",
-            "targets": [
-                "ms.vss-distributed-task.tasks"
-            ],
-            "properties": {
-                "name": "JPCompcombr"
-            }
-        }
-    ]
+  "manifestVersion": 1,
+  "id": "Maugreg",
+  "name": "Maugreg",
+  "version": "22.0.4",
+  "publisher": "Maugreg",
+  "galleryFlags": [
+    "Public",
+    "Preview"
+  ],
+  "targets": [
+    {
+      "id": "Microsoft.VisualStudio.Services"
+    }
+  ],
+  "description": "Esta tarefa usa o modelo AzureOpenAI para revisar PullRequests",
+  "categories": [
+    "Azure Pipelines"
+  ],
+  "icons": {
+    "default": "images/icon.png"
+  },
+  "tags": [
+    "OpenAI",
+    "GPT",
+    "pullRequest",
+    "review",
+    "AzureOpenAI"
+  ],
+  "files": [
+    {
+      "path": "Maugreg"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "uri": "https://github.com/Maugreg/extensao-devops-pull-request"
+  },
+  "content": {
+    "details": {
+      "path": "overview.md"
+    }
+  },
+  "contributions": [
+    {
+      "id": "Maugreg",
+      "type": "ms.vss-distributed-task.task",
+      "targets": [
+        "ms.vss-distributed-task.tasks"
+      ],
+      "properties": {
+        "name": "Maugreg"
+      }
+    }
+  ]
 }
