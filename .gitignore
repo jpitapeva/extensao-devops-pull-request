@@ -110,3 +110,4 @@ dist
 *.vsix
 
 *.js
+/.vs/extensao-devops-pull-request/FileContentIndex
