@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "azure-pipelines-task-lib": "^4.3.1",
+    "azure-pipelines-task-lib": "^4.17.3",
     "binary-extensions": "^2.2.0",
     "node-fetch": "^2.6.6",
     "openai": "^3.2.1",

@@ -71,13 +71,13 @@ async function run() {
 
     console.log(`Detectado alteracao em ${filesToReview.length} arquivos`);
 
-    for (let index = 0; index < filesToReview.length; index++) {
+    for (const element of filesToReview) {
 
-      const fileToReview = filesToReview[index];
+      const fileToReview = element;
       let diff = await _repository.GetDiff(fileToReview);
       let review = await reviewFile(diff, fileToReview, Agent, apiKey, aoiEndpoint, tokenMax, temperature, additionalPrompts)
 
-      if (diff.indexOf('NO_COMMENT') < 0) {
+      if (diff.indexOf('SEM FEEDBACK') < 0) {
         await pr_1.addCommentToPR(fileToReview, review, Agent);
       }
 

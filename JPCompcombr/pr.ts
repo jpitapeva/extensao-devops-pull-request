@@ -28,11 +28,7 @@ export async function addCommentToPR(fileName: string, comment: string, agent: h
   });
 
 
-  if (response.status == 401) {
-    console.log(tl.TaskResult.Failed, "O Build Service deve ter acesso 'Contribuir para pull requests' ao repositorio. Consulte https://stackoverflow.com/a/57985733 para obter mais informacoes, reveja tambem as permissoes do recurso como token e link do endpoint.");
-    tl.setResult(tl.TaskResult.Failed, "O Build Service deve ter acesso 'Contribuir para pull requests' ao repositorio. Consulte https://stackoverflow.com/a/57985733 para obter mais informacoes, reveja tambem as permissoes do recurso como token e link do endpoint.");
-  }
-  else {
+  if (response.ok === true) {
     console.log(`Novo comentario adicionado.`);
   }
 }

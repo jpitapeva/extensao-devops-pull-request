@@ -14,8 +14,8 @@ export async function reviewFile(gitDiff: string, fileName: string, agent: http.
                         Você recebe as alterações do Pull Request em formato de patch, cada entrada de patch tem a mensagem de commit na linha de Assunto seguida pelas alterações de código (diffs) em formato unidiff.
                         Como revisor de código, sua tarefa é:
                         - Revisar apenas linhas adicionadas, editadas ou excluídas.
-                        - Se não houver bugs e as alterações estiverem corretas, escreva apenas a frase 'Sem Feedback.'
-                        - Se houver bug ou alterações de código incorretas, não escreva apenas a frase 'Sem Feedback.'
+                        - Se não houver bugs e as alterações estiverem corretas, escreva apenas a frase 'SEM FEEDBACK'
+                        - Se houver bug ou alterações de código incorretas, não escreva apenas a frase 'SEM FEEDBACK'
                         - Forneça apenas instruções de melhoria e correções de possiveis bugs ou vulnerabilidades conhecidas.
                 ${additionalPrompts.length > 0 ? additionalPrompts.map(str => `- ${str}`).join('\n') : null}`;
 
@@ -56,7 +56,7 @@ export async function reviewFile(gitDiff: string, fileName: string, agent: http.
     if (choices && choices.length > 0) {
       const review = choices[0].message?.content as string;
 
-      if (review.trim() !== "Sem feedback.") {
+      if (review.trim() !== "SEM FEEDBACK") {
         await addCommentToPR(fileName, review, agent);
       }
     }

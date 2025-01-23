@@ -74,5 +74,5 @@ curl https://YOUR_ENDPOINT_NAME.openai.azure.com/openai/deployments/YOUR_DEPLOYM
 ```
 
 
-### Author: Joao Paulo Moreira Antunes (jpitapeva@hotmail.com)</br>
+### Author: Joao Paulo Moreira Antunes (https://www.jpcomp.com.br/)</br>
 
