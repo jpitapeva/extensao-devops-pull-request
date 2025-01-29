@@ -62,7 +62,14 @@ export async function reviewFile(gitDiff: string, fileName: string, agent: http.
     }
 
     console.log(`Revisao ${fileName} completa.`);
-    consumeApi = `Uso: Completions: ${response.usage.completion_tokens}, Prompts: ${response.usage.prompt_tokens}, Total: ${response.usage.total_tokens}`; 
+    
+    try {
+      consumeApi = `Uso: Completions: ${response.usage.completion_tokens}, Prompts: ${response.usage.prompt_tokens}, Total: ${response.usage.total_tokens}`; 
+    }
+    catch (error: any) {
+      console.log(`Erro ao tentar capturar consumo de tokens: ${error.message}`);
+    }
+    
   }
   catch (error: any) {
     if (error.response) {
