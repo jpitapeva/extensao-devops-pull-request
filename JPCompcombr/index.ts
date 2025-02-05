@@ -69,7 +69,7 @@ async function run() {
       return
     }
 
-    console.log(`Detectado alteracao em ${filesToReview.length} arquivos`);
+    console.log(`Detectado alteracao em ${filesToReview.length} arquivo(s)`);
 
     for (const element of filesToReview) {
 
