@@ -26,9 +26,6 @@ export async function reviewFile(gitDiff: string, fileName: string, agent: http.
   try {
     let choices: any;
     let response: any;
-    let completion_tokens_total: any;
-    let prompt_tokens_total: any;
-    let total_tokens_total: any;
     let responseOK: any;
 
     if (tokenMax === undefined || tokenMax === '') {
@@ -78,19 +75,19 @@ export async function reviewFile(gitDiff: string, fileName: string, agent: http.
               temperature: parseInt(`${temperature}`),  
               messages: [  
                   {  
-                      role: "system", // Corrigido para "role"  
-                      content: "Você receberá reposta de um agente de IA que faz code review. Verifique nessa reposta o que é relevante e o que não é relevante na análise do code review. Comentários de afirmação que o código está correto também não são relevantes. Traga na sua reposta apenas os comentários relevantes, caso não haja escreva apenas Sem Feedback"  
+                      role: "system", 
+                      content: "Você receberá reposta de um agente de IA que faz code review. Verifique nessa reposta o que é relevante e o que não é relevante na análise do code review. Comentários de afirmação que o código está correto também não são relevantes. Traga na sua reposta apenas os comentários relevantes, caso não haja escreva apenas Sem feedback"  
                   },  
                   {  
-                      role: "user", // Mantido como "role"  
+                      role: "user", 
                       content: `${review}`  
                   }  
               ]  
           })  
       });
   
-          responseOK = await requestVerificacaoReposta.json();  
-         
+          responseOK = await requestVerificacaoReposta.json();           
+          
 
           if (responseOK.choices && responseOK.choices.length > 0) {  
               const reviewOK = responseOK.choices[0].message?.content as string;  
@@ -106,13 +103,11 @@ export async function reviewFile(gitDiff: string, fileName: string, agent: http.
       console.log(`Nao foi possivel gerar revisao para o arquivo ${fileName}`);
     }
 
-    console.log(`Revisao ${fileName} completa.`);
-    
-    completion_tokens_total = response.completion_tokens + responseOK.completion_tokens;
-    prompt_tokens_total = response.usage.prompt_tokens + responseOK.usage.prompt_tokens;
-    total_tokens_total = response.usage.total_tokens + responseOK.usage.total_tokens;
-
-    try {      
+    try {              
+      const completion_tokens_total = response.usage.completion_tokens + responseOK.usage.completion_tokens;
+      const prompt_tokens_total = response.usage.prompt_tokens + responseOK.usage.prompt_tokens;
+      const total_tokens_total = response.usage.total_tokens + responseOK.usage.total_tokens;
+      
       consumeApi = `Uso: Completions: ${completion_tokens_total}, Prompts: ${prompt_tokens_total}, Total: ${total_tokens_total}`; 
     }
     catch (error: any) {
