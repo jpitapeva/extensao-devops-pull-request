@@ -13,7 +13,7 @@
   "version": {
     "Major": "24",
     "Minor": "0",
-    "Patch": "3"
+    "Patch": "4"
   },
   "minimumAgentVersion": "1.95.0",
   "instanceNameFormat": "JPCompcombr $(message)",
@@ -37,7 +37,7 @@
     {
       "name": "aoi_tokenMax",
       "type": "string",
-      "label": "Azure OpenApi Endpoint",
+      "label": "Azure Max Token",
       "defaultValue": "",
       "required": true,
       "helpMarkDown": "O numero maximo de tokens a serem gerados na conclusao. A contagem de tokens da sua solicitacao mais max_tokens nao pode exceder o tamanho do contexto do modelo. (required)"
@@ -46,7 +46,7 @@
       "name": "aoi_temperature",
       "type": "string",
       "label": "Temperatura de amostragem usar, entre 0 e 2.",
-      "defaultValue": "",
+      "defaultValue": "0",
       "required": true,
       "helpMarkDown": "Temperatura de amostragem, usar entre 0 e 2. Valores mais altos significam que o modelo corre mais riscos. Experimente 0.9 para aplicativos mais criativos e 0 para aqueles com uma resposta bem definida. (required)"
     },
