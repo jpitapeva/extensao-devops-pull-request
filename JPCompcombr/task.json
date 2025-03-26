@@ -13,7 +13,7 @@
   "version": {
     "Major": "24",
     "Minor": "0",
-    "Patch": "4"
+    "Patch": "5"
   },
   "minimumAgentVersion": "1.95.0",
   "instanceNameFormat": "JPCompcombr $(message)",
@@ -75,10 +75,10 @@
       "helpMarkDown": "## Arquivos a serem excluidos da configuracao\n\n### Descricao\nEspecifique uma lista separada por virgulas de nomes de arquivos que devem ser excluidos das revisoes de codigo. Isso é util para excluir arquivos confidenciais ou impedir que determinados arquivos sejam revisados.\n\n### Formato\nForneca uma lista de nomes de arquivos separados por virgulas. Por exemplo: `file1.js, file2.py, secret.txt`\n\n### Valor padrao\nSe nenhum arquivo for especificado, todos os arquivos serao considerados para revisao de codigo por padrao."
     },
     {
-      "name": "support_self_signed_certificate",
+      "name": "use_https",
       "type": "boolean",
       "label": "Support self-signed certificate",
-      "defaultValue": "false",
+      "defaultValue": "true",
       "required": true,
       "helpMarkDown": "Select this option to support self-signed certificate."
     }
