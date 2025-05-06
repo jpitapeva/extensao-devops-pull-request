@@ -13,16 +13,13 @@ export async function reviewFile(
   aoiEndpoint: string,
   tokenMax: string | undefined,
   temperature: string | undefined,
-  prompts: string,
+  prompt: string | undefined,
   additionalPrompts: string[] = [],
 ) {
   console.log(`Iniciando revisao do arquivo: ${fileName} ...`);
 
-  let instructions = '';
-if(prompts !== null || prompts !== undefined || prompts !== '') {
-  instructions = prompts
-}
-else {
+  let instructions : string;
+if(prompt === null ||  prompt === '' || prompt === undefined) {
   instructions = `
   Você é um assistente especializado em engenharia de software, atuando como revisor de código para Pull Requests (PRs).
 
@@ -81,6 +78,9 @@ else {
   * Para cada ponto, indique o arquivo e a linha relevante, se aplicável.
   * Se nenhum problema ou ponto de melhoria for identificado em *nenhum* dos critérios, responda **apenas** com a frase: Sem feedback.
   `;
+}
+else {  
+  instructions = prompt;
 }
 
   try {
