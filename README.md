@@ -29,7 +29,7 @@ jobs:
   - checkout: self
     persistCredentials: true
 
-  - task: JPCompcombr@24
+  - task: JPCompcombr@25
     displayName: GPTPullRequestReview
     inputs:
       api_key: 'YOUR_TOKEN'
@@ -38,6 +38,7 @@ jobs:
       aoi_tokenMax: 1000
       aoi_temperature: 0
       use_https: true
+      prompt: 'Opcional. Se desejar agora voce pode criar o seu proprio prompt, exemplo. Atue como revisor de código de uma solicitação de pull, fornecendo feedback sobre possíveis bugs e problemas de código limpo.\nVocê recebe as alterações da solicitação de pull em um formato de patch.\nCada entrada de patch tem a mensagem de confirmação na linha de assunto, seguida pelas alterações de código (diffs) em um formato unidiff.\n\nComo revisor de código, sua tarefa é:\n- Revisar apenas as linhas adicionadas, editadas ou excluídas.\n- Se não houver bugs e as alterações estiverem corretas, escreva apenas 'Sem feedback'.\n- Se houver bugs ou alterações de código incorretas, não escreva 'Sem feedback'.'
       file_excludes: 'file1.js,file2.py,secret.txt,*.csproj,src/**/*.csproj'
       additional_prompts: 'Prompt separado por virula, exemplo: corrija a nomenclatura de variaveis, garanta identacao consistente, revise a abordagem de tratamento de erros'
 ```

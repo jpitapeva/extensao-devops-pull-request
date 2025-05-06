@@ -25,6 +25,7 @@ async function run() {
     const aoiEndpoint = tl.getInput('aoi_endpoint', true);
     const tokenMax = tl.getInput('aoi_tokenMax', true);
     const temperature = tl.getInput('aoi_temperature', true);
+    const prompts = tl.getInput('prompts', false);
     const additionalPrompts = tl.getInput('additional_prompts', false)?.split(',')
     const fileExtensions = tl.getInput('file_extensions', false);
     const filesToExclude = tl.getInput('file_excludes', false);
@@ -64,8 +65,8 @@ async function run() {
 
     let filesToReview = await _repository.GetChangedFiles(fileExtensions, filesToExclude);
     if (filesToReview.length === 0 || filesToReview.length == 0) {
-      console.log(`Nao encontrado codigo passivel de revisao, sem feedback para revisao de codigo ou revise os parametros de entrada da tarefa.`);
-      tl.setResult(tl.TaskResult.SucceededWithIssues, "Nao encontrado codigo passivel de revisao, sem feedback para revisao de codigo ou revise os parametros de entrada da tarefa.");
+      console.log(`Nao encontrado codigo passivel de revisao, Sem feedback para revisao de codigo ou revise os parametros de entrada da tarefa.`);
+      tl.setResult(tl.TaskResult.SucceededWithIssues, "Nao encontrado codigo passivel de revisao, Sem feedback para revisao de codigo ou revise os parametros de entrada da tarefa.");
       return
     }
 
@@ -75,7 +76,7 @@ async function run() {
 
       const fileToReview = element;
       let diff = await _repository.GetDiff(fileToReview);
-      let review = await reviewFile(diff, fileToReview, Agent, apiKey, aoiEndpoint, tokenMax, temperature, additionalPrompts)
+      let review = await reviewFile(diff, fileToReview, Agent, apiKey, aoiEndpoint, tokenMax, temperature, prompts, additionalPrompts)
 
       if (diff.indexOf('Sem feedback') < 0) {
         await pr_1.addCommentToPR(fileToReview, review, Agent);

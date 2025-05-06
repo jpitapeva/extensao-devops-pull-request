@@ -11,9 +11,9 @@
   ],
   "demands": [],
   "version": {
-    "Major": "24",
+    "Major": "25",
     "Minor": "0",
-    "Patch": "5"
+    "Patch": "0"
   },
   "minimumAgentVersion": "1.95.0",
   "instanceNameFormat": "JPCompcombr $(message)",
@@ -51,12 +51,20 @@
       "helpMarkDown": "Temperatura de amostragem, usar entre 0 e 2. Valores mais altos significam que o modelo corre mais riscos. Experimente 0.9 para aplicativos mais criativos e 0 para aqueles com uma resposta bem definida. (required)"
     },
     {
+      "name": "prompt",
+      "type": "multiLine",
+      "label": "Prompt",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Especifique seu prompt. Se desejar voce pode criar o seu proprio prompt. Exemplo. Atue como revisor de código de uma solicitação de pull, fornecendo feedback sobre possíveis bugs e problemas de código limpo.\nVocê recebe as alterações da solicitação de pull em um formato de patch.\nCada entrada de patch tem a mensagem de confirmação na linha de assunto, seguida pelas alterações de código (diffs) em um formato unidiff.\n\nComo revisor de código, sua tarefa é:\n- Revisar apenas as linhas adicionadas, editadas ou excluídas.\n- Se não houver bugs e as alterações estiverem corretas, escreva apenas 'Sem feedback'.\n- Se houver bugs ou alterações de código incorretas, não escreva 'Sem feedback'."
+    },
+    {
       "name": "additional_prompts",
-      "type": "string",
+      "type": "multiLine",
       "label": "Additional Prompts",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Especifique prompts adicionais do AzureOpenAI como uma lista separada por virgulas para aprimorar o processo de revisao de codigo.\n\n- Adicione varios prompts separados por virgulas.\n- Esses prompts serao usados ​​em conjunto com os prompts principais de revisao de codigo.\n\n**Exemplo:**\n```texto simples\nCorrigir nomenclatura de variaveis, garantir identacao consistente, revisar abordagem de tratamento de erros\n```"
+      "helpMarkDown": "Especifique seu prompt adicional separado por virgula."
     },
     {
       "name": "file_extensions",
