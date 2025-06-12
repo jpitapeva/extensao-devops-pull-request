@@ -76,7 +76,7 @@ if(prompt === null ||  prompt === '' || prompt === undefined) {
   **Formato da Saída:**
   * Apresente o feedback de forma clara e estruturada, idealmente agrupado pelos critérios acima (Design, Funcionalidade, etc.).
   * Para cada ponto, indique o arquivo e a linha relevante, se aplicável.
-  * Se nenhum problema ou ponto de melhoria for identificado em *nenhum* dos critérios, responda **apenas** com a frase: Sem feedback.
+  * Se nenhum problema ou ponto de melhoria for identificado em *nenhum* dos critérios, responda **apenas** com a frase: Sem feedback
   `;
 }
 else {  
@@ -86,7 +86,6 @@ else {
   try {
     let choices: any;
     let response: any;
-    let responseOK: any;
 
     if (tokenMax === undefined || tokenMax === '') {
       tokenMax = '100';
@@ -94,7 +93,7 @@ else {
     }
     if (temperature === undefined || temperature === '' || parseInt(temperature) > 2) {
       temperature = '0';
-      console.log(`temperature fora dos parametros, para proseguir com a task foi setada para 0.`);
+      console.log(`temperatura fora dos parametros, para proseguir, a task foi setada para 0.`);
     }
 
     try {
@@ -123,52 +122,20 @@ else {
     }
 
     if (choices && choices.length > 0) {
-      const review = choices[0].message?.content as string;
-
-      try {
-        const requestVerificacaoReposta = await fetch(aoiEndpoint, {
-          method: 'POST',
-          headers: {
-            'api-key': `${apiKey}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            max_tokens: parseInt(`${tokenMax}`),
-            temperature: parseInt(`${temperature}`),
-            messages: [
-              {
-                role: 'system',
-                content:
-                  'Você receberá reposta de um agente de IA que faz code review. Verifique nessa reposta o que é relevante e o que não é relevante na análise do code review. Comentários de afirmação que o código está correto também não são relevantes. Traga na sua reposta apenas os comentários relevantes, caso não haja escreva apenas Sem feedback',
-              },
-              {
-                role: 'user',
-                content: `${review}`,
-              },
-            ],
-          }),
-        });
-
-        responseOK = await requestVerificacaoReposta.json();
-
-        if (responseOK.choices && responseOK.choices.length > 0) {
-          const reviewOK = responseOK.choices[0].message?.content as string;
-          if (reviewOK.trim() !== 'Sem feedback') {
-            await addCommentToPR(fileName, reviewOK, agent);
-          }
+        const reviewOK = choices[0].message?.content as string;
+        if (reviewOK.trim() !== 'Sem feedback') {
+          await addCommentToPR(fileName, reviewOK, agent);
         }
-      } catch (error) {
-        console.error('Erro ao verificar resposta:', error);
-      }
+        console.log(`Revisão do arquivo ${fileName} concluída.`);
     } else {
-      console.log(`Nao foi possivel gerar revisao para o arquivo ${fileName}`);
+      console.log(`Nenhum feedback encontrado para o arquivo ${fileName}.`);
     }
+    // Captura o consumo de tokens
 
     try {
-      const completion_tokens_total =
-        response.usage.completion_tokens + responseOK.usage.completion_tokens;
-      const prompt_tokens_total = response.usage.prompt_tokens + responseOK.usage.prompt_tokens;
-      const total_tokens_total = response.usage.total_tokens + responseOK.usage.total_tokens;
+      const completion_tokens_total = response.usage.completion_tokens;
+      const prompt_tokens_total = response.usage.prompt_tokens;
+      const total_tokens_total = response.usage.total_tokens;
 
       consumeApi = `Uso: Completions: ${completion_tokens_total}, Prompts: ${prompt_tokens_total}, Total: ${total_tokens_total}`;
     } catch (error: any) {
