@@ -13,7 +13,7 @@
   "version": {
     "Major": "27",
     "Minor": "0",
-    "Patch": "0"
+    "Patch": "1"
   },
   "minimumAgentVersion": "1.95.0",
   "instanceNameFormat": "JPCompcombr $(message)",
@@ -92,7 +92,7 @@
     }
   ],
   "execution": {
-    "Node22": {
+    "Node20_1": {
       "target": "index.js"
     }
   }

@@ -19,7 +19,7 @@ Adicione uma secao de checkout com persistCredentials definido como true.
 
 ### Release notes
 #### Versão 27
-Na versão 27 corrigimos vulnerabilidades em bibliotecas de terceiros e atualizamos o Node.js de 16 para 22. Atenção: essa mudança pode exigir ajustes em ambientes que ainda usam Node.js 16.
+Na versão 27 corrigimos vulnerabilidades em bibliotecas de terceiros e atualizamos o Node.js de 16 para 20_1. Atenção: essa mudança pode exigir ajustes em ambientes que ainda usam Node.js 16.
 
 #### Pipelines Yaml
 ```yaml
