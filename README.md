@@ -17,6 +17,10 @@ Antes de usar esta task, certifique-se de que o serviço de build tenha permiss�
 ### Permitir que a tarefa acesse o token do sistema
 Adicione uma seção de checkout com persistCredentials definido como true.
 
+### Release notes
+#### Versão 27
+Na versão 27 corrigimos vulnerabilidades em bibliotecas de terceiros e atualizamos o Node.js de 16 para 22. Atenção: essa mudança pode exigir ajustes em ambientes que ainda usam Node.js 16.
+
 #### Pipelines Yaml
 ```yaml
 jobs:
@@ -29,7 +33,7 @@ jobs:
   - checkout: self
     persistCredentials: true
 
-  - task: JPCompcombr@26
+  - task: JPCompcombr@27
     displayName: GPTPullRequestReview
     inputs:
       api_key: 'YOUR_TOKEN'
