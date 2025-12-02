@@ -33,12 +33,15 @@ export async function addCommentToPR(fileName: string, comment: string, agent: h
   }
 }
 
-export async function deleteExistingComments(agent: http.Agent | https.Agent) {
+export async function deleteExistingComments(agent: http.Agent | https.Agent, devopsPat?: string) {
+
+  const devopsPatToken = devopsPat ? devopsPat : tl.getVariable('SYSTEM.ACCESSTOKEN');
+
   console.log("Iniciando ...");
 
   const threadsUrl = `${tl.getVariable('SYSTEM.TEAMFOUNDATIONCOLLECTIONURI')}${tl.getVariable('SYSTEM.TEAMPROJECTID')}/_apis/git/repositories/${tl.getVariable('Build.Repository.Name')}/pullRequests/${tl.getVariable('System.PullRequest.PullRequestId')}/threads?api-version=5.1`;
   const threadsResponse = await fetch(threadsUrl, {
-    headers: { Authorization: `Bearer ${tl.getVariable('SYSTEM.ACCESSTOKEN')}` },
+    headers: { Authorization: `Bearer ${devopsPatToken}` },
     agent: agent
   });
 
@@ -52,7 +55,7 @@ export async function deleteExistingComments(agent: http.Agent | https.Agent) {
   for (const thread of threadsWithContext as any[]) {
     const commentsUrl = `${tl.getVariable('SYSTEM.TEAMFOUNDATIONCOLLECTIONURI')}${tl.getVariable('SYSTEM.TEAMPROJECTID')}/_apis/git/repositories/${tl.getVariable('Build.Repository.Name')}/pullRequests/${tl.getVariable('System.PullRequest.PullRequestId')}/threads/${thread.id}/comments?api-version=5.1`;
     const commentsResponse = await fetch(commentsUrl, {
-      headers: { Authorization: `Bearer ${tl.getVariable('SYSTEM.ACCESSTOKEN')}` },
+      headers: { Authorization: `Bearer ${devopsPatToken}` },
       agent: agent
     });
 
@@ -60,16 +63,18 @@ export async function deleteExistingComments(agent: http.Agent | https.Agent) {
 
     for (const comment of comments.value.filter((comment: any) => comment.author.displayName === buildServiceName) as any[]) {
       const removeCommentUrl = `${tl.getVariable('SYSTEM.TEAMFOUNDATIONCOLLECTIONURI')}${tl.getVariable('SYSTEM.TEAMPROJECTID')}/_apis/git/repositories/${tl.getVariable('Build.Repository.Name')}/pullRequests/${tl.getVariable('System.PullRequest.PullRequestId')}/threads/${thread.id}/comments/${comment.id}?api-version=5.1`;
+      console.log("removeCommentUrl", removeCommentUrl);
+      console.log("devopsPatToken", devopsPatToken);
 
       await fetch(removeCommentUrl, {
         method: 'DELETE',
-        headers: { Authorization: `Bearer ${tl.getVariable('SYSTEM.ACCESSTOKEN')}` },
+        headers: { Authorization: `Bearer ${devopsPatToken}` },
         agent: agent
       });
     }
   }
 
-  console.log("Deletando comentarios pre existentes...");
+  console.log("Deletando comentarios preexistentes...");
 }
 
 function getCollectionName(collectionUri: string) {

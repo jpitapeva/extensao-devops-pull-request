@@ -11,7 +11,7 @@
   ],
   "demands": [],
   "version": {
-    "Major": "27",
+    "Major": "28",
     "Minor": "0",
     "Patch": "2"
   },
@@ -89,6 +89,14 @@
       "defaultValue": "true",
       "required": true,
       "helpMarkDown": "Select this option to support self-signed certificate."
+    },
+    {
+      "name": "devops_pat",
+      "type": "string",
+      "label": "PAT",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Opcional. O PAT do DevOps é um campo opcional e deve ser informado apenas quando SYSTEM.ACCESSTOKEN não tiver permissão para excluir comentarios preexistentes"
     }
   ],
   "execution": {
