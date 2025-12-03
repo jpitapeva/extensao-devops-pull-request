@@ -33,9 +33,9 @@ export async function addCommentToPR(fileName: string, comment: string, agent: h
   }
 }
 
-export async function deleteExistingComments(agent: http.Agent | https.Agent, devopsPat?: string) {
+export async function deleteExistingComments(agent: http.Agent | https.Agent, build_service_name?: string) {
 
-  const devopsPatToken = devopsPat ? devopsPat : tl.getVariable('SYSTEM.ACCESSTOKEN');
+  const devopsPatToken = tl.getVariable('SYSTEM.ACCESSTOKEN');
 
   console.log("Iniciando ...");
 
@@ -60,11 +60,9 @@ export async function deleteExistingComments(agent: http.Agent | https.Agent, de
     });
 
     const comments = await commentsResponse.json() as { value: [] };
-
-    for (const comment of comments.value.filter((comment: any) => comment.author.displayName === buildServiceName) as any[]) {
+    const targetBuildServiceName = build_service_name ? build_service_name : buildServiceName;
+    for (const comment of comments.value.filter((comment: any) => comment.author.displayName === targetBuildServiceName) as any[]) {
       const removeCommentUrl = `${tl.getVariable('SYSTEM.TEAMFOUNDATIONCOLLECTIONURI')}${tl.getVariable('SYSTEM.TEAMPROJECTID')}/_apis/git/repositories/${tl.getVariable('Build.Repository.Name')}/pullRequests/${tl.getVariable('System.PullRequest.PullRequestId')}/threads/${thread.id}/comments/${comment.id}?api-version=5.1`;
-      console.log("removeCommentUrl", removeCommentUrl);
-      console.log("devopsPatToken", devopsPatToken);
 
       await fetch(removeCommentUrl, {
         method: 'DELETE',

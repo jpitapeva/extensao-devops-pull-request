@@ -30,7 +30,7 @@ async function run() {
     const filesToExclude = tl.getInput('file_excludes', false);
     const openaiModel = tl.getInput('model') || 'gpt-4-32k';
     const useHttps = tl.getBoolInput('use_https', true);
-    const devopsPat = tl.getInput('devops_pat', false);
+    const buildServiceName = tl.getInput('build_service_name', false);
 
     if (apiKey == undefined) {
       tl.setResult(tl.TaskResult.Failed, 'No Api Key provided!');
@@ -59,7 +59,7 @@ async function run() {
       return;
     }
 
-    await deleteExistingComments(Agent, devopsPat);
+    await deleteExistingComments(Agent, buildServiceName);
 
     console.log('Iniciando Code Review');
 

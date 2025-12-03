@@ -19,7 +19,7 @@ Adicione uma secao de checkout com persistCredentials definido como true.
 
 ### Release notes
 - Na versão 27.0.2 corrigimos vulnerabilidades em bibliotecas de terceiros e atualizamos o Node.js de 16 para 20_1. Atenção: essa mudança pode exigir ajustes em ambientes que ainda usam Node.js 16.
-- Na versão 28 adicionamos um campo opcional chamado(devops_pat) detalhes:(Informar o PAT do DevOps é um campo opcional e deve ser informado apenas quando SYSTEM.ACCESSTOKEN não tiver permissão para excluir comentarios preexistentes).
+- Na versão 28 adicionamos um campo opcional chamado(build_service_name) detalhes:(O build_service_name é um campo opcional e deve ser informado quando existir um build service específico configurado dentro do repositório do Azure Devops.).
 
 #### Pipelines Yaml
 ```yaml
@@ -33,7 +33,7 @@ jobs:
   - checkout: self
     persistCredentials: true
 
-  - task: JPCompcombr@27
+  - task: JPCompcombr@28
     displayName: GPTPullRequestReview
     inputs:
       api_key: 'YOUR_TOKEN'
@@ -45,7 +45,7 @@ jobs:
       prompt: 'Opcional. Agora se desejar voce pode criar o seu proprio prompt, exemplo. Atue como revisor de código de uma solicitação de pull, fornecendo feedback sobre possíveis bugs e problemas de código limpo.\nVocê recebe as alterações da solicitação de pull em um formato de patch.\nCada entrada de patch tem a mensagem de confirmação na linha de assunto, seguida pelas alterações de código (diffs) em um formato unidiff.\n\nComo revisor de código, sua tarefa é:\n- Revisar apenas as linhas adicionadas, editadas ou excluídas.\n- Se não houver bugs e as alterações estiverem corretas, escreva apenas 'Sem feedback'.\n- Se houver bugs ou alterações de código incorretas, não escreva 'Sem feedback'.'
       file_excludes: 'file1.js,file2.py,secret.txt,*.csproj,src/**/*.csproj'
       additional_prompts: 'Opcional. Prompt adicional separado por virgula, exemplo: corrija a nomenclatura de variaveis, garanta identacao consistente, revise a abordagem de tratamento de erros'
-      devops_pat: 'Opcional. O PAT do DevOps é um campo opcional e deve ser usado apenas quando SYSTEM.ACCESSTOKEN não tiver permissão para excluir comentarios preexistentes'
+      build_service_name: 'Opcional. O build_service_name é um campo opcional e deve ser informado quando existir um build service específico configurado dentro do repositório do Azure Devops.'
 ```
 
 ## License

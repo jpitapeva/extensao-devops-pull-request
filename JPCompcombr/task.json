@@ -13,7 +13,7 @@
   "version": {
     "Major": "28",
     "Minor": "0",
-    "Patch": "2"
+    "Patch": "7"
   },
   "minimumAgentVersion": "1.95.0",
   "instanceNameFormat": "JPCompcombr $(message)",
@@ -91,12 +91,12 @@
       "helpMarkDown": "Select this option to support self-signed certificate."
     },
     {
-      "name": "devops_pat",
+      "name": "build_service_name",
       "type": "string",
-      "label": "PAT",
+      "label": "Build Service Name",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Opcional. O PAT do DevOps é um campo opcional e deve ser informado apenas quando SYSTEM.ACCESSTOKEN não tiver permissão para excluir comentarios preexistentes"
+      "helpMarkDown": "Opcional. O build_service_name é um campo opcional e deve ser informado quando existir um build service específico configurado dentro do repositório do Azure Devops"
     }
   ],
   "execution": {
