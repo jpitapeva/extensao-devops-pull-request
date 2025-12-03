@@ -61,6 +61,7 @@ export async function deleteExistingComments(agent: http.Agent | https.Agent, bu
 
     const comments = await commentsResponse.json() as { value: [] };
     const targetBuildServiceName = build_service_name ? build_service_name : buildServiceName;
+    console.log("BuildServiceName:", targetBuildServiceName);
     for (const comment of comments.value.filter((comment: any) => comment.author.displayName === targetBuildServiceName) as any[]) {
       const removeCommentUrl = `${tl.getVariable('SYSTEM.TEAMFOUNDATIONCOLLECTIONURI')}${tl.getVariable('SYSTEM.TEAMPROJECTID')}/_apis/git/repositories/${tl.getVariable('Build.Repository.Name')}/pullRequests/${tl.getVariable('System.PullRequest.PullRequestId')}/threads/${thread.id}/comments/${comment.id}?api-version=5.1`;
 
