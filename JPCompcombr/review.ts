@@ -106,7 +106,7 @@ else {
           messages: [
             {
               role: 'user',
-              content: `${instructions}\n, patch : ${gitDiff}}`,
+              content: `${instructions}\n, patch : ${gitDiff}`,
             },
           ],
         }),
