@@ -19,7 +19,7 @@ Antes de usar esta task, certifique-se de que o serviço de build tenha permiss�
 1. Vai a Project Settings
 1. Abre Permissions
 1. Procura por:
-<ProjectName> Build Service (<OrganizationName>)
+\<ProjectName\> Build Service (\<OrganizationName\>)
 
 Este é o identity usado pelos pipelines YAML e Classic.
 
