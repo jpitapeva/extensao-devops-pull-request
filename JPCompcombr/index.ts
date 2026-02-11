@@ -4,6 +4,7 @@ import { reviewFile } from './review';
 import { consumeApi } from './review';
 import { getTargetBranchName } from './utils';
 import { getChangedFiles } from './git';
+import { addAiReviewLabels } from './pr-labels';
 import * as https from 'https';
 import * as http from 'http';
 import { Repository } from './repository';
@@ -88,6 +89,11 @@ async function run() {
       console.log(`Consumo de Tokens: ${consumeApi}`)
       console.log(`----------------------------------`)
     }
+
+    // ADD AI REVIEW LABEL TO PR
+    const prId = tl.getVariable('System.PullRequest.PullRequestId');
+    console.log('Adicionando label de revisão por IA ao PR...');
+    await addAiReviewLabels(prId, Agent);
 
     console.log("Task de Pull Request finalizada.");
   }
