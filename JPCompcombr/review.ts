@@ -136,13 +136,14 @@ else {
     // Captura o consumo de tokens
 
     try {
-      const completion_tokens_total = response.usage.completion_tokens;
-      const prompt_tokens_total = response.usage.prompt_tokens;
-      const total_tokens_total = response.usage.total_tokens;
-
+      const completion_tokens_total = response.usage?.completion_tokens ?? response.usage?.completionTokens ?? 0;
+      const prompt_tokens_total = response.usage?.prompt_tokens ?? response.usage?.promptTokens ?? 0;
+      const total_tokens_total = response.usage?.total_tokens ?? response.usage?.totalTokens ?? 0;
+    
       consumeApi = `Uso: Completions: ${completion_tokens_total}, Prompts: ${prompt_tokens_total}, Total: ${total_tokens_total}`;
     } catch (error: any) {
       console.log(`Erro ao tentar capturar consumo de tokens: ${error.message}`);
+      consumeApi = `Uso: Informação indisponível`;
     }
   } catch (error: any) {
     if (error.response) {
