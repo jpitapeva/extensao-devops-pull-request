@@ -110,10 +110,10 @@ else {
             },
           ],
         }),
+        agent: agent
       });
-
+    
       response = await request.json();
-
       choices = response.choices;
     } catch (responseError: any) {
       console.log(
