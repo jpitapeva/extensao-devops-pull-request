@@ -46,7 +46,6 @@ jobs:
     displayName: GPTPullRequestReview
     inputs:
       api_key: 'YOUR_TOKEN'
-      model: 'gpt-4'
       aoi_endpoint: 'https://{XXXXXXXX}.azure.com/openai/deployments/{MODEL_NAME}/chat/completions?api-version={API_VERSION}'
       aoi_tokenMax: 1000
       aoi_temperature: 0
