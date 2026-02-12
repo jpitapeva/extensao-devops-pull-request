@@ -16,9 +16,10 @@ Antes de usar esta task, certifique-se de que o serviço de build tenha permiss�
 
 ### Encontrar o Agente de Serviço de Build
 1. Acesse o Azure DevOps
-1. Va até Project Settings
-1. Abra Permissions
-1. Procure por:
+2. Va até Project Settings
+3. Abra Permissions
+4. Selecione a aba Users
+5. Procure por:
 \<ProjectName\> Build Service (\<OrganizationName\>)
 
 Este é o identity usado pelos pipelines YAML e Classic.
