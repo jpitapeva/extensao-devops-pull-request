@@ -14,6 +14,15 @@ Antes de usar esta task, certifique-se de que o serviço de build tenha permiss�
 
 ![contribute_to_pr](https://github.com/jpitapeva/extensao-devops-pull-request/blob/main/images/contribute_to_pr.png?raw=true)
 
+### Encontrar o Agente de Serviço de Build
+1. Acede ao Azure DevOps
+1. Vai a Project Settings
+1. Abre Permissions
+1. Procura por:
+\<ProjectName\> Build Service (\<OrganizationName\>)
+
+Este é o identity usado pelos pipelines YAML e Classic.
+
 ### Permitir que a tarefa acesse o token do sistema
 Adicione uma seção de checkout com persistCredentials definido como true.
 
@@ -37,7 +46,6 @@ jobs:
     displayName: GPTPullRequestReview
     inputs:
       api_key: 'YOUR_TOKEN'
-      model: 'gpt-4'
       aoi_endpoint: 'https://{XXXXXXXX}.azure.com/openai/deployments/{MODEL_NAME}/chat/completions?api-version={API_VERSION}'
       aoi_tokenMax: 1000
       aoi_temperature: 0
