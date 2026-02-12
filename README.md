@@ -18,7 +18,7 @@ Antes de usar esta task, certifique-se de que o serviço de build tenha permiss�
 1. Acesse o Azure DevOps
 2. Va até Project Settings
 3. Abra Permissions
-4. Selecione a aba Users
+4. Clique na aba Users
 5. Procure por:
 \<ProjectName\> Build Service (\<OrganizationName\>)
 
