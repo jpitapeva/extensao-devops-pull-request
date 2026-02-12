@@ -1,10 +1,8 @@
 import fetch from 'node-fetch';
-import { git } from './git';
-import { addCommentToPR } from './pr';
 import * as https from 'https';
 import * as http from 'http';
 
-export let consumeApi: string;
+export let consumeApi: string = 'Uso: Informação não disponível';
 export async function reviewFile(
   gitDiff: string,
   fileName: string,
@@ -15,10 +13,12 @@ export async function reviewFile(
   temperature: string | undefined,
   prompt: string | undefined,
   additionalPrompts: string[] = [],
-) {
+): Promise<string> {
   console.log(`Iniciando revisao do arquivo: ${fileName} ...`);
 
   let instructions : string;
+  const noFeedbackMarker = 'Sem feedback';
+  
 if(prompt === null ||  prompt === '' || prompt === undefined) {
   instructions = `
   Você é um assistente especializado em engenharia de software, atuando como revisor de código para Pull Requests (PRs).
@@ -70,30 +70,43 @@ if(prompt === null ||  prompt === '' || prompt === undefined) {
           .map((str) => `- ${str.trim()}`)
           .filter(Boolean)
           .join('\n')
-      : null
+      : '(Nenhuma instrução adicional)'
   }
 
   **Formato da Saída:**
   * Apresente o feedback de forma clara e estruturada, idealmente agrupado pelos critérios acima (Design, Funcionalidade, etc.).
   * Para cada ponto, indique o arquivo e a linha relevante, se aplicável.
-  * Se nenhum problema ou ponto de melhoria for identificado em *nenhum* dos critérios, responda **apenas** com a frase: Sem feedback
+  * Se nenhum problema ou ponto de melhoria for identificado em *nenhum* dos critérios, responda **apenas** com a frase: ${noFeedbackMarker}
   `;
 }
 else {  
-  instructions = prompt;
+  // Append no-feedback instruction to custom prompt to ensure consistent behavior
+  instructions = `${prompt}
+  
+  **IMPORTANTE - Formato de Resposta:**
+  - Se você NÃO encontrar nenhum problema, erro, ou ponto de melhoria, responda APENAS com a frase exata: ${noFeedbackMarker}
+  - Se você encontrar problemas ou sugestões, forneça o feedback detalhado normalmente.
+  `;
 }
 
   try {
     let choices: any;
-    let response: any;
+    let response: any = { usage: undefined }; // Initialize to avoid undefined in token capture
 
     if (tokenMax === undefined || tokenMax === '') {
       tokenMax = '100';
       console.log(`tokenMax fora dos parametros, para proseguir com a task foi setado para 100.`);
     }
-    if (temperature === undefined || temperature === '' || temperature === '0' || parseInt(temperature) < 1 || parseInt(temperature) > 2) {
-      temperature = '1';
-      console.log(`temperatura fora dos parametros, para proseguir, a temperature da task foi setada para 1.`);
+    if (temperature === undefined || temperature === '') {
+      temperature = '0';
+      console.log(`temperatura fora dos parametros, para proseguir, a task foi setada para 0.`);
+    }
+    
+    // Validate temperature is a valid number between 0 and 2
+    const tempValue = parseFloat(temperature);
+    if (isNaN(tempValue) || tempValue < 0 || tempValue > 2) {
+      temperature = '0';
+      console.log(`temperatura invalida, para proseguir, a task foi setada para 0.`);
     }
 
     try {
@@ -101,8 +114,8 @@ else {
         method: 'POST',
         headers: { 'api-key': `${apiKey}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          max_completion_tokens: parseInt(`${tokenMax}`),
-          temperature: parseInt(`${temperature}`),
+          max_tokens: parseInt(`${tokenMax}`),
+          temperature: parseFloat(`${temperature}`),
           messages: [
             {
               role: 'user',
@@ -114,27 +127,23 @@ else {
       });
     
       response = await request.json();
+      
+      // Validate response structure
+      if (!response || typeof response !== 'object') {
+        console.log('Resposta invalida da API Azure OpenAI');
+        return 'Erro: resposta invalida da API';
+      }
+      
       choices = response.choices;
     } catch (responseError: any) {
       console.log(
-        `Encontrado erro, validar os parametros de entrada. ${responseError.response.status} ${responseError.response.message}`,
+        `Encontrado erro, validar os parametros de entrada. ${responseError.response?.status} ${responseError.response?.message}`,
       );
+      console.log(`Erro completo: ${responseError.message}`);
+      return 'Erro ao comunicar com Azure OpenAI';
     }
 
-    if (choices && choices.length > 0) {
-        const reviewOK = choices[0].message?.content as string;
-        if (reviewOK.trim() !== 'Sem feedback') {
-          await addCommentToPR(fileName, reviewOK, agent);
-        } else {
-          // Add a confirmation comment when no issues are found
-          await addCommentToPR(fileName, '✅ Review completed: No issues found', agent);
-        }
-        console.log(`Revisão do arquivo ${fileName} concluída.`);
-    } else {
-      console.log(`Nenhum feedback encontrado para o arquivo ${fileName}.`);
-    }
     // Captura o consumo de tokens
-
     try {
       const completion_tokens_total = response.usage?.completion_tokens ?? response.usage?.completionTokens ?? 0;
       const prompt_tokens_total = response.usage?.prompt_tokens ?? response.usage?.promptTokens ?? 0;
@@ -145,6 +154,22 @@ else {
       console.log(`Erro ao tentar capturar consumo de tokens: ${error.message}`);
       consumeApi = `Uso: Informação indisponível`;
     }
+
+    if (choices && choices.length > 0) {
+        const reviewOK = choices[0].message?.content;
+        
+        // Validate that content exists and is not empty
+        if (!reviewOK || typeof reviewOK !== 'string' || reviewOK.trim().length === 0) {
+          console.log(`Resposta vazia ou invalida do Azure OpenAI para arquivo ${fileName}.`);
+          return noFeedbackMarker;
+        }
+        
+        console.log(`Revisão do arquivo ${fileName} concluída.`);
+        return reviewOK;
+    } else {
+      console.log(`Nenhum feedback encontrado para o arquivo ${fileName}.`);
+      return noFeedbackMarker;
+    }
   } catch (error: any) {
     if (error.response) {
       console.log(error.response.status);
@@ -152,5 +177,6 @@ else {
     } else {
       console.log(error.message);
     }
+    return 'Erro ao processar revisão';
   }
 }
