@@ -13,7 +13,7 @@
   "version": {
     "Major": "29",
     "Minor": "0",
-    "Patch": "0"
+    "Patch": "1"
   },
   "minimumAgentVersion": "1.95.0",
   "instanceNameFormat": "JPCompcombr $(message)",
@@ -45,10 +45,10 @@
     {
       "name": "aoi_temperature",
       "type": "string",
-      "label": "Temperatura de amostragem usar, entre 0 e 2.",
-      "defaultValue": "0",
+      "label": "Temperatura de amostragem usar, entre 1 e 2.",
+      "defaultValue": "1",
       "required": true,
-      "helpMarkDown": "Temperatura de amostragem, usar entre 0 e 2. Valores mais altos significam que o modelo corre mais riscos. Experimente 0.9 para aplicativos mais criativos e 0 para aqueles com uma resposta bem definida. (required)"
+      "helpMarkDown": "Temperatura de amostragem, usar entre 1 e 2. Valores mais altos significam que o modelo corre mais riscos. Experimente 1.5 para aplicativos mais criativos e 1 para aqueles com uma resposta bem definida. (required)"
     },
     {
       "name": "prompt",
