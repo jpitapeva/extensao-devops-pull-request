@@ -20,24 +20,34 @@ export async function addCommentToPR(fileName: string, comment: string, agent: h
 
   const prUrl = `${tl.getVariable('SYSTEM.TEAMFOUNDATIONCOLLECTIONURI')}${tl.getVariable('SYSTEM.TEAMPROJECTID')}/_apis/git/repositories/${tl.getVariable('Build.Repository.Name')}/pullRequests/${tl.getVariable('System.PullRequest.PullRequestId')}/threads?api-version=5.1`
 
-  let response = await fetch(prUrl, {
-    method: 'POST',
-    headers: { 'Authorization': `Bearer ${tl.getVariable('SYSTEM.ACCESSTOKEN')}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-    agent: agent
-  });
+  try {
+    let response = await fetch(prUrl, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${tl.getVariable('SYSTEM.ACCESSTOKEN')}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+      agent: agent
+    });
 
-
-  if (response.ok === true) {
-    console.log(`Novo comentario adicionado.`);
+    if (response.ok === true) {
+      console.log(`Novo comentario adicionado.`);
+    } else {
+      const errorBody = await response.text();
+      console.log(`Erro ao adicionar comentario. Status: ${response.status} ${response.statusText}`);
+      console.log(`Detalhes do erro: ${errorBody}`);
+      console.log(`URL: ${prUrl}`);
+      console.log(`Arquivo: ${fileName}`);
+    }
+  } catch (error: any) {
+    console.log(`Excecao ao adicionar comentario: ${error.message}`);
+    console.log(`Arquivo: ${fileName}`);
   }
 }
 
 export async function deleteExistingComments(agent: http.Agent | https.Agent, build_service_name?: string) {
+  try {
+    const devopsPatToken = tl.getVariable('SYSTEM.ACCESSTOKEN');
 
-  const devopsPatToken = tl.getVariable('SYSTEM.ACCESSTOKEN');
-
-  console.log("Iniciando ...");
+    console.log("Iniciando ...");
 
   const threadsUrl = `${tl.getVariable('SYSTEM.TEAMFOUNDATIONCOLLECTIONURI')}${tl.getVariable('SYSTEM.TEAMPROJECTID')}/_apis/git/repositories/${tl.getVariable('Build.Repository.Name')}/pullRequests/${tl.getVariable('System.PullRequest.PullRequestId')}/threads?api-version=5.1`;
   const threadsResponse = await fetch(threadsUrl, {
@@ -45,11 +55,24 @@ export async function deleteExistingComments(agent: http.Agent | https.Agent, bu
     agent: agent
   });
 
-  const threads = await threadsResponse.json() as { value: [] };
+  if (!threadsResponse.ok) {
+    console.log(`Erro ao buscar threads: ${threadsResponse.status} ${threadsResponse.statusText}`);
+    return;
+  }
+
+  const threads = await threadsResponse.json() as { value?: any[] };
+  if (!threads.value) {
+    console.log('Nenhum thread encontrado ou formato de resposta inesperado.');
+    return;
+  }
+  
   const threadsWithContext = threads.value.filter((thread: any) => thread.threadContext !== null);
 
-  const collectionUri = tl.getVariable('SYSTEM.TEAMFOUNDATIONCOLLECTIONURI') as string;
-  const collectionName = getCollectionName(collectionUri);
+  const collectionUri = tl.getVariable('SYSTEM.TEAMFOUNDATIONCOLLECTIONURI');
+  if (!collectionUri) {
+    console.log('SYSTEM.TEAMFOUNDATIONCOLLECTIONURI não definida, usando nome de build service padrão.');
+  }
+  const collectionName = collectionUri ? getCollectionName(collectionUri) : 'Unknown';
   const buildServiceName = `${tl.getVariable('SYSTEM.TEAMPROJECT')} Build Service (${collectionName})`;
 
   for (const thread of threadsWithContext as any[]) {
@@ -59,30 +82,51 @@ export async function deleteExistingComments(agent: http.Agent | https.Agent, bu
       agent: agent
     });
 
-    const comments = await commentsResponse.json() as { value: [] };
+    if (!commentsResponse.ok) {
+      console.log(`Erro ao buscar comentarios do thread ${thread.id}: ${commentsResponse.status}`);
+      continue;
+    }
+
+    const comments = await commentsResponse.json() as { value?: any[] };
+    if (!comments.value) {
+      continue;
+    }
+    
     const targetBuildServiceName = build_service_name ? build_service_name : buildServiceName;
     console.log("BuildServiceName:", targetBuildServiceName);
-    for (const comment of comments.value.filter((comment: any) => comment.author.displayName === targetBuildServiceName) as any[]) {
+    
+    for (const comment of comments.value.filter((comment: any) => 
+      comment.author && comment.author.displayName === targetBuildServiceName
+    ) as any[]) {
       const removeCommentUrl = `${tl.getVariable('SYSTEM.TEAMFOUNDATIONCOLLECTIONURI')}${tl.getVariable('SYSTEM.TEAMPROJECTID')}/_apis/git/repositories/${tl.getVariable('Build.Repository.Name')}/pullRequests/${tl.getVariable('System.PullRequest.PullRequestId')}/threads/${thread.id}/comments/${comment.id}?api-version=5.1`;
 
-      await fetch(removeCommentUrl, {
+      const deleteResponse = await fetch(removeCommentUrl, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${devopsPatToken}` },
         agent: agent
       });
+      
+      if (!deleteResponse.ok) {
+        console.log(`Aviso: Falha ao deletar comentario ${comment.id}: ${deleteResponse.status}`);
+      }
     }
   }
 
   console.log("Deletando comentarios preexistentes...");
+  } catch (error: any) {
+    console.log(`Erro ao deletar comentarios preexistentes: ${error.message}`);
+    console.log('Continuando com a revisao...');
+  }
 }
 
-function getCollectionName(collectionUri: string) {
-  const collectionUriWithoutProtocol = collectionUri!.replace('https://', '').replace('http://', '');
+function getCollectionName(collectionUri: string): string {
+  const collectionUriWithoutProtocol = collectionUri.replace('https://', '').replace('http://', '');
 
   if (collectionUriWithoutProtocol.includes('.visualstudio.')) {
     return collectionUriWithoutProtocol.split('.visualstudio.')[0];
   }
   else {
-    return collectionUriWithoutProtocol.split('/')[1];
+    const parts = collectionUriWithoutProtocol.split('/');
+    return parts.length > 1 ? parts[1] : 'Unknown';
   }
 }
