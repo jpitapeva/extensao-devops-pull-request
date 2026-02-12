@@ -116,15 +116,10 @@ async function run() {
       console.log(`----------------------------------`)
     }
 
-    // TODO
     // ADD AI REVIEW LABEL TO PR
-    //const prId = tl.getVariable('System.PullRequest.PullRequestId');
-    //if (!prId) {
-    //  tl.setResult(tl.TaskResult.Failed, 'No Pull Request ID found.');
-    //  return;
-    //}
-    //console.log('Adicionando label de revisão por IA ao PR...');
-    //await addAiReviewLabels({ id: Number(prId), labels: [] }, Agent);
+    const prId = tl.getVariable('System.PullRequest.PullRequestId');
+    console.log('Adicionando label de revisão por IA ao PR...');
+    await addAiReviewLabels(prId, Agent);
 
     console.log("Task de Pull Request finalizada.");
   }

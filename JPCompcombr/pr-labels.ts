@@ -4,28 +4,6 @@ import * as https from 'https';
 import * as http from 'http';
 import fetch from 'node-fetch';
 
-interface Label {
-    name: string;
-}
-
-interface PullRequest {
-    id: string;
-    labels?: Label[];
-}
-
-import * as http from 'http';
-import * as https from 'https';
-
-type PullRequest = {
-    id: number;
-    labels: { name: string }[];
-};
-
-// Function to check if the label already exists in a pull request
-async function labelExists(pullRequest: PullRequest, label: string): Promise<boolean> {
-    return pullRequest.labels ? pullRequest.labels.some((existingLabel: Label) => existingLabel.name === label) : false;
-}
-
 // Function to label pull requests with AI code review labels
 export async function addAiReviewLabels(prId: string | undefined, agent: http.Agent | https.Agent): Promise<void> {
     if (!prId) {
@@ -68,5 +46,3 @@ async function addLabelToPullRequest(prId: string, label: string, agent: http.Ag
         console.log(`Exceção ao adicionar label: ${error.message}`);
     }
 }
-
-export { labelExists };
