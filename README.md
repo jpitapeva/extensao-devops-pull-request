@@ -15,10 +15,10 @@ Antes de usar esta task, certifique-se de que o serviço de build tenha permiss�
 ![contribute_to_pr](https://github.com/jpitapeva/extensao-devops-pull-request/blob/main/images/contribute_to_pr.png?raw=true)
 
 ### Encontrar o Agente de Serviço de Build
-1. Acede ao Azure DevOps
-1. Vai a Project Settings
-1. Abre Permissions
-1. Procura por:
+1. Acesse o Azure DevOps
+1. Va até Project Settings
+1. Abra Permissions
+1. Procure por:
 \<ProjectName\> Build Service (\<OrganizationName\>)
 
 Este é o identity usado pelos pipelines YAML e Classic.
