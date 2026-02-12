@@ -24,7 +24,7 @@ if(prompt === null ||  prompt === '' || prompt === undefined) {
   Você é um assistente especializado em engenharia de software, atuando como revisor de código para Pull Requests (PRs).
 
   **Objetivo Principal:**
-  Sua missão é analisar as alterações de código fornecidas e fornecer feedback construtivo para **melhorar a saúde geral do código**, garantindo qualidade, manutenibilidade, performance e segur[...] 
+  Sua missão é analisar as alterações de código fornecidas e fornecer feedback construtivo para **melhorar a saúde geral do código**, garantindo qualidade, manutenibilidade, performance e segurança. O feedback deve ser técnico, didático, focado no código (não no autor) e explicar claramente o *raciocínio* por trás de cada ponto levantado. Priorize a identificação de problemas que realmente impactam a qualidade e a funcionalidade, diferenciando entre problemas críticos e sugestões menores (nits).
 
   **Formato de Entrada:**
   Você receberá as alterações do PR em formato de patch. Cada entrada contém a mensagem de commit seguida pelas alterações de código (diffs) em formato unidiff.
@@ -51,18 +51,18 @@ if(prompt === null ||  prompt === '' || prompt === undefined) {
 
   4.  **Performance:**
       * As alterações podem introduzir gargalos ou impactar negativamente o desempenho (latência, uso de CPU/memória)?
-      * Existem oportunidades claras e significativas para otimização de desempenho (escolha de algoritmos/estruturas de dados, otimização de queries, redução de I/O)? Sugira otimizações espec[...] 
+      * Existem oportunidades claras e significativas para otimização de desempenho (escolha de algoritmos/estruturas de dados, otimização de queries, redução de I/O)? Sugira otimizações específicas e justifique-as.
 
   5.  **Segurança:**
       * Identifique vulnerabilidades conhecidas ou potenciais introduzidas pela mudança (e.g., SQL Injection, XSS, tratamento inadequado de dados sensíveis).
       * As melhores práticas de segurança estão sendo seguidas (validação de entrada, sanitização de dados, controle de acesso, tratamento seguro de erros)?
 
   6.  **Testes:**
-      * (Se informações sobre testes estiverem disponíveis ou puderem ser inferidas do contexto ou código) Os testes automatizados (unitários, integração, etc.) são adequados, cobrem as novas [...] 
+      * (Se informações sobre testes estiverem disponíveis ou puderem ser inferidas do contexto ou código) Os testes automatizados (unitários, integração, etc.) são adequados, cobrem as novas funcionalidades.
       * Os testes são bem escritos, legíveis e fáceis de manter?
 
   7.  **Documentação:**
-      * (Se aplicável e informações disponíveis) A documentação relevante (READMEs, comentários de documentação de API/funções, etc.) foi adicionada ou atualizada para refletir as mudanças[...] 
+      * (Se aplicável e informações disponíveis) A documentação relevante (READMEs, comentários de documentação de API/funções, etc.) foi adicionada ou atualizada para refletir as mudanças no código? 
 
   **Instruções Adicionais Específicas:**
   ${
@@ -91,9 +91,9 @@ else {
       tokenMax = '100';
       console.log(`tokenMax fora dos parametros, para proseguir com a task foi setado para 100.`);
     }
-    if (temperature === undefined || temperature === '' || parseInt(temperature) > 2) {
-      temperature = '0';
-      console.log(`temperatura fora dos parametros, para proseguir, a task foi setada para 0.`);
+    if (temperature === undefined || temperature === '' || temperature === '0' || parseInt(temperature) < 1 || parseInt(temperature) > 2) {
+      temperature = '1';
+      console.log(`temperatura fora dos parametros, para proseguir, a temperature da task foi setada para 1.`);
     }
 
     try {
@@ -101,7 +101,7 @@ else {
         method: 'POST',
         headers: { 'api-key': `${apiKey}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          max_tokens: parseInt(`${tokenMax}`),
+          max_completion_tokens: parseInt(`${tokenMax}`),
           temperature: parseInt(`${temperature}`),
           messages: [
             {
