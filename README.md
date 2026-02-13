@@ -31,7 +31,7 @@ Adicione uma seção de checkout com persistCredentials definido como true.
 - Na versão 27.0.2 corrigimos vulnerabilidades em bibliotecas de terceiros e atualizamos o Node.js de 16 para 20_1. Atenção: essa mudança pode exigir ajustes em ambientes que ainda usam Node.js 16.
 - Na versão 28 adicionamos um campo opcional chamado(build_service_name) detalhes:(O build_service_name é um campo opcional e deve ser informado quando existir um build service específico configurado dentro do repositório do Azure Devops).
 - Na versão 29 foi corrigido as novas especificações da API do OpenAI que mudaram o parâmetro do body de `max_tokens` para `max_completion_tokens` e o valor default de temperature de `0` para `1`.
-- Na versão 30 foi corrigido estabilidade e validações.
+- Na versão 30 foi corrigido estabilidade e incluido validações.
 
 #### Pipelines Yaml
 ```yaml
