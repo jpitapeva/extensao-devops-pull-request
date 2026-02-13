@@ -11,9 +11,9 @@
   ],
   "demands": [],
   "version": {
-    "Major": "29",
+    "Major": "30",
     "Minor": "0",
-    "Patch": "1"
+    "Patch": "0"
   },
   "minimumAgentVersion": "1.95.0",
   "instanceNameFormat": "JPCompcombr $(message)",
