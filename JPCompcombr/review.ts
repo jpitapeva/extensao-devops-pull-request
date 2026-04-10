@@ -138,7 +138,7 @@ else {
       
       // Validate response structure
       if (!response || typeof response !== 'object' || !response.choices || response === http.STATUS_CODES[400] || response === http.STATUS_CODES[401] || response === http.STATUS_CODES[403] || response === http.STATUS_CODES[404] || response === http.STATUS_CODES[500]) {
-        console.log('Resposta invalida da API Azure OpenAI');
+        console.log('Resposta invalida da API Azure OpenAI', response?.choices ? response.choices[0].message?.content : response);
         console.log('##vso[task.complete result=Failed;]');
         return 'Erro: resposta invalida da API';
       }
