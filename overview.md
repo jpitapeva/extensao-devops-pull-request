@@ -7,6 +7,9 @@ A instalação pode ser feita usando o [Visual Studio MarketPlace](https://marke
 ## Serviço Azure Open AI
 A formatação do endpoint é a seguinte: https://{XXXXXXXX}.openai.azure.com/openai/deployments/{MODEL_NAME}/chat/completions?api-version={API_VERSION}
 
+## Serviço Azure Foundry
+Exemplo de endpoint: https://XXXXX-resource.openai.azure.com/openai/v1/chat/completions
+
 [Documentação API REST](https://learn.microsoft.com/pt-br/azure/ai-services/openai/reference).
 
 ### Dê permissão ao agente de serviço de build
@@ -22,6 +25,7 @@ Adicione uma secao de checkout com persistCredentials definido como true.
 - Na versão 28 adicionamos um campo opcional chamado(build_service_name) detalhes:(O build_service_name é um campo opcional e deve ser informado quando existir um build service específico configurado dentro do repositório do Azure Devops.).
 - Na versão 29 foi corrigido as novas especificações da API do OpenAI que mudaram o parâmetro do body de `max_tokens` para `max_completion_tokens` e alteraram o valor default de temperature de `0` para `1`.
 - Na versão 30 foi corrigido estabilidade e incluido validações.
+- Na versão 31 é obrigatorio informar o nome correto do modelo configurado dentro do Portal da Azure Foundry. Exemplo: gpt-5.4-nano, gpt-35-turbo, gpt-4-32k, gpt-4-0613, gpt-4-32k-0613, para mais detalhes: https://learn.microsoft.com/en-us/azure/foundry/foundry-models/concepts/models-sold-directly-by-azure?tabs=global-standard-aoai%2Cglobal-standard&pivots=azure-openai
 
 #### Pipelines Yaml
 ```yaml
@@ -35,18 +39,19 @@ jobs:
   - checkout: self
     persistCredentials: true
 
-  - task: JPCompcombr@30
+  - task: JPCompcombr@31
     displayName: GPTPullRequestReview
     inputs:
       api_key: 'YOUR_TOKEN'      
-      aoi_endpoint: 'https://{XXXXXXXX}.azure.com/openai/deployments/{MODEL_NAME}/chat/completions?api-version={API_VERSION}'
+      aoi_endpoint: 'https://{XXXXXXXX}.azure.com/openai/deployments/{MODEL_NAME}/chat/completions?api-version={API_VERSION}' OU https://XXXXXXX-resource.openai.azure.com/openai/v1/chat/completions
       aoi_tokenMax: 1000
       aoi_temperature: 1
       use_https: true
       prompt: 'Opcional. Agora se desejar voce pode criar o seu proprio prompt, exemplo. Atue como revisor de código de uma solicitação de pull, fornecendo feedback sobre possíveis bugs e problemas de código limpo.\nVocê recebe as alterações da solicitação de pull em um formato de patch.\nCada entrada de patch tem a mensagem de confirmação na linha de assunto, seguida pelas alterações de código (diffs) em um formato unidiff.\n\nComo revisor de código, sua tarefa é:\n- Revisar apenas as linhas adicionadas, editadas ou excluídas.\n- Se não houver bugs e as alterações estiverem corretas, escreva apenas 'Sem feedback'.\n- Se houver bugs ou alterações de código incorretas, não escreva 'Sem feedback'.'
-      file_excludes: 'file1.js,file2.py,secret.txt,*.csproj,src/**/*.csproj'
+      file_excludes: 'file1.js,file2.py,secret.txt,*.csproj,src/**/*.csproj'      
       additional_prompts: 'Opcional. Prompt adicional separado por virgula, exemplo: corrija a nomenclatura de variaveis, garanta identacao consistente, revise a abordagem de tratamento de erros'
       build_service_name: 'Opcional. O build_service_name é um campo opcional e deve ser informado quando existir um build service específico configurado dentro do repositório do Azure Devops.'
+      model: A partir da versão 31 é obrigatorio informar o nome correto do modelo configurado dentro do Portal da Azure Foundry. Exemplo: gpt-5.4-nano, gpt-35-turbo, gpt-4-32k, gpt-4-0613, gpt-4-32k-0613.
 ```
 
 ## License

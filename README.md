@@ -7,6 +7,9 @@ A instalação da task pode ser feita usando o [Visual Studio MarketPlace](https
 ## Serviço Azure Open AI
 A formatação do endpoint é a seguinte: https://{XXXXXXXX}.openai.azure.com/openai/deployments/{MODEL_NAME}/chat/completions?api-version={API_VERSION}
 
+## Serviço Azure Foundry
+Exemplo de endpoint: https://XXXXX-resource.openai.azure.com/openai/v1/chat/completions
+
 [Documentação API REST](https://learn.microsoft.com/pt-br/azure/ai-services/openai/reference).
 
 ### Dê permissão ao agente de serviço de build
@@ -32,6 +35,7 @@ Adicione uma seção de checkout com persistCredentials definido como true.
 - Na versão 28 adicionamos um campo opcional chamado(build_service_name) detalhes:(O build_service_name é um campo opcional e deve ser informado quando existir um build service específico configurado dentro do repositório do Azure Devops).
 - Na versão 29 foi corrigido as novas especificações da API do OpenAI que mudaram o parâmetro do body de `max_tokens` para `max_completion_tokens` e o valor default de temperature de `0` para `1`.
 - Na versão 30 foi corrigido estabilidade e incluido validações.
+- Na versão 31 é obrigatorio informar o nome correto do modelo configurado dentro do Portal da Azure Foundry. Exemplo: gpt-5.4-nano, gpt-35-turbo, gpt-4-32k, gpt-4-0613, gpt-4-32k-0613, mais detalhes: https://learn.microsoft.com/en-us/azure/foundry/foundry-models/concepts/models-sold-directly-by-azure?tabs=global-standard-aoai%2Cglobal-standard&pivots=azure-openai
 
 #### Pipelines Yaml
 ```yaml
@@ -45,11 +49,11 @@ jobs:
   - checkout: self
     persistCredentials: true
 
-  - task: JPCompcombr@30
+  - task: JPCompcombr@31
     displayName: GPTPullRequestReview
     inputs:
       api_key: 'YOUR_TOKEN'
-      aoi_endpoint: 'https://{XXXXXXXX}.azure.com/openai/deployments/{MODEL_NAME}/chat/completions?api-version={API_VERSION}'
+      aoi_endpoint: 'https://{XXXXXXXX}.azure.com/openai/deployments/{MODEL_NAME}/chat/completions?api-version={API_VERSION}' OU https://XXXXXX-resource.openai.azure.com/openai/v1/chat/completions
       aoi_tokenMax: 1000
       aoi_temperature: 1 
       use_https: true
@@ -57,6 +61,7 @@ jobs:
       file_excludes: 'file1.js,file2.py,secret.txt,*.csproj,src/**/*.csproj'
       additional_prompts: 'Opcional. Prompt adicional separado por virgula, exemplo: corrija a nomenclatura de variaveis, garanta identacao consistente, revise a abordagem de tratamento de erros'
       build_service_name: 'Opcional. O build_service_name é um campo opcional e deve ser informado quando existir um build service específico configurado dentro do repositório do Azure Devops.'
+      model: A partir da versão 31 é obrigatorio informar o nome correto do modelo configurado dentro do Portal da Azure Foundry. Exemplo: gpt-5.4-nano, gpt-35-turbo, gpt-4-32k, gpt-4-0613, gpt-4-32k-0613
 ```
 
 ## License
@@ -81,13 +86,19 @@ A engenharia de prompt também pode ajudar a reduzir o viés e a aumentar a impa
 
 ## Curl
 ```
-curl https://YOUR_ENDPOINT_NAME.openai.azure.com/openai/deployments/YOUR_DEPLOYMENT_NAME/chat/completions?api-version=2023-03-15-preview \
-  -H "Content-Type: application/json" \
-  -H "api-key: YOUR_API_KEY" \
-  -d '{"messages":[{"role": "system", "content": "You are a helpful assistant, teaching people about AI."},
-{"role": "user", "content": "Does Azure OpenAI support multiple languages?"},
-{"role": "assistant", "content": "Yes, Azure OpenAI supports several languages, and can translate between them."},
-{"role": "user", "content": "Do other Azure AI Services support translation too?"}]}'
+postman request POST 'https://RESOURCE_NAME-resource.openai.azure.com/openai/v1/chat/completions' \
+  --header 'api-key: API_TOKEN' \
+  --header 'Content-Type: application/json' \
+  --body '{    
+    "max_completion_tokens": 10000,
+    "model": "gpt-5.4-nano",
+    "top_p": 1.0,
+     "messages": [
+            {"role": "system", "content": "Você é um assistente especializado em engenharia de software, atuando como revisor de código para Pull Requests (PRs)"},          
+            {"role": "system","content": "TESTE"
+          }
+    ]
+}'
 ```
 
 

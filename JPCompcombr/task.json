@@ -11,7 +11,7 @@
   ],
   "demands": [],
   "version": {
-    "Major": "30",
+    "Major": "31",
     "Minor": "0",
     "Patch": "1"
   },
@@ -89,7 +89,7 @@
       "defaultValue": "true",
       "required": true,
       "helpMarkDown": "Select this option to support self-signed certificate."
-    },
+    },   
     {
       "name": "build_service_name",
       "type": "string",
@@ -97,6 +97,14 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Opcional. O build_service_name é um campo opcional e deve ser informado quando existir um build service específico configurado dentro do repositório do Azure Devops"
+    },
+     {
+      "name": "model",
+      "type": "string",
+      "label": "Model Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "A partir da versão 31 é obrigatório informar o nome correto do modelo configurado dentro do Portal da Azure Foundry. Exemplo: gpt-5.4-nano, gpt-35-turbo, gpt-4-32k, gpt-4-0613, gpt-4-32k-0613"
     }
   ],
   "execution": {

@@ -43,8 +43,9 @@ async function run() {
       .filter(p => p.length > 0);
     const fileExtensions = tl.getInput('file_extensions', false);
     const filesToExclude = tl.getInput('file_excludes', false);
-    const useHttps = tl.getBoolInput('use_https', true);
+    const useHttps = tl.getBoolInput('use_https', true);    
     const buildServiceName = tl.getInput('build_service_name', false);
+    const model = tl.getInput('model', true);
 
     if (apiKey == undefined) {
       tl.setResult(tl.TaskResult.Failed, 'No Api Key provided!');
@@ -99,7 +100,7 @@ async function run() {
         continue;
       }
 
-      let review = await reviewFile(diff, fileToReview, Agent, apiKey, aoiEndpoint, tokenMax, temperature, prompt, additionalPrompts)
+      let review = await reviewFile(diff, fileToReview, Agent, apiKey, aoiEndpoint, tokenMax, temperature, prompt, additionalPrompts, model);
 
       if (review && review.trim() !== noFeedbackMarker && !review.startsWith('Erro')) {
         await addCommentToPR(fileToReview, review, Agent);

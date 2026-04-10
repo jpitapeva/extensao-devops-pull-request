@@ -13,6 +13,7 @@ export async function reviewFile(
   temperature: string | undefined,
   prompt: string | undefined,
   additionalPrompts: string[] = [],
+  model: string | undefined,
 ): Promise<string> {
   console.log(`Iniciando revisao do arquivo: ${fileName} ...`);
 
@@ -98,7 +99,12 @@ else {
       temperature = '1';
       console.log(`temperatura fora dos parametros, para proseguir, a task foi setada para 1.`);
     }
-    
+    if (model === undefined || model === '') {
+      console.log(`A partir da versão 31 é obrigatorio informar o nome correto do modelo configurado dentro do Portal da Azure Foundry. Exemplo: gpt-5.4-nano, gpt-35-turbo, gpt-4-32k, gpt-4-0613, gpt-4-32k-0613, gpt-4-1106-preview, gpt-4-1106, etc. Verificar a documentação para mais detalhes: https://learn.microsoft.com/en-us/azure/foundry/foundry-models/concepts/models-sold-directly-by-azure?tabs=global-standard-aoai%2Cglobal-standard&pivots=azure-openai`);
+      console.log('##vso[task.complete result=Failed;]');
+      return 'Erro: parametros de entrada inválidos';
+    }
+
     // Validate temperature is a valid number between 0 and 2
     const tempValue = parseFloat(temperature);
     if (isNaN(tempValue) || tempValue < 0 || tempValue > 2) {
@@ -111,9 +117,14 @@ else {
         method: 'POST',
         headers: { 'api-key': `${apiKey}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          model: model,
           max_completion_tokens: parseInt(`${tokenMax}`),
           temperature: parseFloat(`${temperature}`),
           messages: [
+            {
+              role: 'system', 
+              content: 'Você é um assistente especializado em engenharia de software, atuando como revisor de código para Pull Requests (PRs)'
+            },
             {
               role: 'user',
               content: `${instructions}\n, patch : ${gitDiff}`,
@@ -126,8 +137,9 @@ else {
       response = await request.json();
       
       // Validate response structure
-      if (!response || typeof response !== 'object') {
+      if (!response || typeof response !== 'object' || !response.choices || response === http.STATUS_CODES[400] || response === http.STATUS_CODES[401] || response === http.STATUS_CODES[403] || response === http.STATUS_CODES[404] || response === http.STATUS_CODES[500]) {
         console.log('Resposta invalida da API Azure OpenAI');
+        console.log('##vso[task.complete result=Failed;]');
         return 'Erro: resposta invalida da API';
       }
       
@@ -137,6 +149,7 @@ else {
         `Encontrado erro, validar os parametros de entrada. ${responseError.response?.status} ${responseError.response?.message}`,
       );
       console.log(`Erro completo: ${responseError.message}`);
+      console.log('##vso[task.complete result=Failed;]');
       return 'Erro ao comunicar com Azure OpenAI';
     }
 
@@ -150,6 +163,7 @@ else {
     } catch (error: any) {
       console.log(`Erro ao tentar capturar consumo de tokens: ${error.message}`);
       consumeApi = `Uso: Informação indisponível`;
+      console.log('##vso[task.complete result=Failed;]');
     }
 
     if (choices && choices.length > 0) {
@@ -171,8 +185,10 @@ else {
     if (error.response) {
       console.log(error.response.status);
       console.log(error.response.data);
+      console.log('##vso[task.complete result=Failed;]');
     } else {
       console.log(error.message);
+      console.log('##vso[task.complete result=Failed;]');
     }
     return 'Erro ao processar revisão';
   }
