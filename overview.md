@@ -6,11 +6,14 @@ A instalação pode ser feita usando o [Visual Studio MarketPlace](https://marke
 
 ## Serviço Azure Open AI
 A formatação do endpoint é a seguinte: https://{XXXXXXXX}.openai.azure.com/openai/deployments/{MODEL_NAME}/chat/completions?api-version={API_VERSION}
+[Documentação API REST](https://learn.microsoft.com/pt-br/azure/ai-services/openai/reference).
+
+---
 
 ## Serviço Azure Foundry
 Exemplo de endpoint: https://XXXXX-resource.openai.azure.com/openai/v1/chat/completions
 
-[Documentação API REST](https://learn.microsoft.com/pt-br/azure/ai-services/openai/reference).
+---
 
 ### Dê permissão ao agente de serviço de build
 Antes de usar esta task, certifique-se de que o serviço de build tenha permissoes para contribuir em seu REPOSITORIO:
