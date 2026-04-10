@@ -140,7 +140,7 @@ else {
       if (!response || typeof response !== 'object' || !response.choices || response === http.STATUS_CODES[400] || response === http.STATUS_CODES[401] || response === http.STATUS_CODES[403] || response === http.STATUS_CODES[404] || response === http.STATUS_CODES[500]) {
         console.log('Resposta invalida da API Azure OpenAI', response?.choices ? response.choices[0].message?.content : response);
         console.log('##vso[task.complete result=Failed;]');
-        return 'Erro: resposta invalida da API';
+        return 'Erro: resposta invalida da API, verificar todos os parametros de entrada e a configuração do Azure OpenAI ou Azure Foundry.';
       }
       
       choices = response.choices;
@@ -150,7 +150,7 @@ else {
       );
       console.log(`Erro completo: ${responseError.message}`);
       console.log('##vso[task.complete result=Failed;]');
-      return 'Erro ao comunicar com Azure OpenAI';
+      return 'Erro ao comunicar com Azure OpenAI, verificar todos os parametros de entrada e a configuração do Azure OpenAI ou Azure Foundry.';
     }
 
     // Captura o consumo de tokens
