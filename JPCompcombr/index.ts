@@ -45,7 +45,11 @@ async function run() {
     const filesToExclude = tl.getInput('file_excludes', false);
     const useHttps = tl.getBoolInput('use_https', true);    
     const buildServiceName = tl.getInput('build_service_name', false);
-    const model = tl.getInput('model', true);
+    const model_name = tl.getInput('model_name', true);
+    const agent_foundry_mode = tl.getBoolInput('agent_foundry_mode', true);
+    const agent_name = tl.getInput('agent_name', false);
+    const agent_version = tl.getInput('agent_version', false);
+
 
     if (apiKey == undefined) {
       tl.setResult(tl.TaskResult.Failed, 'No Api Key provided!');
@@ -100,7 +104,7 @@ async function run() {
         continue;
       }
 
-      let review = await reviewFile(diff, fileToReview, Agent, apiKey, aoiEndpoint, tokenMax, temperature, prompt, additionalPrompts, model);
+      let review = await reviewFile(diff, fileToReview, Agent, apiKey, aoiEndpoint, tokenMax, temperature, prompt, additionalPrompts, model_name, agent_foundry_mode, agent_name, agent_version);
 
       if (review && review.trim() !== noFeedbackMarker && !review.startsWith('Erro')) {
         await addCommentToPR(fileToReview, review, Agent);

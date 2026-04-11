@@ -6,12 +6,16 @@ A instalação pode ser feita usando o [Visual Studio MarketPlace](https://marke
 
 ## Serviço Azure Open AI
 A formatação do endpoint é a seguinte: https://{XXXXXXXX}.openai.azure.com/openai/deployments/{MODEL_NAME}/chat/completions?api-version={API_VERSION}
-[Documentação API REST](https://learn.microsoft.com/pt-br/azure/ai-services/openai/reference).
+
+> [Documentação API REST](https://learn.microsoft.com/pt-br/azure/ai-services/openai/reference).
 
 ---
 
 ## Serviço Azure Foundry
-Exemplo de endpoint: https://XXXXX-resource.openai.azure.com/openai/v1/chat/completions
+- Link para agente NAO construido via deploy do Microsoft Azure Foundry: https://XXXXX.openai.azure.com/openai/v1/chat/completions
+- Link para agente construido via deploy do Microsoft Azure Foundry: https://XXXXXX.services.ai.azure.com/api/projects/XXXXXX/openai/v1/responses
+
+> [Documentação create a model response](https://developers.openai.com/api/reference/resources/responses/methods/create)
 
 ---
 
@@ -29,6 +33,10 @@ Adicione uma secao de checkout com persistCredentials definido como true.
 - Na versão 29 foi corrigido as novas especificações da API do OpenAI que mudaram o parâmetro do body de `max_tokens` para `max_completion_tokens` e alteraram o valor default de temperature de `0` para `1`.
 - Na versão 30 foi corrigido estabilidade e incluido validações.
 - Na versão 31 é obrigatorio informar o nome correto do modelo configurado dentro do Portal da Azure Foundry. Exemplo: gpt-5.4-nano, gpt-35-turbo, gpt-4-32k, gpt-4-0613, gpt-4-32k-0613, para mais detalhes: https://learn.microsoft.com/en-us/azure/foundry/foundry-models/concepts/models-sold-directly-by-azure?tabs=global-standard-aoai%2Cglobal-standard&pivots=azure-openai
+- Na versão 32 foi disponibilizado a integracao com agent da Microsoft Azure Foundry
+
+---
+
 
 #### Pipelines Yaml
 ```yaml
@@ -42,11 +50,11 @@ jobs:
   - checkout: self
     persistCredentials: true
 
-  - task: JPCompcombr@31
+  - task: JPCompcombr@32
     displayName: GPTPullRequestReview
     inputs:
-      api_key: 'YOUR_TOKEN'      
-      aoi_endpoint: 'https://{XXXXXXXX}.azure.com/openai/deployments/{MODEL_NAME}/chat/completions?api-version={API_VERSION}' OU https://XXXXXXX-resource.openai.azure.com/openai/v1/chat/completions
+      api_key: 'api-key'      
+      aoi_endpoint: 'https://{XXXXXXXX}.azure.com/openai/deployments/{MODEL_NAME}/chat/completions?api-version={API_VERSION} OU https://XXXXX.openai.azure.com/openai/v1/chat/completions OU PARA MODO AGENT https://XXXXXX.services.ai.azure.com/api/projects/XXXXXX/openai/v1/responses'
       aoi_tokenMax: 1000
       aoi_temperature: 1
       use_https: true
@@ -54,11 +62,19 @@ jobs:
       file_excludes: 'file1.js,file2.py,secret.txt,*.csproj,src/**/*.csproj'      
       additional_prompts: 'Opcional. Prompt adicional separado por virgula, exemplo: corrija a nomenclatura de variaveis, garanta identacao consistente, revise a abordagem de tratamento de erros'
       build_service_name: 'Opcional. O build_service_name é um campo opcional e deve ser informado quando existir um build service específico configurado dentro do repositório do Azure Devops.'
-      model: A partir da versão 31 é obrigatorio informar o nome correto do modelo configurado dentro do Portal da Azure Foundry. Exemplo: gpt-5.4-nano, gpt-35-turbo, gpt-4-32k, gpt-4-0613, gpt-4-32k-0613.
+      model_name: A partir da versão 31 é obrigatorio informar o nome correto do modelo configurado dentro do Portal da Azure Foundry. Exemplo: gpt-5.4-nano, gpt-35-turbo, gpt-4-32k, gpt-4-0613, gpt-4-32k-0613.
+      agent_foundry_mode: Obrigatorio informar 'true' se o agent foi construido por deploy dentro do portal da Microsoft Azure Foundry, link fornecido por exemplo: https://XXXXXX.services.ai.azure.com/api/projects/XXXXXX/openai/v1/responses"
+      agent_name: Obrigatorio informar o nome do correto do agent se o parametro 'agent_foundry_mode' for configurado como true
+      agent_version: Obrigatorio informar a versao correta do agent se o parametro 'agent_foundry_mode' for configurado como true
 ```
+
+---
 
 ## License
 [MIT](https://raw.githubusercontent.com/mlarhrouch/azure-pipeline-gpt-pr-review/main/LICENSE)
+
+## Site
+[JPCOMP](https://jpcomp.com.br/)
 
 ## Plus
 [Devops Publish](https://learn.microsoft.com/en-us/azure/devops/extend/publish/overview?view=azure-devops)

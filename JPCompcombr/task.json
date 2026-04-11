@@ -11,9 +11,9 @@
   ],
   "demands": [],
   "version": {
-    "Major": "31",
+    "Major": "32",
     "Minor": "0",
-    "Patch": "4"
+    "Patch": "0"
   },
   "minimumAgentVersion": "1.95.0",
   "instanceNameFormat": "JPCompcombr $(message)",
@@ -98,13 +98,37 @@
       "required": false,
       "helpMarkDown": "Opcional. O build_service_name é um campo opcional e deve ser informado quando existir um build service específico configurado dentro do repositório do Azure Devops"
     },
-     {
-      "name": "model",
+    {
+      "name": "model_name",
       "type": "string",
       "label": "Model Name",
       "defaultValue": "",
       "required": true,
       "helpMarkDown": "A partir da versão 31 é obrigatório informar o nome correto do modelo configurado dentro do Portal da Azure Foundry. Exemplo: gpt-5.4-nano, gpt-35-turbo, gpt-4-32k, gpt-4-0613, gpt-4-32k-0613"
+    },
+    {
+      "name": "agent_foundry_mode",
+      "type": "boolean",
+      "label": "Agent Microsoft Foundry",
+      "defaultValue": false,
+      "required": true,
+      "helpMarkDown": "Obrigatorio informar 'true' se o agent foi construido via Microsoft Azure Foundry, link fornecido como por exemplo: https://XXXXXX.services.ai.azure.com/api/projects/XXXXXX/openai/v1/responses"
+    },
+    {
+      "name": "agent_name",
+      "type": "string",
+      "label": "Agent Name",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Obrigatorio informar o nome correto do agent se o parametro 'agent_foundry_mode' for configurado como true"
+    },
+    {
+      "name": "agent_version",
+      "type": "string",
+      "label": "Agent Version",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Obrigatorio informar a versão correta do agent se o parametro 'agent_foundry_mode' for configurado como true"
     }
   ],
   "execution": {
