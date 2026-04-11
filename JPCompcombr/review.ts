@@ -2,7 +2,7 @@ import fetch from 'node-fetch';
 import * as https from 'https';
 import * as http from 'http';
 
-export let consumeApi: string = 'Uso: Informação não disponível';
+export let consumeApi: string = 'Usage: Informação não disponível';
 export async function reviewFile(
   gitDiff: string,
   fileName: string,
@@ -91,11 +91,13 @@ export async function reviewFile(
 
   try {
     let choices: any;
-    let response: any = { usage: undefined }; // Initialize to avoid undefined in token capture
+    let responseOpenAi: any = { usage: undefined }; // Initialize to avoid undefined in token capture
+    let responseFoundry: any = { usage: undefined }; // Initialize to avoid undefined in token capture
 
     if (agent_foundry_mode === true && (agent_name === undefined || agent_name === '' || agent_version === undefined || agent_version === '')) {
-      console.log(`No agent_foundry_mode fica obrigatorio informar os parametros corretos do agent_name e agent_version.`);
+      console.log(`ATENCAO: No agent_foundry_mode fica obrigatorio informar os parametros corretos do agent_name e agent_version.`);
       console.log('##vso[task.complete result=Failed;]');
+      return 'Erro: parametros de entrada inválidos';
     }
     if (tokenMax === undefined || tokenMax === '') {
       tokenMax = '100';
@@ -106,7 +108,7 @@ export async function reviewFile(
       console.log(`temperatura fora dos parametros, para proseguir, a task foi setada para 1.`);
     }
     if (model_name === undefined || model_name === '') {
-      console.log(`A partir da versão 31 é obrigatorio informar o nome correto do modelo configurado dentro do Portal da Azure Foundry. Exemplo: gpt-5.4-nano, gpt-35-turbo, gpt-4-32k, gpt-4-0613, gpt-4-32k-0613, gpt-4-1106-preview, gpt-4-1106, etc. Verificar a documentação para mais detalhes: https://learn.microsoft.com/en-us/azure/foundry/foundry-models/concepts/models-sold-directly-by-azure?tabs=global-standard-aoai%2Cglobal-standard&pivots=azure-openai`);
+      console.log(`ATENCAO: A partir da versão 31 é obrigatorio informar o nome correto do modelo configurado dentro do Portal da Azure Foundry parametro de entrada = model_name. Exemplo de modelos: gpt-5.4-nano, gpt-35-turbo, gpt-4-32k, gpt-4-0613, gpt-4-32k-0613, gpt-4-1106-preview, gpt-4-1106, etc. Verificar a documentação para mais detalhes: https://learn.microsoft.com/en-us/azure/foundry/foundry-models/concepts/models-sold-directly-by-azure?tabs=global-standard-aoai%2Cglobal-standard&pivots=azure-openai`);
       console.log('##vso[task.complete result=Failed;]');
       return 'Erro: parametros de entrada inválidos';
     }
@@ -120,6 +122,7 @@ export async function reviewFile(
 
     if (agent_foundry_mode === false || agent_foundry_mode === undefined) {
       try {
+        console.log(`Executando requisição para Azure OpenAI ou Foundry NAO integrado com agent...`);
         const request = await fetch(aoiEndpoint, {
           method: 'POST',
           headers: { 'api-key': `${apiKey}`, 'Content-Type': 'application/json' },
@@ -134,24 +137,26 @@ export async function reviewFile(
               },
               {
                 role: 'user',
-                content: `${instructions}\n, patch : ${gitDiff}`,
+                content: `${instructions}\n, patch : ${gitDiff}`
               },
             ],
           }),
           agent: agent
         });
 
-        response = await request.json();
+        responseOpenAi = await request.json();
 
         // Validate response structure
-        if (!response || typeof response !== 'object' || !response.choices || response === http.STATUS_CODES[400] || response === http.STATUS_CODES[401] || response === http.STATUS_CODES[403] || response === http.STATUS_CODES[404] || response === http.STATUS_CODES[500]) {
-          console.log(`Encontrado erro, validar os parametros de entrada. CODE: ${response?.error?.code}  MESSAGE: ${response?.error?.message} TYPE: ${response?.error?.type} PARAM: ${response?.error?.param}`);
+        if (responseOpenAi !== http.STATUS_CODES[200]) {
+          console.log(`Resposta bruta da Foundry: ${JSON.stringify(responseOpenAi)}`);
+          console.log(`Encontrado erro, validar os parametros de entrada. CODE: ${responseOpenAi?.error?.code}  MESSAGE: ${responseOpenAi?.error?.message} TYPE: ${responseOpenAi?.error?.type} PARAM: ${responseOpenAi?.error?.param}`);
           console.log('##vso[task.complete result=Failed;]');
           return 'Erro: resposta invalida da API, verificar todos os parametros de entrada como nome do modelo, token, link e a configuração do Azure OpenAI ou Azure Foundry.';
         }
 
-        choices = response.choices;
+        choices = responseOpenAi.choices;
       } catch (responseError: any) {
+        console.log(`Resposta bruta da Foundry: ${JSON.stringify(responseError.response)}`);    
         console.log(`Encontrado erro, validar os parametros de entrada. CODE: ${responseError.response?.error?.code}  MESSAGE: ${responseError.response?.error?.message} TYPE: ${responseError.response?.error?.type} PARAM: ${responseError.response?.error?.param}`);
         console.log(`Erro completo: ${responseError.message}`);
         console.log('##vso[task.complete result=Failed;]');
@@ -160,9 +165,9 @@ export async function reviewFile(
 
       // Captura o consumo de tokens
       try {
-        const completion_tokens_total = response.usage?.completion_tokens ?? response.usage?.completionTokens ?? 0;
-        const prompt_tokens_total = response.usage?.prompt_tokens ?? response.usage?.promptTokens ?? 0;
-        const total_tokens_total = response.usage?.total_tokens ?? response.usage?.totalTokens ?? 0;
+        const completion_tokens_total = responseOpenAi.usage?.completion_tokens ?? responseOpenAi.usage?.completionTokens ?? 0;
+        const prompt_tokens_total = responseOpenAi.usage?.prompt_tokens ?? responseOpenAi.usage?.promptTokens ?? 0;
+        const total_tokens_total = responseOpenAi.usage?.total_tokens ?? responseOpenAi.usage?.totalTokens ?? 0;
 
         consumeApi = `Usage: Completions: ${completion_tokens_total}, Prompts: ${prompt_tokens_total}, Total: ${total_tokens_total}`;
       } catch (error: any) {
@@ -189,7 +194,8 @@ export async function reviewFile(
     }
     else {
       try {
-        const request = await fetch(aoiEndpoint, {
+        console.log(`Executando requisição para Azure Foundry INTEGRADO com Agent...`);
+        const requestFoundry = await fetch(aoiEndpoint, {
           method: 'POST',
           headers: { 'api-key': `${apiKey}`, 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -199,7 +205,7 @@ export async function reviewFile(
             {
               name: agent_name,
               version: agent_version,
-              type: "agent_reference",
+              type: 'agent_reference'
             },
             input: [
               {
@@ -207,48 +213,52 @@ export async function reviewFile(
                 content: 'Você é um assistente especializado em engenharia de software, atuando como revisor de código para Pull Requests (PRs)'
               },
               {
-                role: 'user',
-                content: `${instructions}\n, patch : ${gitDiff}`,
+                role: 'system',
+                content: `${instructions}\n, patch : ${gitDiff}`
               },
             ],
           }),
           agent: agent
         });
 
-        response = await request.json();
-
-        // Validate response structure
-        if (!response || typeof response !== 'object' || response === http.STATUS_CODES[400] || response === http.STATUS_CODES[401] || response === http.STATUS_CODES[403] || response === http.STATUS_CODES[404] || response === http.STATUS_CODES[500]) {
-          console.log(`Encontrado erro, validar os parametros de entrada. CODE: ${response?.error?.code}  MESSAGE: ${response?.error?.message} TYPE: ${response?.error?.type} PARAM: ${response?.error?.param}`);
+        responseFoundry = await requestFoundry.json();
+        if (responseFoundry !== http.STATUS_CODES[200]) {
+          console.log(`Encontrado erro, validar os parametros de entrada. CODE: ${responseFoundry?.error?.code}  MESSAGE: ${responseFoundry?.error?.message} TYPE: ${responseFoundry?.error?.type} PARAM: ${responseFoundry?.error?.param}`);
+          console.log(`Request bruta da Foundry: ${JSON.stringify(requestFoundry.body)}`);
+          console.log(`Resposta bruta da Foundry: ${JSON.stringify(responseFoundry)}`);
           console.log('##vso[task.complete result=Failed;]');
           return 'Erro: resposta invalida da API, verificar todos os parametros de entrada como nome do modelo, token, link e a configuracao do Azure OpenAI ou Azure Foundry.';
         }
       } catch (responseError: any) {
-        console.log(`Encontrado erro, validar os parametros de entrada. CODE: ${responseError?.error?.code}  MESSAGE: ${responseError?.error?.message} TYPE: ${responseError?.error?.type} PARAM: ${responseError?.error?.param}`);
+        console.log(`Resposta bruta da Foundry: ${JSON.stringify(responseFoundry)}`);
         console.log('##vso[task.complete result=Failed;]');
-        return 'Erro ao comunicar com Azure OpenAI, verificar todos os parametros de entrada e a configuracao do Azure OpenAI ou Azure Foundry.';
+        return 'Erro ao comunicar com Azure Foundry, verificar todos os parametros de entrada e a configuracao do Azure OpenAI ou Azure Foundry.';
       }
 
       // Captura o consumo de tokens
       try {
-        const output_tokens = response.usage?.output_tokens ?? response.usage?.output_tokens ?? 0; // Adjusted for potential differences in usage reporting
-        const input_tokens = response.usage?.input_tokens ?? response.usage?.input_tokens ?? 0;
-        const total_tokens = response.usage?.total_tokens ?? response.usage?.total_tokens ?? 0;
+        const output_tokens = responseFoundry.usage?.output_tokens ?? responseFoundry.usage?.output_tokens ?? 0; // Adjusted for potential differences in usage reporting
+        const input_tokens = responseFoundry.usage?.input_tokens ?? responseFoundry.usage?.input_tokens ?? 0;
+        const total_tokens = responseFoundry.usage?.total_tokens ?? responseFoundry.usage?.total_tokens ?? 0;
 
         consumeApi = `Usage: Input: ${input_tokens}, Output: ${output_tokens}, Total: ${total_tokens}`;
+        console.log('AGENTE PARAMETRIZADO: ', responseFoundry?.agent_references);
       } catch (error: any) {
         console.log(`Erro ao tentar capturar consumo de tokens: ${error.message}`);
         consumeApi = `Usage: Informação indisponível`;
         console.log('##vso[task.complete result=Failed;]');
       }
 
-      const output = response.output?.content?.[0]?.text;
-      if (output && output.length > 0) {
-        const reviewOK = output.trim();
+      const output = responseFoundry?.output;
+      const outputList = Array.isArray(output) ? output : [];
+      const messageItem = outputList.find((item: any) => item?.type === 'message');
+      const messageContent = messageItem?.content?.find((contentItem: any) => contentItem?.type === 'output_text')?.text ?? messageItem?.content?.[0]?.text;
+      if (messageContent && messageContent.length > 0) {
+        const reviewOK = messageContent.trim();
 
         // Validate that content exists and is not empty
         if (!reviewOK || typeof reviewOK !== 'string' || reviewOK.trim().length === 0) {
-          console.log(`Resposta vazia ou invalida do Azure OpenAI para arquivo ${fileName}.`);
+          console.log(`Resposta vazia ou invalida do Azure Foundry para arquivo ${fileName}.`);
           return noFeedbackMarker;
         }
 
