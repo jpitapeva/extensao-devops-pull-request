@@ -1,4 +1,4 @@
-# Use o modelo OpenAI GPT para revisar solicitações pull para Azure Devops
+# Use o modelo OpenAI ou Microsoft Foundry para revisar solicitações pull para Azure Devops
 Task do Azure DevOps que adiciona comentarios em portugues nas solicitacoes de PullRequest com a ajuda da IA.
 
 ## Serviço Azure OpenAI
@@ -8,9 +8,9 @@ Parametro/endpoint 'aoi_endpoint': https://{XXXXXXXX}.openai.azure.com/openai/de
 
 ---
 
-## Serviço Azure Foundry
-- Parametro/endpoint 'aoi_endpoint' para agent NAO criado/construido via deploy dentro do Microsoft Azure AI Foundry: https://XXXXX.openai.azure.com/openai/v1/chat/completions.
-- Parametro/endpoint 'aoi_endpoint' para agent construido via deploy do Microsoft Azure Foundry: https://XXXXXX.services.ai.azure.com/api/projects/XXXXXX/openai/v1/responses
+## Serviço Microsoft Foundry
+- Parametro/endpoint 'aoi_endpoint' para agent NAO criado/construido via deploy dentro do Microsoft Foundry: https://XXXXX.openai.azure.com/openai/v1/chat/completions.
+- Parametro/endpoint 'aoi_endpoint' para agent construido via deploy do Microsoft Foundry: https://XXXXXX.services.ai.azure.com/api/projects/XXXXXX/openai/v1/responses
 
 > [Documentação create a model response](https://developers.openai.com/api/reference/resources/responses/methods/create)
 
@@ -39,8 +39,8 @@ Adicione uma seção de checkout com persistCredentials definido como true.
 - Versão 28: adicionamos o campo opcional 'build_service_name'. Detalhe: o parametro 'build_service_name' deve ser informado quando houver um build service especifico configurado no repositório do Azure DevOps. Necessario para situacoes em que comentarios antigos dentro do PR e gerado pela IA nao sao excluidos.
 - Versão 29: adequamos as novas especificacoes da API da OpenAI: o parametro do body mudou de 'max_tokens' para 'max_completion_tokens', e o valor padrao de 'temperature' mudou de 0 para 1.
 - Versão 30: corrigimos instabilidades e incluimos novas validacoes.
-- Versão 31: passou a ser obrigatorio informar o nome correto do modelo configurado no portal do Microsoft Azure AI Foundry (ex.: gpt-5.4-nano, gpt-35-turbo, gpt-4-32k, gpt-4-0613, gpt-4-32k-0613). Mais detalhes: https://learn.microsoft.com/en-us/azure/foundry/foundry-models/concepts/models-sold-directly-by-azure?tabs=global-standard-aoai%2Cglobal-standard&pivots=azure-openai
-- Versão 32: disponibilizamos a integracao com agents do Microsoft Azure AI Foundry.
+- Versão 31: passou a ser obrigatorio informar o nome correto do modelo configurado no Microsoft Foundry (ex.: gpt-5.4-nano, gpt-35-turbo, gpt-4-32k, gpt-4-0613, gpt-4-32k-0613). Mais detalhes: https://learn.microsoft.com/en-us/azure/foundry/foundry-models/concepts/models-sold-directly-by-azure?tabs=global-standard-aoai%2Cglobal-standard&pivots=azure-openai
+- Versão 32: disponibilizamos a integracao com agents do Microsoft Foundry.
 
 ---
 
@@ -68,8 +68,8 @@ jobs:
       file_excludes: 'file1.js,file2.py,secret.txt,*.csproj,src/**/*.csproj'
       additional_prompts: 'Opcional. Prompt adicional separado por virgula, exemplo: corrija a nomenclatura de variaveis, garanta identacao consistente, revise a abordagem de tratamento de erros'
       build_service_name: 'Opcional. O build_service_name é um campo opcional e deve ser informado quando existir um build service específico configurado dentro do repositório do Azure Devops. Necessario para situacoes em que comentarios antigos dentro do PR e gerado pela IA nao sao excluidos.'
-      model_name: A partir da versão 31 é obrigatorio informar o nome correto do modelo configurado dentro do Portal da Azure Foundry. Exemplo: gpt-5.4-nano, gpt-35-turbo, gpt-4-32k, gpt-4-0613, gpt-4-32k-0613
-      agent_foundry_mode: Obrigatorio informar 'true' se o agent foi construido por deploy dentro do portal da Microsoft Azure Foundry, link fornecido por exemplo: https://XXXXXX.services.ai.azure.com/api/projects/XXXXXX/openai/v1/responses"
+      model_name: A partir da versão 31 é obrigatorio informar o nome correto do modelo configurado no Microsoft Foundry. Exemplo: gpt-5.4-nano, gpt-35-turbo, gpt-4-32k, gpt-4-0613, gpt-4-32k-0613
+      agent_foundry_mode: Obrigatorio informar 'true' se o agent foi construido por deploy dentro do portal da Microsoft Foundry, link fornecido por exemplo: https://XXXXXX.services.ai.azure.com/api/projects/XXXXXX/openai/v1/responses"
       agent_name: Obrigatorio informar o nome do correto do agent se o parametro 'agent_foundry_mode' for configurado como true
       agent_version: Obrigatorio informar a versao correta do agent se o parametro 'agent_foundry_mode' for configurado como true
 ```
@@ -98,7 +98,7 @@ A engenharia de prompt também pode ajudar a reduzir o viés e a aumentar a impa
 
 
 ## Curl
-1- Curl para IA NAO construida via deploy do Microsoft Azure Foundry
+1- Curl para IA NAO construida via deploy do Microsoft Foundry
 
 ```
 postman request POST 'https://RESOURCE_NAME.openai.azure.com/openai/v1/chat/completions' \
@@ -118,7 +118,7 @@ postman request POST 'https://RESOURCE_NAME.openai.azure.com/openai/v1/chat/comp
 
 ---
 
-2- Curl para agent construido via deploy do Microsoft Azure Foundry
+2- Curl para agent construido via deploy do Microsoft Foundry
 
 ```
 postman request POST 'https://RESOURCE_NAME.services.ai.azure.com/api/projects/XXXXXXX/openai/v1/responses' \

@@ -104,7 +104,7 @@
       "label": "Model Name",
       "defaultValue": "",
       "required": true,
-      "helpMarkDown": "A partir da versão 31 é obrigatório informar o nome correto do modelo configurado dentro do Portal da Azure Foundry. Exemplo: gpt-5.4-nano, gpt-35-turbo, gpt-4-32k, gpt-4-0613, gpt-4-32k-0613"
+      "helpMarkDown": "A partir da versão 31 é obrigatório informar o nome correto do modelo configurado no Microsoft Foundry. Exemplo: gpt-5.4-nano, gpt-35-turbo, gpt-4-32k, gpt-4-0613, gpt-4-32k-0613"
     },
     {
       "name": "agent_foundry_mode",
@@ -112,7 +112,7 @@
       "label": "Agent Microsoft Foundry",
       "defaultValue": false,
       "required": true,
-      "helpMarkDown": "Obrigatorio informar 'true' se o agent foi construido via Microsoft Azure Foundry, link fornecido como por exemplo: https://XXXXXX.services.ai.azure.com/api/projects/XXXXXX/openai/v1/responses"
+      "helpMarkDown": "Obrigatorio informar 'true' se o agent foi construido atraves do Microsoft Foundry, link fornecido como por exemplo: https://XXXXXX.services.ai.azure.com/api/projects/XXXXXX/openai/v1/responses"
     },
     {
       "name": "agent_name",
