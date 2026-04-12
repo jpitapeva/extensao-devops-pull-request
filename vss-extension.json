@@ -12,7 +12,7 @@
             "id": "Microsoft.VisualStudio.Services"
         }
     ],    
-    "description": "Esta tarefa usa o modelo AzureOpenAI OU Azure Foundry para revisar PullRequests do Azure Deviops. Ela pode ser configurada para usar um modelo específico, ou para escolher automaticamente entre AzureOpenAI e Azure Foundry, dependendo da disponibilidade e configuração do ambiente.",
+    "description": "Esta tarefa usa o modelo do AzureOpenAI ou do Azure Foundry para revisar PullRequests do Azure DevOps com ajuda da IA.",
     "categories": [
         "Azure Pipelines"
     ],
