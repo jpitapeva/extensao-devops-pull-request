@@ -2,18 +2,17 @@
     "manifestVersion": 1,
     "id": "JPCompcombr",
     "name": "JPCompcombr",
-    "version": "32.0.19",
+    "version": "32.0.20",
     "publisher": "JPCompcombr",
     "galleryFlags": [
-        "Public",
-        "Preview"
+        "Public"
     ],
     "targets": [
         {
             "id": "Microsoft.VisualStudio.Services"
         }
     ],    
-    "description": "Esta tarefa usa o modelo AzureOpenAI para revisar PullRequests",
+    "description": "Esta tarefa usa o modelo AzureOpenAI OU Azure Foundry para revisar PullRequests do Azure Deviops. Ela pode ser configurada para usar um modelo específico, ou para escolher automaticamente entre AzureOpenAI e Azure Foundry, dependendo da disponibilidade e configuração do ambiente.",
     "categories": [
         "Azure Pipelines"
     ],
@@ -25,7 +24,8 @@
         "GPT",
         "pullRequest",
         "review",
-        "AzureOpenAI"
+        "AzureOpenAI",
+        "Azure Foundry"
     ],
     "files": [
         {

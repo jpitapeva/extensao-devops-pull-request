@@ -260,9 +260,9 @@ export async function reviewFile(
         const total_tokens = responseFoundry.usage?.total_tokens ?? responseFoundry.usage?.total_tokens ?? 0;
 
         consumeApi = `Usage: Input: ${input_tokens}, Output: ${output_tokens}, Total: ${total_tokens}`;
-        console.log('AGENTE PARAMETRIZADO: type - ', responseFoundry?.agent_reference?.type);
-        console.log('AGENTE PARAMETRIZADO: name - ', responseFoundry?.agent_reference?.name);
-        console.log('AGENTE PARAMETRIZADO: version - ', responseFoundry?.agent_reference?.version);
+        console.log('AGENT PARAMETRIZADO: type - ', responseFoundry?.agent_reference?.type);
+        console.log('AGENT PARAMETRIZADO: name - ', responseFoundry?.agent_reference?.name);
+        console.log('AGENT PARAMETRIZADO: version - ', responseFoundry?.agent_reference?.version);
 
       } catch (error: any) {
         console.log(`Erro ao tentar capturar consumo de tokens: ${error.message}`);
