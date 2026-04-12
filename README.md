@@ -16,6 +16,7 @@ Para o parametro 'aoi_endpoint' informar o endpoint como no exemplo: https://{XX
 - Para o parametro 'aoi_endpoint' de agent construido atraves de deploy do Microsoft Foundry: https://XXXXXX.services.ai.azure.com/api/projects/XXXXXX/openai/v1/responses
 
 > [Documentacao create a model response](https://developers.openai.com/api/reference/resources/responses/methods/create)
+> [Microsoft foundry model catalog](https://ai.azure.com/catalog)
 
 ---
 
