@@ -1,4 +1,4 @@
-# Use o modelo da Azure OpenAI ou do Microsoft Foundry para revisar solicitações pull para Azure Devops
+# Use modelos da Azure OpenAI ou do Microsoft Foundry para revisar solicitações pull para Azure Devops
 Task do Azure DevOps que adiciona comentarios em portugues nas solicitacoes de PullRequest com a ajuda da IA.
 
 ## Serviço Azure OpenAI
