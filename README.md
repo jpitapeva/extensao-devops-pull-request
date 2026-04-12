@@ -1,6 +1,9 @@
 # Use modelos da Azure OpenAI ou da Microsoft Foundry para revisar solicitacoes de PullRequest dentro do Azure Devops
 Task do Azure DevOps que adiciona comentarios em portugues nas solicitacoes de PullRequest com a ajuda da IA.
 
+#Instalacao
+https://marketplace.visualstudio.com/publishers/jpcompcombr
+
 ## Servico Azure OpenAI
 Para o parametro 'aoi_endpoint' informar o endpoint como no exemplo: https://{XXXXXXXX}.openai.azure.com/openai/deployments/{MODEL_NAME}/chat/completions?api-version={API_VERSION}
 
