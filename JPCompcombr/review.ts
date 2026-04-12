@@ -3,6 +3,23 @@ import * as https from 'https';
 import * as http from 'http';
 
 export let consumeApi: string = 'Usage: Informação não disponível';
+
+function getOutputTextFromResponseOutput(output: any): string | undefined {
+  if (!Array.isArray(output)) {
+    return undefined;
+  }
+
+  const messageItem = output.find((item: any) => item?.type === 'message');
+  if (!messageItem || !Array.isArray(messageItem.content)) {
+    return undefined;
+  }
+
+  const outputTextItem = messageItem.content.find((contentItem: any) => contentItem?.type === 'output_text');
+  const text = outputTextItem?.text;
+
+  return typeof text === 'string' ? text : undefined;
+}
+
 export async function reviewFile(
   gitDiff: string,
   fileName: string,
@@ -146,9 +163,9 @@ export async function reviewFile(
 
         responseOpenAi = await request.json();
 
-        // Validate response structure
-        if (responseOpenAi !== http.STATUS_CODES[200]) {
+        if (!request.ok || !responseOpenAi || typeof responseOpenAi !== 'object' || !responseOpenAi.choices) {
           console.log(`Resposta bruta da Foundry: ${JSON.stringify(responseOpenAi)}`);
+          console.log(`HTTP Status: ${request.status} - ${request.statusText}`);
           console.log(`Encontrado erro, validar os parametros de entrada. CODE: ${responseOpenAi?.error?.code}  MESSAGE: ${responseOpenAi?.error?.message} TYPE: ${responseOpenAi?.error?.type} PARAM: ${responseOpenAi?.error?.param}`);
           console.log('##vso[task.complete result=Failed;]');
           return 'Erro: resposta invalida da API, verificar todos os parametros de entrada como nome do modelo, token, link e a configuração do Azure OpenAI ou Azure Foundry.';
@@ -156,7 +173,7 @@ export async function reviewFile(
 
         choices = responseOpenAi.choices;
       } catch (responseError: any) {
-        console.log(`Resposta bruta da Foundry: ${JSON.stringify(responseError.response)}`);    
+        console.log(`Resposta bruta da Foundry: ${JSON.stringify(responseError.response)}`);
         console.log(`Encontrado erro, validar os parametros de entrada. CODE: ${responseError.response?.error?.code}  MESSAGE: ${responseError.response?.error?.message} TYPE: ${responseError.response?.error?.type} PARAM: ${responseError.response?.error?.param}`);
         console.log(`Erro completo: ${responseError.message}`);
         console.log('##vso[task.complete result=Failed;]');
@@ -222,7 +239,8 @@ export async function reviewFile(
         });
 
         responseFoundry = await requestFoundry.json();
-        if (responseFoundry !== http.STATUS_CODES[200]) {
+        if (!requestFoundry.ok || !responseFoundry || typeof responseFoundry !== 'object') {
+          console.log(`HTTP Status: ${requestFoundry.status} - ${requestFoundry.statusText}`);
           console.log(`Encontrado erro, validar os parametros de entrada. CODE: ${responseFoundry?.error?.code}  MESSAGE: ${responseFoundry?.error?.message} TYPE: ${responseFoundry?.error?.type} PARAM: ${responseFoundry?.error?.param}`);
           console.log(`Request bruta da Foundry: ${JSON.stringify(requestFoundry.body)}`);
           console.log(`Resposta bruta da Foundry: ${JSON.stringify(responseFoundry)}`);
@@ -242,32 +260,27 @@ export async function reviewFile(
         const total_tokens = responseFoundry.usage?.total_tokens ?? responseFoundry.usage?.total_tokens ?? 0;
 
         consumeApi = `Usage: Input: ${input_tokens}, Output: ${output_tokens}, Total: ${total_tokens}`;
-        console.log('AGENTE PARAMETRIZADO: ', responseFoundry?.agent_references);
+        console.log('AGENTE PARAMETRIZADO: type - ', responseFoundry?.agent_reference?.type);
+        console.log('AGENTE PARAMETRIZADO: name - ', responseFoundry?.agent_reference?.name);
+        console.log('AGENTE PARAMETRIZADO: version - ', responseFoundry?.agent_reference?.version);
+
       } catch (error: any) {
         console.log(`Erro ao tentar capturar consumo de tokens: ${error.message}`);
         consumeApi = `Usage: Informação indisponível`;
         console.log('##vso[task.complete result=Failed;]');
       }
 
-      const output = responseFoundry?.output;
-      const outputList = Array.isArray(output) ? output : [];
-      const messageItem = outputList.find((item: any) => item?.type === 'message');
-      const messageContent = messageItem?.content?.find((contentItem: any) => contentItem?.type === 'output_text')?.text ?? messageItem?.content?.[0]?.text;
-      if (messageContent && messageContent.length > 0) {
+      console.log(getOutputTextFromResponseOutput(responseFoundry?.output));
+
+      const messageContent = getOutputTextFromResponseOutput(responseFoundry?.output);
+      if (messageContent && messageContent.trim().length > 0) {
         const reviewOK = messageContent.trim();
-
-        // Validate that content exists and is not empty
-        if (!reviewOK || typeof reviewOK !== 'string' || reviewOK.trim().length === 0) {
-          console.log(`Resposta vazia ou invalida do Azure Foundry para arquivo ${fileName}.`);
-          return noFeedbackMarker;
-        }
-
         console.log(`Revisão do arquivo ${fileName} concluída.`);
         return reviewOK;
-      } else {
-        console.log(`Nenhum feedback encontrado para o arquivo ${fileName}.`);
-        return noFeedbackMarker;
       }
+
+      console.log(`Nenhum feedback encontrado para o arquivo ${fileName}.`);
+      return noFeedbackMarker;
     }
   } catch (error: any) {
     if (error.response) {
