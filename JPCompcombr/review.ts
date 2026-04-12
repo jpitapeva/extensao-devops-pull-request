@@ -270,8 +270,6 @@ export async function reviewFile(
         console.log('##vso[task.complete result=Failed;]');
       }
 
-      console.log(getOutputTextFromResponseOutput(responseFoundry?.output));
-
       const messageContent = getOutputTextFromResponseOutput(responseFoundry?.output);
       if (messageContent && messageContent.trim().length > 0) {
         const reviewOK = messageContent.trim();
