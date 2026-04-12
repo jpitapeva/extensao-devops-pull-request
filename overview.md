@@ -5,15 +5,15 @@ Task do Azure DevOps que adiciona comentários em portugues nas solicitacoes de 
 A instalação pode ser feita usando o [Visual Studio MarketPlace](https://marketplace.visualstudio.com/publishers/jpcompcombr).
 
 ## Serviço Azure Open AI
-A formatação do endpoint é a seguinte: https://{XXXXXXXX}.openai.azure.com/openai/deployments/{MODEL_NAME}/chat/completions?api-version={API_VERSION}
+A formatação do aoi_endpoint é a seguinte: https://{XXXXXXXX}.openai.azure.com/openai/deployments/{MODEL_NAME}/chat/completions?api-version={API_VERSION}
 
 > [Documentação API REST](https://learn.microsoft.com/pt-br/azure/ai-services/openai/reference).
 
 ---
 
 ## Serviço Azure Foundry
-- Link para agente NAO construido via deploy do Microsoft Azure Foundry: https://XXXXX.openai.azure.com/openai/v1/chat/completions
-- Link para agente construido via deploy do Microsoft Azure Foundry: https://XXXXXX.services.ai.azure.com/api/projects/XXXXXX/openai/v1/responses
+- aoi_endpoint para agente NAO construido via deploy do Microsoft Azure Foundry: https://XXXXX.openai.azure.com/openai/v1/chat/completions
+- aoi_endpoint para agente construido via deploy do Microsoft Azure Foundry: https://XXXXXX.services.ai.azure.com/api/projects/XXXXXX/openai/v1/responses
 
 > [Documentação create a model response](https://developers.openai.com/api/reference/resources/responses/methods/create)
 
