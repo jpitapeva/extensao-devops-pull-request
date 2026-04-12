@@ -13,7 +13,7 @@
   "version": {
     "Major": "32",
     "Minor": "0",
-    "Patch": "21"
+    "Patch": "22"
   },
   "minimumAgentVersion": "1.95.0",
   "instanceNameFormat": "JPCompcombr $(message)",
@@ -56,7 +56,7 @@
       "label": "prompt",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Especifique seu prompt. Se desejar voce pode criar o seu proprio prompt. Exemplo. Atue como revisor de código de uma solicitação de pull, fornecendo feedback sobre possíveis bugs e problemas de código limpo.\nVocê recebe as alterações da solicitação de pull em um formato de patch.\nCada entrada de patch tem a mensagem de confirmação na linha de assunto, seguida pelas alterações de código (diffs) em um formato unidiff.\n\nComo revisor de código, sua tarefa é:\n- Revisar apenas as linhas adicionadas, editadas ou excluídas.\n- Se não houver bugs e as alterações estiverem corretas, escreva apenas 'Sem feedback'.\n- Se houver bugs ou alterações de código incorretas, não escreva 'Sem feedback'."
+      "helpMarkDown": "Especifique seu prompt. Se desejar voce pode criar o seu proprio prompt. Exemplo. Atue como revisor de codigo de uma solicitação de pull, fornecendo feedback sobre possíveis bugs e problemas de codigo limpo.\nVocê recebe as alterações da solicitação de pull em um formato de patch.\nCada entrada de patch tem a mensagem de confirmação na linha de assunto, seguida pelas alterações de codigo (diffs) em um formato unidiff.\n\nComo revisor de codigo, sua tarefa é:\n- Revisar apenas as linhas adicionadas, editadas ou excluídas.\n- Se não houver bugs e as alterações estiverem corretas, escreva apenas 'Sem feedback'.\n- Se houver bugs ou alterações de codigo incorretas."
     },
     {
       "name": "additional_prompts",

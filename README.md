@@ -1,27 +1,27 @@
 # Use modelos da Azure OpenAI ou da Microsoft Foundry para revisar solicitacoes de PullRequest dentro do Azure Devops
 Task do Azure DevOps que adiciona comentarios em portugues nas solicitacoes de PullRequest com a ajuda da IA.
 
-## Serviço Azure OpenAI
-Parametro/endpoint 'aoi_endpoint': https://{XXXXXXXX}.openai.azure.com/openai/deployments/{MODEL_NAME}/chat/completions?api-version={API_VERSION}
+## Servico Azure OpenAI
+Para o parametro 'aoi_endpoint' informar o endpoint como no exemplo: https://{XXXXXXXX}.openai.azure.com/openai/deployments/{MODEL_NAME}/chat/completions?api-version={API_VERSION}
 
-> [Documentação API REST](https://learn.microsoft.com/pt-br/azure/ai-services/openai/reference).
-
----
-
-## Serviço Microsoft Foundry
-- Parametro/endpoint 'aoi_endpoint' para agent NAO criado/construido via deploy dentro do Microsoft Foundry: https://XXXXX.openai.azure.com/openai/v1/chat/completions.
-- Parametro/endpoint 'aoi_endpoint' para agent construido via deploy do Microsoft Foundry: https://XXXXXX.services.ai.azure.com/api/projects/XXXXXX/openai/v1/responses
-
-> [Documentação create a model response](https://developers.openai.com/api/reference/resources/responses/methods/create)
+> [Documentacao API REST](https://learn.microsoft.com/pt-br/azure/ai-services/openai/reference).
 
 ---
 
-### Dê permissão ao agent de serviço de build
-Antes de usar esta task, certifique-se de que o serviço de build tenha permissões para contribuir em seu REPOSITORIO:
+## Servico Microsoft Foundry
+- Para o parametro 'aoi_endpoint' de agent NAO criado/construido atraves de deploy do Microsoft Foundry: https://XXXXX.openai.azure.com/openai/v1/chat/completions.
+- Para o parametro 'aoi_endpoint' de agent construido atraves de deploy do Microsoft Foundry: https://XXXXXX.services.ai.azure.com/api/projects/XXXXXX/openai/v1/responses
+
+> [Documentacao create a model response](https://developers.openai.com/api/reference/resources/responses/methods/create)
+
+---
+
+### De permissao ao agent de servico de build
+Antes de usar esta task, certifique-se de que o servico de build tenha permissões para contribuir em seu REPOSITORIO:
 
 ![contribute_to_pr](https://github.com/jpitapeva/extensao-devops-pull-request/blob/main/images/contribute_to_pr.png?raw=true)
 
-### Encontrar o Agent de Serviço de Build
+### Encontrar o Agent de Servico de Build
 1. Acesse o Azure DevOps
 2. Va até Project Settings
 3. Abra Permissions
@@ -32,7 +32,7 @@ Antes de usar esta task, certifique-se de que o serviço de build tenha permiss�
 Este é o identity usado pelos pipelines YAML e Classic.
 
 ### Permitir que a tarefa acesse o token do sistema
-Adicione uma seção de checkout com persistCredentials definido como true.
+Adicione uma secao de checkout com persistCredentials definido como true.
 
 ### Release notes
 - Versão 27.0.2: corrigimos vulnerabilidades em bibliotecas de terceiros e atualizamos o Node.js da versão 16 para 20.1. ATENCAO: essa mudanca pode exigir ajustes em ambientes que ainda utilizam Node.js 16.
@@ -64,10 +64,10 @@ jobs:
       aoi_tokenMax: 1000
       aoi_temperature: 1 
       use_https: true
-      prompt: 'Opcional. Se desejar agora voce pode criar o seu proprio prompt, exemplo. Atue como revisor de código de uma solicitação de pull, fornecendo feedback sobre possíveis bugs e problemas de código limpo.\nVocê recebe as alterações da solicitação de pull em um formato de patch.\nCada entrada de patch tem a mensagem de confirmação na linha de assunto, seguida pelas alterações de código (diffs) em um formato unidiff.\n\nComo revisor de código, sua tarefa é:\n- Revisar apenas as linhas adicionadas, editadas ou excluídas.\n- Se não houver bugs e as alterações estiverem corretas, escreva apenas 'Sem feedback'.\n- Se houver bugs ou alterações de código incorretas, não escreva 'Sem feedback'.'
+      prompt: 'Opcional. Se desejar agora voce pode criar o seu proprio prompt, exemplo. Atue como revisor de codigo de uma solicitação de pull, fornecendo feedback sobre possíveis bugs e problemas de codigo limpo.\nVoce recebe as alteracoes da solicitacao de pull em um formato de patch.\nCada entrada de patch tem a mensagem de confirmacao na linha de assunto, seguida pelas alteracoes de codigo (diffs) em um formato unidiff.\n\nComo revisor de codigo, sua tarefa é:\n- Revisar apenas as linhas adicionadas, editadas ou excluídas.\n- Se não houver bugs e as alterações estiverem corretas, escreva apenas 'Sem feedback'.\n- Se houver bugs ou alterações de codigo incorretas.'
       file_excludes: 'file1.js,file2.py,secret.txt,*.csproj,src/**/*.csproj'
       additional_prompts: 'Opcional. Prompt adicional separado por virgula, exemplo: corrija a nomenclatura de variaveis, garanta identacao consistente, revise a abordagem de tratamento de erros'
-      build_service_name: 'Opcional. O build_service_name é um campo opcional e deve ser informado quando existir um build service específico configurado dentro do repositório do Azure Devops. Necessario para situacoes em que comentarios antigos dentro do PR e gerado pela IA nao sao excluidos.'
+      build_service_name: 'Opcional. O 'build_service_name' é um campo opcional e deve ser informado quando existir um build service especifico configurado dentro do repositorio do Azure Devops. Necessario para situacoes em que comentarios antigos dentro do PR e gerado pela IA nao sao excluidos.'
       model_name: A partir da versão 31 é obrigatorio informar o nome correto do modelo configurado no Microsoft Foundry. Exemplo: gpt-5.4-nano, gpt-35-turbo, gpt-4-32k, gpt-4-0613, gpt-4-32k-0613
       agent_foundry_mode: 'bool. Informar 'true' se o agent foi construido por deploy dentro do Microsoft Foundry, endpoint por exemplo: https://XXXXXX.services.ai.azure.com/api/projects/XXXXXX/openai/v1/responses'
       agent_name: Obrigatorio informar o nome do correto do agent se o parametro 'agent_foundry_mode' for configurado como true
@@ -88,7 +88,7 @@ Upload extension to marketplace: https://marketplace.visualstudio.com/manage</br
 ## GPT (transformador pré-treinado gerativo)
 
 ## O que é a engenharia de prompts
-Os modelos de IA generativa são treinados em grandes quantidades de dados e podem gerar texto, imagens, código e conteúdo criativo com base na continuação mais provável do prompt.
+Os modelos de IA generativa sao treinados em grandes quantidades de dados e podem gerar texto, imagens, codigo e conteúdo criativo com base na continuação mais provável do prompt.
 
 Engenharia de prompt é o processo de criação e otimização de prompts para utilizar melhor os modelos de IA. A criação de prompts eficazes é fundamental para o sucesso da engenharia de prompt e pode aprimorar significativamente o desempenho do modelo de IA em tarefas específicas. Fornecer prompts relevantes, específicos, inequívocos e bem estruturados pode ajudar o modelo a entender melhor o contexto e gerar respostas mais precisas.
 
@@ -109,7 +109,7 @@ postman request POST 'https://RESOURCE_NAME.openai.azure.com/openai/v1/chat/comp
     "model": "gpt-5.4-nano",
     "top_p": 1.0,
      "messages": [
-            {"role": "system", "content": "Você é um assistente especializado em engenharia de software, atuando como revisor de código para Pull Requests (PRs)"},          
+            {"role": "system", "content": "Voce e um assistente especializado em engenharia de software, atuando como revisor de codigo para Pull Requests (PRs)"},          
             {"role": "system","content": "TESTE"
           }
     ]
@@ -135,7 +135,7 @@ postman request POST 'https://RESOURCE_NAME.services.ai.azure.com/api/projects/X
           },
     "input":
     [
-         {"role": "system", "content": "Você é um assistente especializado em engenharia de software, atuando como revisor de código para Pull Requests (PRs)"},
+         {"role": "system", "content": "Voce e um assistente especializado em engenharia de software, atuando como revisor de codigo para Pull Requests (PRs)"},
          {"role": "system","content": "TESTE"}
      ]
 }'

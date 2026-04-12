@@ -23,7 +23,7 @@
 			"index": 0,
 			"logprobs": null,
 			"message": {
-				"content": "- Corrija a nomenclatura da variável \"new_msg\" para \"newMsg\" seguindo a convenção de nomenclatura de variáveis em C#.\n- Adicione a identação correta em cada linha para garantir que o código esteja legível e consistente com o restante do código.\n- É necessário verificar a abordagem de tratamento de erros, uma vez que a função \"returnRegex\" não possui nenhum tratamento. Seria interessante adicionar uma exceção se o parâmetro \"text\" for nulo.",
+				"content": "- Corrija a nomenclatura da variavel \"new_msg\" para \"newMsg\" seguindo a convencao de nomenclatura de variáveis em C#.\n- Adicione a identação correta em cada linha para garantir que o codigo esteja legivel e consistente com o restante do codigo.\n- É necessário verificar a abordagem de tratamento de erros, uma vez que a função \"returnRegex\" não possui nenhum tratamento. Seria interessante adicionar uma exceção se o parâmetro \"text\" for nulo.",
 				"role": "assistant"
 			}
 		}

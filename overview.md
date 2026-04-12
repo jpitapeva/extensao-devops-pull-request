@@ -1,23 +1,23 @@
 # Use modelos da Azure OpenAI ou da Microsoft Foundry para revisar solicitacoes de PullRequest dentro do Azure Devops
 Task do Azure DevOps que adiciona comentarios em portugues nas solicitacoes de PullRequest com a ajuda da IA.
 
-## Serviço Azure OpenAI
-Parametro/endpoint 'aoi_endpoint': https://{XXXXXXXX}.openai.azure.com/openai/deployments/{MODEL_NAME}/chat/completions?api-version={API_VERSION}
+## Servico Azure OpenAI
+Para o parametro 'aoi_endpoint' informar o endpoint como no exemplo: https://{XXXXXXXX}.openai.azure.com/openai/deployments/{MODEL_NAME}/chat/completions?api-version={API_VERSION}
 
-> [Documentação API REST](https://learn.microsoft.com/pt-br/azure/ai-services/openai/reference).
-
----
-
-## Serviço Microsoft Foundry
-- Parâmetro/endpoint 'aoi_endpoint' para agent NAO criado/construido via deploy dentro do Microsoft Foundry: https://XXXXX.openai.azure.com/openai/v1/chat/completions.
-- Parametro/endpoint 'aoi_endpoint' para agent construido via deploy do Microsoft Foundry: https://XXXXXX.services.ai.azure.com/api/projects/XXXXXX/openai/v1/responses
-
-> [Documentação create a model response](https://developers.openai.com/api/reference/resources/responses/methods/create)
+> [Documentacao API REST](https://learn.microsoft.com/pt-br/azure/ai-services/openai/reference).
 
 ---
 
-### Dê permissão ao Agent de serviço de build
-Antes de usar esta task, certifique-se de que o serviço de build tenha permissoes para contribuir em seu REPOSITORIO:
+## Servico Microsoft Foundry
+- Para o parametro 'aoi_endpoint' de agent NAO criado/construido atraves de deploy do Microsoft Foundry: https://XXXXX.openai.azure.com/openai/v1/chat/completions.
+- Para o parametro 'aoi_endpoint' de agent construido atraves de deploy do Microsoft Foundry: https://XXXXXX.services.ai.azure.com/api/projects/XXXXXX/openai/v1/responses
+
+> [Documentacao create a model response](https://developers.openai.com/api/reference/resources/responses/methods/create)
+
+---
+
+### De permissao ao Agent de servico de build
+Antes de usar esta task, certifique-se de que o servico de build tenha permissoes para contribuir em seu REPOSITORIO:
 
 ![contribute_to_pr](https://github.com/jpitapeva/extensao-devops-pull-request/blob/main/images/contribute_to_pr.png?raw=true)
 
@@ -55,7 +55,7 @@ jobs:
       aoi_tokenMax: 1000
       aoi_temperature: 1
       use_https: true
-      prompt: 'Opcional. Agora se desejar voce pode criar o seu proprio prompt, exemplo. Atue como revisor de código de uma solicitação de pull, fornecendo feedback sobre possíveis bugs e problemas de código limpo.\nVocê recebe as alterações da solicitação de pull em um formato de patch.\nCada entrada de patch tem a mensagem de confirmação na linha de assunto, seguida pelas alterações de código (diffs) em um formato unidiff.\n\nComo revisor de código, sua tarefa é:\n- Revisar apenas as linhas adicionadas, editadas ou excluídas.\n- Se não houver bugs e as alterações estiverem corretas, escreva apenas 'Sem feedback'.\n- Se houver bugs ou alterações de código incorretas, não escreva 'Sem feedback'.'
+      prompt: 'Opcional. Agora se desejar voce pode criar o seu proprio prompt, exemplo. Atue como revisor de codigo de uma solicitacao de pull, fornecendo feedback sobre possiveis bugs e problemas de codigo limpo.\nVocê recebe as alteracoes da solicitacao de pull em um formato de patch.\nCada entrada de patch tem a mensagem de confirmacao na linha de assunto, seguida pelas alteracoes de codigo (diffs) em um formato unidiff.\n\nComo revisor de codigo, sua tarefa é:\n- Revisar apenas as linhas adicionadas, editadas ou excluídas.\n- Se não houver bugs e as alteracoes estiverem corretas, escreva apenas 'Sem feedback'.\n- Se houver bugs ou alteracoes de codigo incorretas'
       file_excludes: 'file1.js,file2.py,secret.txt,*.csproj,src/**/*.csproj'      
       additional_prompts: 'Opcional. Prompt adicional separado por virgula, exemplo: corrija a nomenclatura de variaveis, garanta identacao consistente, revise a abordagem de tratamento de erros'
       build_service_name: 'Opcional. O build_service_name é um campo opcional e deve ser informado quando existir um build service especifico configurado dentro do repositorio do Azure Devops. Necessario para situacoes em que comentarios antigos dentro do PR e gerado pela IA nao sao excluidos.'
