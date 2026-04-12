@@ -1,8 +1,8 @@
 {
   "id": "2572887e-809d-43b4-bab7-baaad9c8ec87",
   "name": "JPCompcombr",
-  "friendlyName": "Revisao de PullRequest by AzureOpenAI",
-  "description": "Esta tarefa usa o modelo AzureOpenAi para revisar PullRequests",
+  "friendlyName": "Revisao de PullRequest by Azure OpenAi ou Microsoft Foundry",
+  "description": "Esta tarefa usa modelos Azure OpenAi ou do Microsoft Foundry para revisar PullRequests",
   "author": "Joao Antunes",
   "helpMarkDown": "[Mais informacoes](https://github.com/jpitapeva/extensao-devops-pull-request)",
   "category": "Utility",
@@ -13,7 +13,7 @@
   "version": {
     "Major": "32",
     "Minor": "0",
-    "Patch": "20"
+    "Patch": "21"
   },
   "minimumAgentVersion": "1.95.0",
   "instanceNameFormat": "JPCompcombr $(message)",

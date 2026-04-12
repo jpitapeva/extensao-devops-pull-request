@@ -60,7 +60,7 @@ jobs:
       additional_prompts: 'Opcional. Prompt adicional separado por virgula, exemplo: corrija a nomenclatura de variaveis, garanta identacao consistente, revise a abordagem de tratamento de erros'
       build_service_name: 'Opcional. O build_service_name é um campo opcional e deve ser informado quando existir um build service especifico configurado dentro do repositorio do Azure Devops. Necessario para situacoes em que comentarios antigos dentro do PR e gerado pela IA nao sao excluidos.'
       model_name: A partir da versão 31 é obrigatorio informar o nome correto do modelo configurado no Microsoft Foundry. Exemplo: gpt-5.4-nano, gpt-35-turbo, gpt-4-32k, gpt-4-0613, gpt-4-32k-0613.
-      agent_foundry_mode: Obrigatorio informar 'true' se o agent foi construido por deploy dentro do portal da Microsoft Foundry, link fornecido por exemplo: https://XXXXXX.services.ai.azure.com/api/projects/XXXXXX/openai/v1/responses"
+      agent_foundry_mode: 'bool. Informar 'true' se o agent foi construido por deploy dentro do Microsoft Foundry, endpoint por exemplo: https://XXXXXX.services.ai.azure.com/api/projects/XXXXXX/openai/v1/responses'
       agent_name: Obrigatorio informar o nome do correto do agent se o parametro 'agent_foundry_mode' for configurado como true
       agent_version: Obrigatorio informar a versao correta do agent se o parametro 'agent_foundry_mode' for configurado como true
 ```
