@@ -1,7 +1,7 @@
 # Use o modelo OpenAI GPT para revisar solicitações pull para Azure Devops
 Task do Azure DevOps que adiciona comentarios em portugues nas solicitacoes de PullRequest com a ajuda da IA.
 
-## Serviço Azure Open AI
+## Serviço Azure OpenAI
 Parametro/endpoint 'aoi_endpoint': https://{XXXXXXXX}.openai.azure.com/openai/deployments/{MODEL_NAME}/chat/completions?api-version={API_VERSION}
 
 > [Documentação API REST](https://learn.microsoft.com/pt-br/azure/ai-services/openai/reference).
