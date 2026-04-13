@@ -12,8 +12,8 @@ Para o parametro 'aoi_endpoint' informar o endpoint como no exemplo: https://{XX
 ---
 
 ## Servico Microsoft Foundry
-- Para o parametro 'aoi_endpoint' de agent NAO criado/construido atraves de deploy do Microsoft Foundry: https://XXXXX.openai.azure.com/openai/v1/chat/completions.
-- Para o parametro 'aoi_endpoint' de agent construido atraves de deploy do Microsoft Foundry: https://XXXXXX.services.ai.azure.com/api/projects/XXXXXX/openai/v1/responses
+- CHAT-COMPLETION - Para o parametro 'aoi_endpoint' de agent NAO criado/construido atraves de deploy do Microsoft Foundry: https://XXXXX.openai.azure.com/openai/v1/chat/completions.
+- RESPONSES - Para o parametro 'aoi_endpoint' de agent construido atraves de deploy do Microsoft Foundry: https://XXXXXX.services.ai.azure.com/api/projects/XXXXXX/openai/v1/responses
 
 ### Observar dentro do Microsoft Foundry se o modelo é compatível com o chat-completions e/ou responses
 Exemplo: <img width="287" height="77" alt="image" src="https://github.com/user-attachments/assets/99484935-258a-4022-b65c-cac42221405b" />
