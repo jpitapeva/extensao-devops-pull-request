@@ -14,6 +14,7 @@ Para o parametro 'aoi_endpoint' informar o endpoint como no exemplo: https://{XX
 
 > [Documentacao create a model response](https://developers.openai.com/api/reference/resources/responses/methods/create)
 
+## Observar dentro do Microsoft Foundry se o modelo é compatível com o chat-completions e/ou responses
 ![contribute_to_pr](https://github.com/jpitapeva/extensao-devops-pull-request/blob/main/images/model.png?raw=true)
 
 ---
@@ -36,6 +37,9 @@ Adicione uma secao de checkout com persistCredentials definido como true.
 
 ---
 
+> [README](https://github.com/jpitapeva/extensao-devops-pull-request/blob/main/README.md)
+
+---
 
 #### Pipelines Yaml
 ```yaml
