@@ -1,5 +1,8 @@
-# Use modelos da Azure OpenAI ou da Microsoft Foundry para revisar solicitacoes de PullRequest dentro do Azure Devops
+## Use modelos da Azure OpenAI ou da Microsoft Foundry para revisar solicitacoes de PullRequest dentro do Azure Devops
 Task do Azure DevOps que adiciona comentarios em portugues nas solicitacoes de PullRequest com a ajuda da IA.
+
+# Instalacao
+https://marketplace.visualstudio.com/publishers/jpcompcombr
 
 ## Servico Azure OpenAI
 Para o parametro 'aoi_endpoint' informar o endpoint como no exemplo: https://{XXXXXXXX}.openai.azure.com/openai/deployments/{MODEL_NAME}/chat/completions?api-version={API_VERSION}
@@ -9,10 +12,14 @@ Para o parametro 'aoi_endpoint' informar o endpoint como no exemplo: https://{XX
 ---
 
 ## Servico Microsoft Foundry
-- Para o parametro 'aoi_endpoint' de agent NAO criado/construido atraves de deploy do Microsoft Foundry: https://XXXXX.openai.azure.com/openai/v1/chat/completions.
-- Para o parametro 'aoi_endpoint' de agent construido atraves de deploy do Microsoft Foundry: https://XXXXXX.services.ai.azure.com/api/projects/XXXXXX/openai/v1/responses
+- CHAT-COMPLETION - Para o parametro 'aoi_endpoint' de agent NAO criado/construido atraves de deploy do Microsoft Foundry: https://XXXXX.openai.azure.com/openai/v1/chat/completions.
+- RESPONSES - Para o parametro 'aoi_endpoint' de agent construido atraves de deploy do Microsoft Foundry: https://XXXXXX.services.ai.azure.com/api/projects/XXXXXX/openai/v1/responses
 
-> [Documentacao create a model response](https://developers.openai.com/api/reference/resources/responses/methods/create)
+### Observar dentro do Microsoft Foundry se o modelo é compatível com o chat-completions e/ou responses
+Exemplo: <img width="287" height="77" alt="image" src="https://github.com/user-attachments/assets/99484935-258a-4022-b65c-cac42221405b" />
+
+> [Documentacao create a model response](https://developers.openai.com/api/reference/resources/responses/methods/create)</br>
+> [Microsoft foundry model catalog](https://ai.azure.com/catalog)
 
 ---
 
@@ -60,7 +67,7 @@ jobs:
     displayName: GPTPullRequestReview
     inputs:
       api_key: 'api-key'
-      aoi_endpoint: 'https://{XXXXXXXX}.azure.com/openai/deployments/{MODEL_NAME}/chat/completions?api-version={API_VERSION} OU https://XXXXX.openai.azure.com/openai/v1/chat/completions OU PARA MODO AGENT https://XXXXXX.services.ai.azure.com/api/projects/XXXXXX/openai/v1/responses
+      aoi_endpoint: 'https://{XXXXXXXX}.azure.com/openai/deployments/{MODEL_NAME}/chat/completions?api-version={API_VERSION} OU https://XXXXX.openai.azure.com/openai/v1/chat/completions OU PARA MODO AGENT https://XXXXXX.services.ai.azure.com/api/projects/XXXXXX/openai/v1/responses'
       aoi_tokenMax: 1000
       aoi_temperature: 1 
       use_https: true
