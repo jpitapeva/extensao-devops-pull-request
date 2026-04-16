@@ -29,7 +29,7 @@ Adicione uma secao de checkout com persistCredentials definido como true.
 - Versão 28: adicionamos o campo opcional 'build_service_name'. Detalhe: o parametro 'build_service_name' deve ser informado quando houver um build service especifico configurado no repositório do Azure DevOps. Necessario para situacoes em que comentarios antigos dentro do PR e gerado pela IA nao sao excluidos.
 - Versão 29: adequamos as novas especificacoes da API da OpenAI: o parametro do body mudou de 'max_tokens' para 'max_completion_tokens', e o valor padrao de 'temperature' mudou de 0 para 1.
 - Versão 30: corrigimos instabilidades e incluimos novas validacoes.
-- Versão 31: passou a ser obrigatorio informar o nome correto do modelo configurado no portal do Microsoft Foundry (ex.: gpt-5.4-nano, gpt-35-turbo, gpt-4-32k, gpt-4-0613, gpt-4-32k-0613). Mais detalhes: https://learn.microsoft.com/en-us/azure/foundry/foundry-models/concepts/models-sold-directly-by-azure?tabs=global-standard-aoai%2Cglobal-standard&pivots=azure-openai
+- Versão 31: [Breaking changes] passou a ser obrigatorio informar o nome correto do modelo no parametro(model_name), o modelo é configurado no portal do Microsoft Foundry (ex.: gpt-5.4-nano, gpt-35-turbo, gpt-4-32k, gpt-4-0613, gpt-4-32k-0613). Mais detalhes: https://learn.microsoft.com/en-us/azure/foundry/foundry-models/concepts/models-sold-directly-by-azure?tabs=global-standard-aoai%2Cglobal-standard&pivots=azure-openai
 - Versão 32: disponibilizamos a integracao com agents do Microsoft Foundry.
 
 ---
