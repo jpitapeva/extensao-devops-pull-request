@@ -9,10 +9,12 @@ Para o parametro 'aoi_endpoint' informar o endpoint como no exemplo: https://{XX
 ---
 
 ## Servico Microsoft Foundry
-- Para o parametro 'aoi_endpoint' de agent NAO criado/construido atraves de deploy do Microsoft Foundry: https://XXXXX.openai.azure.com/openai/v1/chat/completions.
-- Para o parametro 'aoi_endpoint' de agent construido atraves de deploy do Microsoft Foundry: https://XXXXXX.services.ai.azure.com/api/projects/XXXXXX/openai/v1/responses
+- CHAT-COMPLETION - Para o parametro 'aoi_endpoint' de agent NAO criado/construido atraves de deploy do Microsoft Foundry: https://XXXXX.openai.azure.com/openai/v1/chat/completions
+- RESPONSES - Para o parametro 'aoi_endpoint' de agent construido atraves de deploy do Microsoft Foundry: https://XXXXXX.services.ai.azure.com/api/projects/XXXXXX/openai/v1/responses
 
 > [Documentacao create a model response](https://developers.openai.com/api/reference/resources/responses/methods/create)
+
+![contribute_to_pr](https://github.com/jpitapeva/extensao-devops-pull-request/blob/main/images/model.png?raw=true)
 
 ---
 
