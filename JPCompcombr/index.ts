@@ -119,8 +119,9 @@ async function run() {
       console.log(`----------------------------------`)
       console.log(`Consumo de Tokens: ${consumeApi}`)
       console.log(`----------------------------------`)
-      
-      if(agent_foundry_mode){
+    }
+
+    if(agent_foundry_mode){
       console.log(`Parametros do modelo utilizado: ${model}`)
       console.log(`----------------------------------`)
       }
@@ -128,7 +129,6 @@ async function run() {
       if(prompt_view){
         console.log(`Prompt: ${promptInstructions}`);
       }
-    }
 
     // ADD AI REVIEW LABEL TO PR
     const prId = tl.getVariable('System.PullRequest.PullRequestId');
@@ -137,6 +137,7 @@ async function run() {
 
     console.log("Task de Pull Request finalizada.");
   }
+
   catch (err: any) {
     console.log("Encontrado erro", err.message);
     tl.setResult(tl.TaskResult.Failed, err.message);
