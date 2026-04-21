@@ -295,16 +295,12 @@ function tratamentoDeSaida(noFeedbackMarker: string): string {
           - NÃO faça comentários se não houver problemas reais ou melhorias estritamente necessárias.
           - O silêncio é preferível a feedback desnecessário.
           - Comentários gentis ou neutros são considerados ruído de processo.
-
-          - Problemas de performance
-          - Violações de padrões de código ou boas práticas
-          - Problemas de manutenibilidade ou legibilidade com impacto concreto
-          - Testes ausentes, incorretos ou insuficientes (quando aplicável)
         
           REGRAS DE SAÍDA (EXTREMAMENTE IMPORTANTE):
           - Se, e SOMENTE SE, pelo menos um problema ou ponto de melhoria for identificado, descreva o problema de forma clara, objetiva e técnica.
           - Se NENHUM problema ou melhoria for identificado em TODOS os critérios acima, responda EXATAMENTE com o texto: "${noFeedbackMarker}"
           - Qualquer saída diferente de "${noFeedbackMarker}" será interpretada como um feedback técnico obrigatório para o desenvolvedor, indicando que há algo que precisa ser corrigido ou melhorado.
+          - Deve estar no formato markdown para facilitar a leitura e compreensão, utilizando listas, negrito, itálico e outros recursos de formatação para destacar os pontos mais importantes.
         
           REGRA DE IMPACTO NO PROCESSO (NÍVEL AVANÇADO):
           - Qualquer saída diferente de "${noFeedbackMarker}" será interpretada como uma ação obrigatória para o desenvolvedor.
