@@ -70,7 +70,7 @@ export async function reviewFile(
           ### 7. Documentação
           - (Se aplicável e informações disponíveis) A documentação relevante (READMEs, comentários de documentação de API/funções, etc.) foi adicionada ou atualizada para refletir as mudanças no código?
 
-          ## Instruções Adicionais Específicas
+          ### Instruções Adicionais Específicas
           ${
             additionalPrompts && additionalPrompts.length > 0
               ? additionalPrompts
@@ -78,34 +78,9 @@ export async function reviewFile(
                   .filter(Boolean)
                   .join('\n')
               : '- Nenhuma instrução adicional fornecida.'
-          }
+          }`
 
-          ** Formato da Saída, instruções de saída específicas (RESTRIÇÕES RÍGIDAS):
-          - NÃO forneça elogios, feedback positivo, encorajamento ou comentários educados.
-          - NÃO faça comentários se não houver problemas reais ou melhorias estritamente necessárias.
-          - O silêncio é preferível a feedback desnecessário.
-          - Comentários gentis ou neutros são considerados ruído de processo.
-        
-          REGRAS DE SAÍDA (EXTREMAMENTE IMPORTANTE):
-          - Se, e SOMENTE SE, pelo menos um problema ou ponto de melhoria for identificado, descreva o problema de forma clara, objetiva e técnica.
-          - Se NENHUM problema ou melhoria for identificado em TODOS os critérios acima, responda EXATAMENTE com o texto: "${noFeedbackMarker}"
-          - Qualquer saída diferente de "${noFeedbackMarker}" será interpretada como um feedback técnico obrigatório para o desenvolvedor, indicando que há algo que precisa ser corrigido ou melhorado.
-          - Deve estar no formato markdown para facilitar a leitura e compreensão, utilizando listas, negrito, itálico e outros recursos de formatação para destacar os pontos mais importantes.
-        
-          REGRA DE IMPACTO NO PROCESSO (NÍVEL AVANÇADO):
-          - Qualquer saída diferente de "${noFeedbackMarker}" será interpretada como uma ação obrigatória para o desenvolvedor.
-          - Feedback desnecessário causa atrito no processo de Pull Request e DEVE ser evitado.
-        
-          ANTI-EXEMPLOS (NÃO FAÇA ISSO):
-          - "Boa abordagem"
-          - "Código bem escrito"
-          - "Implementação interessante"
-          - "No geral está tudo certo"
-          - Qualquer forma de elogio, aprovação implícita ou comentário neutro
-        
-          EXEMPLO POSITIVO:
-          Entrada: Código sem bugs, sem problemas de segurança e sem pontos de melhoria
-          Saída: "${noFeedbackMarker}"`;
+      instructions = `${instructions}, ${tratamentoDeSaida(noFeedbackMarker)}`;
   }   
   else {
     // Append no-feedback instruction to custom prompt to ensure consistent behavior
@@ -316,31 +291,30 @@ function getOutputTextFromResponseOutput(output: any): string | undefined {
 
 function tratamentoDeSaida(noFeedbackMarker: string): string {
   return `
-          ## Instruções de saída específicas
-          REGRAS DE COMPORTAMENTO (RESTRIÇÕES RÍGIDAS):
-          - NÃO forneça elogios, feedback positivo, encorajamento ou comentários educados.
-          - NÃO faça comentários se não houver problemas reais ou melhorias estritamente necessárias.
-          - O silêncio é preferível a feedback desnecessário.
-          - Comentários gentis ou neutros são considerados ruído de processo.
+         ** Formato da Saída, instruções de saída específicas (RESTRIÇÕES RÍGIDAS):
+         - NÃO forneça elogios, feedback positivo, encorajamento ou comentários educados.
+         - NÃO faça comentários se não houver problemas reais ou melhorias estritamente necessárias.
+         - O silêncio é preferível a feedback desnecessário.
+         - Comentários gentis ou neutros são considerados ruído de processo.
         
-          REGRAS DE SAÍDA (EXTREMAMENTE IMPORTANTE):
-          - Se, e SOMENTE SE, pelo menos um problema ou ponto de melhoria for identificado, descreva o problema de forma clara, objetiva e técnica.
-          - Se NENHUM problema ou melhoria for identificado em TODOS os critérios acima, responda EXATAMENTE com o texto: "${noFeedbackMarker}"
-          - Qualquer saída diferente de "${noFeedbackMarker}" será interpretada como um feedback técnico obrigatório para o desenvolvedor, indicando que há algo que precisa ser corrigido ou melhorado.
-          - Deve estar no formato markdown para facilitar a leitura e compreensão, utilizando listas, negrito, itálico e outros recursos de formatação para destacar os pontos mais importantes.
+         REGRAS DE SAÍDA (EXTREMAMENTE IMPORTANTE):
+         - Se, e SOMENTE SE, pelo menos um problema ou ponto de melhoria for identificado, descreva o problema de forma clara, objetiva e técnica.
+         - Se NENHUM problema ou melhoria for identificado em TODOS os critérios acima, responda EXATAMENTE com o texto: "${noFeedbackMarker}"
+         - Qualquer saída diferente de "${noFeedbackMarker}" será interpretada como um feedback técnico obrigatório para o desenvolvedor, indicando que há algo que precisa ser corrigido ou melhorado.
+         - Formato de saida em markdown para facilitar a leitura e compreensão, utilizando listas, negrito, itálico e outros recursos de formatação para destacar os pontos mais importantes.
         
-          REGRA DE IMPACTO NO PROCESSO (NÍVEL AVANÇADO):
-          - Qualquer saída diferente de "${noFeedbackMarker}" será interpretada como uma ação obrigatória para o desenvolvedor.
-          - Feedback desnecessário causa atrito no processo de Pull Request e DEVE ser evitado.
+         REGRA DE IMPACTO NO PROCESSO (NÍVEL AVANÇADO):
+         - Qualquer saída diferente de "${noFeedbackMarker}" será interpretada como uma ação obrigatória para o desenvolvedor.
+         - Feedback desnecessário causa atrito no processo de Pull Request e DEVE ser evitado.
         
-          ANTI-EXEMPLOS (NÃO FAÇA ISSO):
-          - "Boa abordagem"
-          - "Código bem escrito"
-          - "Implementação interessante"
-          - "No geral está tudo certo"
-          - Qualquer forma de elogio, aprovação implícita ou comentário neutro
+         ANTI-EXEMPLOS (NÃO FAÇA ISSO):
+         - "Boa abordagem"
+         - "Código bem escrito"
+         - "Implementação interessante"
+         - "No geral está tudo certo"
+         - Qualquer forma de elogio, aprovação implícita ou comentário neutro
         
-          EXEMPLO POSITIVO:
-          Entrada: Código sem bugs, sem problemas de segurança e sem pontos de melhoria
-          Saída: "${noFeedbackMarker}"`;
+         EXEMPLO POSITIVO:
+         Entrada: Código sem bugs, sem problemas de segurança e sem pontos de melhoria
+         Saída: "${noFeedbackMarker}"`;
 }
