@@ -4,6 +4,7 @@ import * as http from 'http';
 
 export let consumeApi: string = 'Usage: Informação não disponível';
 export let model: string = '';
+export let promptInstructions: string = '';
 
 export async function reviewFile(
   gitDiff: string,
@@ -71,20 +72,19 @@ export async function reviewFile(
 
           ## Instruções Adicionais Específicas
           ${additionalPrompts && additionalPrompts.length > 0 ? additionalPrompts
-        .map((str) => `- ${str.trim()}`)
-        .filter(Boolean)
-        .join('\n')
-        : null
+          .map((str) => `- ${str.trim()}`)
+          .filter(Boolean)
+          .join('\n')
+          : null
           }`
       
-      instructions = `${instructions}, ${tratamentoDeSaida(noFeedbackMarker)}`;
-
-      console.log(`${instructions}`);
+        instructions = `${instructions}, ${tratamentoDeSaida(noFeedbackMarker)}`;
   }   
   else {
     // Append no-feedback instruction to custom prompt to ensure consistent behavior
-    instructions = `${prompt}, ${tratamentoDeSaida(noFeedbackMarker)}`;
+      instructions = `${prompt}, ${tratamentoDeSaida(noFeedbackMarker)}`;
   }
+    promptInstructions = instructions; // Store the final prompt with instructions for potential debugging or logging    
 
   try {
     let choices: any;
@@ -288,37 +288,37 @@ function getOutputTextFromResponseOutput(output: any): string | undefined {
 }
 
 function tratamentoDeSaida(noFeedbackMarker: string): string {
-  return ` REGRAS DE COMPORTAMENTO (RESTRIÇÕES RÍGIDAS):
-    - NÃO forneça elogios, feedback positivo, encorajamento ou comentários educados.
-    - NÃO faça comentários se não houver problemas reais ou melhorias estritamente necessárias.
-    - O silêncio é preferível a feedback desnecessário.
-    - Comentários gentis ou neutros são considerados ruído de processo.
+  return `
+     ### Instruções de saída específicas
+     REGRAS DE COMPORTAMENTO (RESTRIÇÕES RÍGIDAS):
+     - NÃO forneça elogios, feedback positivo, encorajamento ou comentários educados.
+     - NÃO faça comentários se não houver problemas reais ou melhorias estritamente necessárias.
+     - O silêncio é preferível a feedback desnecessário.
+     - Comentários gentis ou neutros são considerados ruído de processo.
 
-    CRITÉRIOS DE REVISÃO (COMENTAR APENAS SE PELO MENOS UM FALHAR):
-    - Bugs ou erros lógicos
-    - Vulnerabilidades de segurança
-    - Problemas de performance
-    - Violações de padrões de código ou boas práticas
-    - Problemas de manutenibilidade ou legibilidade com impacto concreto
-    - Testes ausentes, incorretos ou insuficientes (quando aplicável)
-
-    REGRAS DE SAÍDA (EXTREMAMENTE IMPORTANTE):
-    - Se, e SOMENTE SE, pelo menos um problema ou ponto de melhoria for identificado, descreva o problema de forma clara, objetiva e técnica.
-    - Se NENHUM problema ou melhoria for identificado em TODOS os critérios acima, responda EXATAMENTE com o texto: "${noFeedbackMarker}"
-    - Qualquer saída diferente de "${noFeedbackMarker}" será interpretada como um feedback técnico obrigatório para o desenvolvedor, indicando que há algo que precisa ser corrigido ou melhorado.
-
-    REGRA DE IMPACTO NO PROCESSO (NÍVEL AVANÇADO):
-    - Qualquer saída diferente de "${noFeedbackMarker}" será interpretada como uma ação obrigatória para o desenvolvedor.
-    - Feedback desnecessário causa atrito no processo de Pull Request e DEVE ser evitado.
-
-    ANTI-EXEMPLOS (NÃO FAÇA ISSO):
-    - "Boa abordagem"
-    - "Código bem escrito"
-    - "Implementação interessante"
-    - "No geral está tudo certo"
-    - Qualquer forma de elogio, aprovação implícita ou comentário neutro
-
-    EXEMPLO POSITIVO:
-    Entrada: Código sem bugs, sem problemas de segurança e sem pontos de melhoria
-    Saída: "${noFeedbackMarker}"`;
+	   - Problemas de performance
+	   - Violações de padrões de código ou boas práticas
+	   - Problemas de manutenibilidade ou legibilidade com impacto concreto
+	   - Testes ausentes, incorretos ou insuficientes (quando aplicável)
+	 
+  	 REGRAS DE SAÍDA (EXTREMAMENTE IMPORTANTE):
+	   - Se, e SOMENTE SE, pelo menos um problema ou ponto de melhoria for identificado, descreva o problema de forma clara, objetiva e técnica.
+	   - Se NENHUM problema ou melhoria for identificado em TODOS os critérios acima, responda EXATAMENTE com o texto: "${noFeedbackMarker}"
+	   - Qualquer saída diferente de "${noFeedbackMarker}" será interpretada como um feedback técnico obrigatório para o desenvolvedor, indicando que há algo que precisa ser corrigido ou melhorado.
+	 
+	   REGRA DE IMPACTO NO PROCESSO (NÍVEL AVANÇADO):
+	   - Qualquer saída diferente de "${noFeedbackMarker}" será interpretada como uma ação obrigatória para o desenvolvedor.
+	   - Feedback desnecessário causa atrito no processo de Pull Request e DEVE ser evitado.
+	 
+	   ANTI-EXEMPLOS (NÃO FAÇA ISSO):
+	   - "Boa abordagem"
+	   - "Código bem escrito"
+	   - "Implementação interessante"
+	   - "No geral está tudo certo"
+	   - Qualquer forma de elogio, aprovação implícita ou comentário neutro
+	 
+	   EXEMPLO POSITIVO:
+	   Entrada: Código sem bugs, sem problemas de segurança e sem pontos de melhoria
+	   Saída: "${noFeedbackMarker}"`;
+    
 }

@@ -1,6 +1,6 @@
 import * as tl from "azure-pipelines-task-lib/task";
 import { deleteExistingComments, addCommentToPR } from './pr';
-import { reviewFile, consumeApi, model } from './review';
+import { reviewFile, consumeApi, model, promptInstructions } from './review';
 import { getTargetBranchName } from './utils';
 import { addAiReviewLabels } from './pr-labels';
 import * as https from 'https';
@@ -124,6 +124,8 @@ async function run() {
       console.log(`Parametros do modelo utilizado: ${model}`)
       console.log(`----------------------------------`)
       }
+
+      console.log(`Prompt: ${promptInstructions}`);
     }
 
     // ADD AI REVIEW LABEL TO PR
