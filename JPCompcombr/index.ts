@@ -1,6 +1,6 @@
 import * as tl from "azure-pipelines-task-lib/task";
 import { deleteExistingComments, addCommentToPR } from './pr';
-import { reviewFile, consumeApi } from './review';
+import { reviewFile, consumeApi, model } from './review';
 import { getTargetBranchName } from './utils';
 import { addAiReviewLabels } from './pr-labels';
 import * as https from 'https';
@@ -119,6 +119,11 @@ async function run() {
       console.log(`----------------------------------`)
       console.log(`Consumo de Tokens: ${consumeApi}`)
       console.log(`----------------------------------`)
+      
+      if(agent_foundry_mode){
+      console.log(`Parametros do modelo utilizado: ${model}`)
+      console.log(`----------------------------------`)
+      }
     }
 
     // ADD AI REVIEW LABEL TO PR

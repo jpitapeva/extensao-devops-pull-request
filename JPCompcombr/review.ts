@@ -3,6 +3,7 @@ import * as https from 'https';
 import * as http from 'http';
 
 export let consumeApi: string = 'Usage: Informação não disponível';
+export let model: string = '';
 
 function getOutputTextFromResponseOutput(output: any): string | undefined {
   if (!Array.isArray(output)) {
@@ -102,8 +103,9 @@ export async function reviewFile(
     instructions = `${prompt}
     
     **IMPORTANTE - Formato de Resposta:**
-    - Se você NÃO encontrar nenhum problema, erro, ou ponto de melhoria, responda APENAS com a frase exata: ${noFeedbackMarker}
-    - Se você encontrar problemas ou sugestões, forneça o feedback detalhado normalmente.`;
+    - NÃO forneça elogios, feedback positivo, encorajamento ou comentários educados, mesmo que o código seja de alta qualidade. 
+    NÃO faça comentários senão houver problemas reais ou melhorias estritamente necessárias. 
+    Comentários gentis ou neutros são considerados ruído de processo. Se você NÃO encontrar nenhum problema, erro, ou ponto de melhoria, responda APENAS com a frase exata: ${noFeedbackMarker}'`;
   }
 
   try {
@@ -260,9 +262,7 @@ export async function reviewFile(
         const total_tokens = responseFoundry.usage?.total_tokens ?? responseFoundry.usage?.total_tokens ?? 0;
 
         consumeApi = `Usage: Input: ${input_tokens}, Output: ${output_tokens}, Total: ${total_tokens}`;
-        console.log('AGENT PARAMETRIZADO: type - ', responseFoundry?.agent_reference?.type);
-        console.log('AGENT PARAMETRIZADO: name - ', responseFoundry?.agent_reference?.name);
-        console.log('AGENT PARAMETRIZADO: version - ', responseFoundry?.agent_reference?.version);
+        model = `AGENT PARAMETRIZADO: type - ${responseFoundry?.agent_reference?.type}, name - ${responseFoundry?.agent_reference?.name}, version - ${responseFoundry?.agent_reference?.version}`;
 
       } catch (error: any) {
         console.log(`Erro ao tentar capturar consumo de tokens: ${error.message}`);
