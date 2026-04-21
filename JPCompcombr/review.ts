@@ -75,15 +75,15 @@ export async function reviewFile(
         .filter(Boolean)
         .join('\n')
         : null
-      }
+          }`
       
-      "${tratamentoDeSaida(noFeedbackMarker)}"`;
+      instructions = `${instructions}, ${tratamentoDeSaida(noFeedbackMarker)}`;
+
+      console.log(`${instructions}`);
   }   
   else {
     // Append no-feedback instruction to custom prompt to ensure consistent behavior
-    instructions = `${prompt}
-
-      "${tratamentoDeSaida(noFeedbackMarker)}"`;
+    instructions = `${prompt}, ${tratamentoDeSaida(noFeedbackMarker)}`;
   }
 
   try {
@@ -288,7 +288,7 @@ function getOutputTextFromResponseOutput(output: any): string | undefined {
 }
 
 function tratamentoDeSaida(noFeedbackMarker: string): string {
-  return `REGRAS DE COMPORTAMENTO (RESTRIÇÕES RÍGIDAS):
+  return ` REGRAS DE COMPORTAMENTO (RESTRIÇÕES RÍGIDAS):
     - NÃO forneça elogios, feedback positivo, encorajamento ou comentários educados.
     - NÃO faça comentários se não houver problemas reais ou melhorias estritamente necessárias.
     - O silêncio é preferível a feedback desnecessário.
