@@ -79,6 +79,7 @@ jobs:
       agent_foundry_mode: 'bool. Informar 'true' se o agent foi construido por deploy dentro do Microsoft Foundry, endpoint por exemplo: https://XXXXXX.services.ai.azure.com/api/projects/XXXXXX/openai/v1/responses'
       agent_name: Obrigatorio informar o nome do correto do agent se o parametro 'agent_foundry_mode' for configurado como true
       agent_version: Obrigatorio informar a versao correta do agent se o parametro 'agent_foundry_mode' for configurado como true
+      prompt_view: Opcional. Informe true para habilitar a visualização do prompt. [default = false]
 ```
 
 ---

@@ -13,7 +13,7 @@
   "version": {
     "Major": "32",
     "Minor": "0",
-    "Patch": "28"
+    "Patch": "30"
   },
   "minimumAgentVersion": "1.95.0",
   "instanceNameFormat": "JPCompcombr $(message)",
@@ -112,7 +112,7 @@
       "label": "Agent Microsoft Foundry",
       "defaultValue": false,
       "required": true,
-      "helpMarkDown": "Obrigatorio informar 'true' se o agent foi construido atraves do Microsoft Foundry, link fornecido como por exemplo: https://XXXXXX.services.ai.azure.com/api/projects/XXXXXX/openai/v1/responses"
+      "helpMarkDown": "Obrigatorio informar 'true' se o agent foi construido atraves do Microsoft Foundry, link fornecido como por exemplo: https://XXXXXX.services.ai.azure.com/api/projects/XXXXXX/openai/v1/responses" 
     },
     {
       "name": "agent_name",
@@ -129,6 +129,14 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Obrigatorio informar a versão correta do agent se o parametro 'agent_foundry_mode' for configurado como true"
+    },
+    {
+      "name": "prompt_view",
+      "type": "boolean",
+      "label": "Prompt View",
+      "defaultValue": "false",
+      "required": true,
+      "helpMarkDown": "Opcional. Informe 'true' para habilitar o modo de visualização do prompt. [default: false] O modo de visualização do prompt é uma funcionalidade opcional que, quando habilitada, permite visualizar o prompt gerado antes de ser enviado para o modelo de linguagem. Isso pode ser útil para depuração e para garantir que o prompt esteja formatado corretamente antes da execução da tarefa."
     }
   ],
   "execution": {

@@ -49,7 +49,7 @@ async function run() {
     const agent_foundry_mode = tl.getBoolInput('agent_foundry_mode', true);
     const agent_name = tl.getInput('agent_name', false);
     const agent_version = tl.getInput('agent_version', false);
-
+    const prompt_view = tl.getBoolInput('prompt_view', true);
 
     if (apiKey == undefined) {
       tl.setResult(tl.TaskResult.Failed, 'No Api Key provided!');
@@ -125,7 +125,9 @@ async function run() {
       console.log(`----------------------------------`)
       }
 
-      console.log(`Prompt: ${promptInstructions}`);
+      if(prompt_view){
+        console.log(`Prompt: ${promptInstructions}`);
+      }
     }
 
     // ADD AI REVIEW LABEL TO PR
