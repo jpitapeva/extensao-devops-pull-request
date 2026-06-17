@@ -29,11 +29,12 @@ Adicione uma secao de checkout com persistCredentials definido como true.
 
 ### Release notes
 - Versão 27.0.2: corrigimos vulnerabilidades em bibliotecas de terceiros e atualizamos o Node.js da versão 16 para 20.1. ATENCAO: essa mudanca pode exigir ajustes em ambientes que ainda utilizam Node.js 16.
-- Versão 28: adicionamos o campo opcional 'build_service_name'. Detalhe: o parametro 'build_service_name' deve ser informado quando houver um build service especifico configurado no repositório do Azure DevOps. Necessario para situacoes em que comentarios antigos dentro do PR e gerado pela IA nao sao excluidos.
+- Versão 28: adicionamos a propriedade opcional de 'build_service_name'. Detalhe: o parametro 'build_service_name' deve ser informado quando houver um build service especifico configurado no repositório do Azure DevOps. Necessario para situacoes em que comentarios antigos dentro do PR e gerado pela IA nao sao excluidos.
 - Versão 29: adequamos as novas especificacoes da API da OpenAI: o parametro do body mudou de 'max_tokens' para 'max_completion_tokens', e o valor padrao de 'temperature' mudou de 0 para 1.
 - Versão 30: corrigimos instabilidades e incluimos novas validacoes.
 - Versão 31: [Breaking changes] passou a ser obrigatorio informar o nome correto do modelo no parametro(model_name), o modelo é configurado no portal do Microsoft Foundry (ex.: gpt-5.4-nano, gpt-35-turbo, gpt-4-32k, gpt-4-0613, gpt-4-32k-0613). Mais detalhes: https://learn.microsoft.com/en-us/azure/foundry/foundry-models/concepts/models-sold-directly-by-azure?tabs=global-standard-aoai%2Cglobal-standard&pivots=azure-openai
 - Versão 32: disponibilizamos a integracao com agents do Microsoft Foundry.
+- Versão 33: adicionamos a propriedade de autenticação via EntraID. Informe 'true' para habilitar o uso do token de autorização do Entra ID. [default: false] O token de autorização do Entra ID é uma funcionalidade opcional que, quando habilitada, permite autenticar solicitações usando o token de autorização do Entra ID."
 
 ---
 
@@ -53,7 +54,7 @@ jobs:
   - checkout: self
     persistCredentials: true
 
-  - task: JPCompcombr@32
+  - task: JPCompcombr@33
     displayName: GPTPullRequestReview
     inputs:
       api_key: 'api-key'      
@@ -70,6 +71,7 @@ jobs:
       agent_name: Obrigatorio informar o nome do correto do agent se o parametro 'agent_foundry_mode' for configurado como true
       agent_version: Obrigatorio informar a versao correta do agent se o parametro 'agent_foundry_mode' for configurado como true
       prompt_view: Opcional. Informe true para habilitar a visualização do prompt. [default = false]
+      authorization_token_entra_id: Propriedade de autenticação via EntraID. Informe 'true' para habilitar o valor informado na 'api_key' para autorização do Entra ID. [default: false] O token de autorização do Entra ID é uma funcionalidade opcional que, quando habilitada, permite autenticar solicitações usando o token de autorização do Entra ID."
 ```
 
 ---

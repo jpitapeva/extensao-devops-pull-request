@@ -50,6 +50,7 @@ async function run() {
     const agent_name = tl.getInput('agent_name', false);
     const agent_version = tl.getInput('agent_version', false);
     const prompt_view = tl.getBoolInput('prompt_view', true);
+    const authorization_token_entra_id = tl.getBoolInput('authorization_token_entra_id', true);
 
     if (apiKey == undefined) {
       tl.setResult(tl.TaskResult.Failed, 'No Api Key provided!');
@@ -104,7 +105,7 @@ async function run() {
         continue;
       }
 
-      let review = await reviewFile(diff, fileToReview, Agent, apiKey, aoiEndpoint, tokenMax, temperature, prompt, additionalPrompts, model_name, agent_foundry_mode, agent_name, agent_version);
+      let review = await reviewFile(diff, fileToReview, Agent, apiKey, aoiEndpoint, tokenMax, temperature, prompt, additionalPrompts, model_name, agent_foundry_mode, agent_name, agent_version, authorization_token_entra_id);
 
       if (review && review.trim() !== noFeedbackMarker && !review.startsWith('Erro')) {
         await addCommentToPR(fileToReview, review, Agent);

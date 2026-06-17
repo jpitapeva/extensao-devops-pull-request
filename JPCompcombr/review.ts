@@ -19,7 +19,8 @@ export async function reviewFile(
   model_name: string | undefined,
   agent_foundry_mode: boolean | undefined,
   agent_name: string | undefined,
-  agent_version: string | undefined
+  agent_version: string | undefined,
+  authorization_token_entra_id: boolean | undefined   
 ): Promise<string> {
   console.log(`Iniciando revisao do arquivo: ${fileName} ...`);
 
@@ -125,7 +126,11 @@ promptInstructions = instructions; // Store the final prompt with instructions f
         console.log(`Executando requisição para Azure OpenAI ou Foundry NAO integrado com agent...`);
         const request = await fetch(aoiEndpoint, {
           method: 'POST',
-          headers: { 'api-key': `${apiKey}`, 'Content-Type': 'application/json' },
+         
+          headers: {             
+            ...(authorization_token_entra_id === true ? { 'Authorization': `Bearer ${apiKey}` } : { 'api-key': `${apiKey}` }),           
+            'Content-Type': 'application/json' 
+          },
           body: JSON.stringify({
             model: model_name,
             max_completion_tokens: parseInt(`${tokenMax}`),
@@ -197,7 +202,10 @@ promptInstructions = instructions; // Store the final prompt with instructions f
         console.log(`Executando requisição para Microsoft Foundry INTEGRADO com Agent...`);
         const requestFoundry = await fetch(aoiEndpoint, {
           method: 'POST',
-          headers: { 'api-key': `${apiKey}`, 'Content-Type': 'application/json' },
+          headers: {             
+            ...(authorization_token_entra_id === true ? { 'Authorization': `Bearer ${apiKey}` } : { 'api-key': `${apiKey}` }),           
+            'Content-Type': 'application/json' 
+          },
           body: JSON.stringify({
             model: model_name,
             max_output_tokens: parseInt(`${tokenMax}`),
