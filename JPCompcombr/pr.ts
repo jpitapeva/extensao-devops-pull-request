@@ -3,6 +3,13 @@ import * as https from 'https';
 import * as http from 'http';
 import fetch from 'node-fetch';
 
+function getApiBaseUrl(): string {
+  const collectionUri = tl.getVariable('SYSTEM.TEAMFOUNDATIONCOLLECTIONURI') || '';
+  const projectId = tl.getVariable('SYSTEM.TEAMPROJECTID') || '';
+  const formattedCollectionUri = collectionUri.endsWith('/') ? collectionUri : `${collectionUri}/`;
+  return `${formattedCollectionUri}${projectId}`;
+}
+
 export async function addCommentToPR(fileName: string, comment: string, agent: http.Agent | https.Agent) {
   const body = {
     comments: [
@@ -18,7 +25,7 @@ export async function addCommentToPR(fileName: string, comment: string, agent: h
     }
   }
 
-  const prUrl = `${tl.getVariable('SYSTEM.TEAMFOUNDATIONCOLLECTIONURI')}${tl.getVariable('SYSTEM.TEAMPROJECTID')}/_apis/git/repositories/${tl.getVariable('Build.Repository.Name')}/pullRequests/${tl.getVariable('System.PullRequest.PullRequestId')}/threads?api-version=5.1`
+  const prUrl = `${getApiBaseUrl()}/_apis/git/repositories/${tl.getVariable('Build.Repository.Name')}/pullRequests/${tl.getVariable('System.PullRequest.PullRequestId')}/threads?api-version=5.1`
 
   try {
     let response = await fetch(prUrl, {
@@ -49,7 +56,7 @@ export async function deleteExistingComments(agent: http.Agent | https.Agent, bu
 
     console.log("Iniciando ...");
 
-  const threadsUrl = `${tl.getVariable('SYSTEM.TEAMFOUNDATIONCOLLECTIONURI')}${tl.getVariable('SYSTEM.TEAMPROJECTID')}/_apis/git/repositories/${tl.getVariable('Build.Repository.Name')}/pullRequests/${tl.getVariable('System.PullRequest.PullRequestId')}/threads?api-version=5.1`;
+  const threadsUrl = `${getApiBaseUrl()}/_apis/git/repositories/${tl.getVariable('Build.Repository.Name')}/pullRequests/${tl.getVariable('System.PullRequest.PullRequestId')}/threads?api-version=5.1`;
   const threadsResponse = await fetch(threadsUrl, {
     headers: { Authorization: `Bearer ${devopsPatToken}` },
     agent: agent
@@ -76,7 +83,7 @@ export async function deleteExistingComments(agent: http.Agent | https.Agent, bu
   const buildServiceName = `${tl.getVariable('SYSTEM.TEAMPROJECT')} Build Service (${collectionName})`;
 
   for (const thread of threadsWithContext as any[]) {
-    const commentsUrl = `${tl.getVariable('SYSTEM.TEAMFOUNDATIONCOLLECTIONURI')}${tl.getVariable('SYSTEM.TEAMPROJECTID')}/_apis/git/repositories/${tl.getVariable('Build.Repository.Name')}/pullRequests/${tl.getVariable('System.PullRequest.PullRequestId')}/threads/${thread.id}/comments?api-version=5.1`;
+    const commentsUrl = `${getApiBaseUrl()}/_apis/git/repositories/${tl.getVariable('Build.Repository.Name')}/pullRequests/${tl.getVariable('System.PullRequest.PullRequestId')}/threads/${thread.id}/comments?api-version=5.1`;
     const commentsResponse = await fetch(commentsUrl, {
       headers: { Authorization: `Bearer ${devopsPatToken}` },
       agent: agent
@@ -98,7 +105,7 @@ export async function deleteExistingComments(agent: http.Agent | https.Agent, bu
     for (const comment of comments.value.filter((comment: any) => 
       comment.author && comment.author.displayName === targetBuildServiceName
     ) as any[]) {
-      const removeCommentUrl = `${tl.getVariable('SYSTEM.TEAMFOUNDATIONCOLLECTIONURI')}${tl.getVariable('SYSTEM.TEAMPROJECTID')}/_apis/git/repositories/${tl.getVariable('Build.Repository.Name')}/pullRequests/${tl.getVariable('System.PullRequest.PullRequestId')}/threads/${thread.id}/comments/${comment.id}?api-version=5.1`;
+      const removeCommentUrl = `${getApiBaseUrl()}/_apis/git/repositories/${tl.getVariable('Build.Repository.Name')}/pullRequests/${tl.getVariable('System.PullRequest.PullRequestId')}/threads/${thread.id}/comments/${comment.id}?api-version=5.1`;
 
       const deleteResponse = await fetch(removeCommentUrl, {
         method: 'DELETE',
