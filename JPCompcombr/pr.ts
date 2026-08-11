@@ -10,8 +10,51 @@ function getApiBaseUrl(): string {
   return `${formattedCollectionUri}${projectId}`;
 }
 
-export async function addCommentToPR(fileName: string, comment: string, agent: http.Agent | https.Agent) {
-  const body = {
+export interface CommentThreadContextInput {
+  filePath: string;
+  startLine?: number;
+  endLine?: number;
+  leftFileStartLine?: number;
+  leftFileEndLine?: number;
+}
+
+export function buildThreadBody(
+  commentContext: string | CommentThreadContextInput,
+  comment: string
+) {
+  const contextInput: CommentThreadContextInput =
+    typeof commentContext === 'string'
+      ? { filePath: commentContext }
+      : commentContext;
+
+  let formattedPath = contextInput.filePath.trim();
+  if (!formattedPath.startsWith('/')) {
+    formattedPath = '/' + formattedPath;
+  }
+
+  const threadContext: any = {
+    filePath: formattedPath
+  };
+
+  if (contextInput.startLine !== undefined && contextInput.startLine !== null && !isNaN(Number(contextInput.startLine))) {
+    threadContext.rightFileStart = { line: Number(contextInput.startLine), offset: 1 };
+  }
+
+  if (contextInput.endLine !== undefined && contextInput.endLine !== null && !isNaN(Number(contextInput.endLine))) {
+    threadContext.rightFileEnd = { line: Number(contextInput.endLine), offset: 1 };
+  } else if (threadContext.rightFileStart) {
+    threadContext.rightFileEnd = { line: threadContext.rightFileStart.line, offset: 1 };
+  }
+
+  if (contextInput.leftFileStartLine !== undefined && contextInput.leftFileStartLine !== null && !isNaN(Number(contextInput.leftFileStartLine))) {
+    threadContext.leftFileStart = { line: Number(contextInput.leftFileStartLine), offset: 1 };
+  }
+
+  if (contextInput.leftFileEndLine !== undefined && contextInput.leftFileEndLine !== null && !isNaN(Number(contextInput.leftFileEndLine))) {
+    threadContext.leftFileEnd = { line: Number(contextInput.leftFileEndLine), offset: 1 };
+  }
+
+  return {
     comments: [
       {
         parentCommentId: 0,
@@ -20,10 +63,17 @@ export async function addCommentToPR(fileName: string, comment: string, agent: h
       }
     ],
     status: 1,
-    threadContext: {
-      filePath: fileName,
-    }
-  }
+    threadContext
+  };
+}
+
+export async function addCommentToPR(
+  commentContext: string | CommentThreadContextInput,
+  comment: string,
+  agent: http.Agent | https.Agent
+) {
+  const body = buildThreadBody(commentContext, comment);
+  const fileName = typeof commentContext === 'string' ? commentContext : commentContext.filePath;
 
   const prUrl = `${getApiBaseUrl()}/_apis/git/repositories/${tl.getVariable('Build.Repository.Name')}/pullRequests/${tl.getVariable('System.PullRequest.PullRequestId')}/threads?api-version=5.1`
 
@@ -36,7 +86,7 @@ export async function addCommentToPR(fileName: string, comment: string, agent: h
     });
 
     if (response.ok === true) {
-      console.log(`Novo comentario adicionado.`);
+      console.log(`Novo comentario adicionado para ${fileName}.`);
     } else {
       const errorBody = await response.text();
       console.log(`Erro ao adicionar comentario. Status: ${response.status} ${response.statusText}`);

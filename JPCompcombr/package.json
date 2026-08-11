@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "tsc -p ."
+    "build": "tsc -p .",
+    "test": "tsc -p . && node --test tests/*.test.js"
   },
   "keywords": [],
   "author": "",

@@ -35,10 +35,10 @@ Você é um assistente especializado em engenharia de software, atuando como rev
 Sua missão é analisar as alterações de código fornecidas e fornecer feedback construtivo para **melhorar a saúde geral do código**, garantindo qualidade, manutenibilidade, performance e segurança. O feedback deve ser técnico, didático, focado no código (não no autor) e explicar claramente o *raciocínio* por trás de cada ponto levantado. Priorize a identificação de problemas que realmente impactam a qualidade e a funcionalidade, diferenciando entre problemas críticos e sugestões menores (nits).
 
 ## Formato de Entrada
-Você receberá as alterações do PR em formato de patch. Cada entrada contém a mensagem de commit seguida pelas alterações de código (diffs) em formato unidiff.
+Você receberá as alterações do PR agrupadas com o caminho relativo de cada arquivo. Cada entrada contém o caminho relativo do arquivo seguido pelas alterações de código (diffs) em formato unidiff.
 
 ## Instruções Detalhadas para Revisão
-Analise o código fornecido com base nos seguintes critérios. Para cada ponto levantado, explique o problema e, sempre que possível, sugira uma solução ou alternativa clara e acionável.
+Analise o código fornecido com base nos seguintes critérios de forma integrada e consistente. Para cada ponto levantado, identifique o caminho relativo do arquivo, a linha inicial e a linha final correspondentes. Explique o problema e sugira uma solução ou alternativa clara e acionável.
 
 ### 1. Design e Arquitetura
 - A solução está bem desenhada e se integra adequadamente ao sistema existente?
@@ -298,6 +298,83 @@ function getOutputTextFromResponseOutput(output: any): string | undefined {
   return typeof text === 'string' ? text : undefined;
 }
 
+export interface ReviewFeedbackItem {
+  filePath: string;
+  startLine?: number;
+  endLine?: number;
+  comment: string;
+}
+
+export function parseReviewFeedback(reviewOutput: string, defaultFilePath?: string): ReviewFeedbackItem[] {
+  const noFeedbackMarker = 'Sem feedback';
+
+  if (!reviewOutput || typeof reviewOutput !== 'string') {
+    return [];
+  }
+
+  const trimmed = reviewOutput.trim();
+
+  if (trimmed === noFeedbackMarker || trimmed === `"${noFeedbackMarker}"`) {
+    return [];
+  }
+
+  // Tentar realizar parse de JSON caso exista bloco ou array JSON na resposta
+  try {
+    let jsonStr = trimmed;
+    const jsonBlockMatch = trimmed.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
+    if (jsonBlockMatch) {
+      jsonStr = jsonBlockMatch[1].trim();
+    } else {
+      const firstBracket = trimmed.indexOf('[');
+      const lastBracket = trimmed.lastIndexOf(']');
+      if (firstBracket !== -1 && lastBracket !== -1 && lastBracket > firstBracket) {
+        jsonStr = trimmed.substring(firstBracket, lastBracket + 1).trim();
+      }
+    }
+
+    if (jsonStr.startsWith('[') && jsonStr.endsWith(']')) {
+      const parsed = JSON.parse(jsonStr);
+      if (Array.isArray(parsed)) {
+        const items: ReviewFeedbackItem[] = [];
+        for (const item of parsed) {
+          if (item && typeof item === 'object') {
+            const commentText = item.comment || item.description || item.feedback || item.text;
+            if (commentText && typeof commentText === 'string' && commentText.trim().length > 0) {
+              const filePath = item.filePath || item.filename || item.file || defaultFilePath || '';
+              const startLine = typeof item.startLine === 'number' ? item.startLine : (typeof item.line === 'number' ? item.line : (typeof item.start_line === 'number' ? item.start_line : undefined));
+              const endLine = typeof item.endLine === 'number' ? item.endLine : (typeof item.end_line === 'number' ? item.end_line : startLine);
+
+              items.push({
+                filePath,
+                startLine,
+                endLine,
+                comment: commentText.trim()
+              });
+            }
+          }
+        }
+        if (items.length > 0) {
+          return items;
+        }
+      }
+    }
+  } catch (err) {
+    // Caso de falha no parse JSON, segue para tratamento de texto livre/fallback
+  }
+
+  if (trimmed.includes(noFeedbackMarker) && trimmed.length < 50) {
+    return [];
+  }
+
+  // Fallback para respostas legadas ou texto livre sem JSON
+  return [
+    {
+      filePath: defaultFilePath || '',
+      comment: trimmed
+    }
+  ];
+}
+
 function tratamentoDeSaida(noFeedbackMarker: string): string {
   return `
 ### Formato da Saída, instruções de saída específicas (RESTRIÇÕES RÍGIDAS):
@@ -307,22 +384,36 @@ function tratamentoDeSaida(noFeedbackMarker: string): string {
 - Comentários gentis ou neutros são considerados ruído de processo.
         
 REGRAS DE SAÍDA (EXTREMAMENTE IMPORTANTE):
-- Se, e SOMENTE SE, pelo menos um problema ou ponto de melhoria for identificado, descreva o problema de forma clara, objetiva e técnica.
+- Se, e SOMENTE SE, pelo menos um problema ou ponto de melhoria for identificado, forneça os feedbacks obrigatoriamente no formato JSON contendo um array de objetos com os campos:
+  - "filePath": o caminho relativo do arquivo onde o problema foi identificado.
+  - "startLine": o número da linha inicial (na nova versão do arquivo) onde a observação se aplica.
+  - "endLine": o número da linha final (na nova versão do arquivo) onde a observação se aplica.
+  - "comment": o comentário técnico descritivo em markdown detalhando o problema e a solução.
+
+Exemplo de formato de saída quando houver problemas:
+\`\`\`json
+[
+  {
+    "filePath": "caminho/relativo/do/arquivo.ts",
+    "startLine": 15,
+    "endLine": 20,
+    "comment": "Descrever o problema técnico e a solução recomendada aqui."
+  }
+]
+\`\`\`
+
 - Se NENHUM problema ou melhoria for identificado em TODOS os critérios acima, responda EXATAMENTE com o texto: "${noFeedbackMarker}"
-- Qualquer saída diferente de "${noFeedbackMarker}" será interpretada como um feedback técnico obrigatório para o desenvolvedor, indicando que há algo que precisa ser corrigido ou melhorado.
-- Formato de saida em markdown para facilitar a leitura e compreensão, utilizando listas, negrito, itálico e outros recursos de formatação para destacar os pontos mais importantes.
-        
+- Qualquer saída diferente de "${noFeedbackMarker}" ou do array JSON estruturado será interpretada como um feedback técnico obrigatório.
+
 REGRA DE IMPACTO NO PROCESSO (NÍVEL AVANÇADO):
-- Qualquer saída diferente de "${noFeedbackMarker}" será interpretada como uma ação obrigatória para o desenvolvedor.
 - Feedback desnecessário causa atrito no processo de Pull Request e DEVE ser evitado.
         
 ANTI-EXEMPLOS (NÃO FAÇA ISSO):
 - "Boa abordagem"
 - "Código bem escrito"
-- "Implementação interessante"
 - "No geral está tudo certo"
-- Qualquer forma de elogio, aprovação implícita ou comentário neutro
-        
+- Qualquer forma de elogio ou comentário neutro
+
 EXEMPLO POSITIVO:
 Entrada: Código sem bugs, sem problemas de segurança e sem pontos de melhoria
 Saída: "${noFeedbackMarker}"`;
