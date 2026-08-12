@@ -35,7 +35,7 @@ Adicione uma secao de checkout com persistCredentials definido como true.
 - Versão 31: [Breaking changes] passou a ser obrigatorio informar o nome correto do modelo no parametro(model_name), o modelo é configurado no portal do Microsoft Foundry (ex.: gpt-5.4-nano, gpt-35-turbo, gpt-4-32k, gpt-4-0613, gpt-4-32k-0613). Mais detalhes: https://learn.microsoft.com/en-us/azure/foundry/foundry-models/concepts/models-sold-directly-by-azure?tabs=global-standard-aoai%2Cglobal-standard&pivots=azure-openai
 - Versão 32: disponibilizamos a integracao com agents do Microsoft Foundry.
 - Versão 33: adicionamos a propriedade de autenticação via EntraID. Informe 'true' para habilitar o uso do token de autorização do Entra ID. [default: false] O token de autorização do Entra ID é uma funcionalidade opcional que, quando habilitada, permite autenticar solicitações usando o token de autorização do Entra ID."
-- Versão 34: adicionamos a propriedade de agrupamento de arquivos no Review. Informe 'true' para agrupar os arquivos alterados do PR em uma única análise consistente, fornecendo os caminhos relativos ao modelo. [default: true]"
+- Versão 34: adicionamos a propriedade de agrupamento de arquivos no Review. Informe 'true' para agrupar os arquivos alterados do PR em uma única análise consistente, fornecendo os caminhos relativos ao modelo. [default: true]
 
 ---
 
