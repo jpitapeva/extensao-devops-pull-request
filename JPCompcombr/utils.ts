@@ -18,4 +18,5 @@ export function getTargetBranchName() {
   return `origin/${targetBranchName}`;
 }
 
-//npx tfx-cli extension create
+// Teste de alteração para simulação de Pull Request
+// npx tfx-cli extension create
