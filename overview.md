@@ -73,6 +73,7 @@ jobs:
       agent_version: Obrigatorio informar a versao correta do agent se o parametro 'agent_foundry_mode' for configurado como true
       prompt_view: Opcional. Informe true para habilitar a visualização do prompt. [default = false]
       authorization_token_entra_id: Propriedade de autenticação via EntraID. Informe 'true' para habilitar o valor informado na 'api_key' para autorização do Entra ID. [default: false] O token de autorização do Entra ID é uma funcionalidade opcional que, quando habilitada, permite autenticar solicitações usando o token de autorização do Entra ID."
+      group_files: Propriedade de agrupamento de arquivos no Review. [default: true]
 ```
 
 ---
