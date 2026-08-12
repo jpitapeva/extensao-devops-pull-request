@@ -20,9 +20,16 @@ export async function addAiReviewLabels(prId: string | undefined, agent: http.Ag
     }
 }
 
+function getApiBaseUrl(): string {
+    const collectionUri = tl.getVariable('SYSTEM.TEAMFOUNDATIONCOLLECTIONURI') || '';
+    const projectId = tl.getVariable('SYSTEM.TEAMPROJECTID') || '';
+    const formattedCollectionUri = collectionUri.endsWith('/') ? collectionUri : `${collectionUri}/`;
+    return `${formattedCollectionUri}${projectId}`;
+}
+
 // Function to add a label to a pull request via Azure DevOps API
 async function addLabelToPullRequest(prId: string, label: string, agent: http.Agent | https.Agent): Promise<void> {
-    const labelUrl = `${tl.getVariable('SYSTEM.TEAMFOUNDATIONCOLLECTIONURI')}${tl.getVariable('SYSTEM.TEAMPROJECTID')}/_apis/git/repositories/${tl.getVariable('Build.Repository.Name')}/pullRequests/${prId}/labels?api-version=7.0`;
+    const labelUrl = `${getApiBaseUrl()}/_apis/git/repositories/${tl.getVariable('Build.Repository.Name')}/pullRequests/${prId}/labels?api-version=7.0`;
 
     try {
         const response = await fetch(labelUrl, {

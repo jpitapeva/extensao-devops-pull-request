@@ -157,3 +157,7 @@ postman request POST 'https://RESOURCE_NAME.services.ai.azure.com/api/projects/X
 ## Author: Joao Paulo Moreira Antunes
 ### Site
 [JPCOMP](https://jpcomp.com.br/)
+
+## Contributors
+- [João Bestetti](https://github.com/Joaopmb)
+

@@ -145,6 +145,14 @@
       "defaultValue": "false",
       "required": true,
       "helpMarkDown": "Opcional. Informe 'true' para habilitar o uso do token de autorização do Entra ID informado na propriedade 'api_key'. [default: false] O token de autorização do Entra ID é uma funcionalidade opcional que, quando habilitada, permite autenticar solicitações usando o token de autorização do Entra ID."
+    },
+    {
+      "name": "group_files",
+      "type": "boolean",
+      "label": "Agrupar arquivos para revisão",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown": "Opcional. Informe 'true' para agrupar os arquivos alterados do PR em uma única análise consistente, fornecendo os caminhos relativos ao modelo. [default: true]"
     }
   ],
   "execution": {

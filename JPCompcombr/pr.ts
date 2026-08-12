@@ -3,8 +3,58 @@ import * as https from 'https';
 import * as http from 'http';
 import fetch from 'node-fetch';
 
-export async function addCommentToPR(fileName: string, comment: string, agent: http.Agent | https.Agent) {
-  const body = {
+function getApiBaseUrl(): string {
+  const collectionUri = tl.getVariable('SYSTEM.TEAMFOUNDATIONCOLLECTIONURI') || '';
+  const projectId = tl.getVariable('SYSTEM.TEAMPROJECTID') || '';
+  const formattedCollectionUri = collectionUri.endsWith('/') ? collectionUri : `${collectionUri}/`;
+  return `${formattedCollectionUri}${projectId}`;
+}
+
+export interface CommentThreadContextInput {
+  filePath: string;
+  startLine?: number;
+  endLine?: number;
+  leftFileStartLine?: number;
+  leftFileEndLine?: number;
+}
+
+export function buildThreadBody(
+  commentContext: string | CommentThreadContextInput,
+  comment: string
+) {
+  const contextInput: CommentThreadContextInput =
+    typeof commentContext === 'string'
+      ? { filePath: commentContext }
+      : commentContext;
+
+  let formattedPath = contextInput.filePath.trim();
+  if (!formattedPath.startsWith('/')) {
+    formattedPath = '/' + formattedPath;
+  }
+
+  const threadContext: any = {
+    filePath: formattedPath
+  };
+
+  if (contextInput.startLine !== undefined && contextInput.startLine !== null && !isNaN(Number(contextInput.startLine))) {
+    threadContext.rightFileStart = { line: Number(contextInput.startLine), offset: 1 };
+  }
+
+  if (contextInput.endLine !== undefined && contextInput.endLine !== null && !isNaN(Number(contextInput.endLine))) {
+    threadContext.rightFileEnd = { line: Number(contextInput.endLine), offset: 1 };
+  } else if (threadContext.rightFileStart) {
+    threadContext.rightFileEnd = { line: threadContext.rightFileStart.line, offset: 1 };
+  }
+
+  if (contextInput.leftFileStartLine !== undefined && contextInput.leftFileStartLine !== null && !isNaN(Number(contextInput.leftFileStartLine))) {
+    threadContext.leftFileStart = { line: Number(contextInput.leftFileStartLine), offset: 1 };
+  }
+
+  if (contextInput.leftFileEndLine !== undefined && contextInput.leftFileEndLine !== null && !isNaN(Number(contextInput.leftFileEndLine))) {
+    threadContext.leftFileEnd = { line: Number(contextInput.leftFileEndLine), offset: 1 };
+  }
+
+  return {
     comments: [
       {
         parentCommentId: 0,
@@ -13,12 +63,19 @@ export async function addCommentToPR(fileName: string, comment: string, agent: h
       }
     ],
     status: 1,
-    threadContext: {
-      filePath: fileName,
-    }
-  }
+    threadContext
+  };
+}
 
-  const prUrl = `${tl.getVariable('SYSTEM.TEAMFOUNDATIONCOLLECTIONURI')}${tl.getVariable('SYSTEM.TEAMPROJECTID')}/_apis/git/repositories/${tl.getVariable('Build.Repository.Name')}/pullRequests/${tl.getVariable('System.PullRequest.PullRequestId')}/threads?api-version=5.1`
+export async function addCommentToPR(
+  commentContext: string | CommentThreadContextInput,
+  comment: string,
+  agent: http.Agent | https.Agent
+) {
+  const body = buildThreadBody(commentContext, comment);
+  const fileName = typeof commentContext === 'string' ? commentContext : commentContext.filePath;
+
+  const prUrl = `${getApiBaseUrl()}/_apis/git/repositories/${tl.getVariable('Build.Repository.Name')}/pullRequests/${tl.getVariable('System.PullRequest.PullRequestId')}/threads?api-version=5.1`
 
   try {
     let response = await fetch(prUrl, {
@@ -29,7 +86,7 @@ export async function addCommentToPR(fileName: string, comment: string, agent: h
     });
 
     if (response.ok === true) {
-      console.log(`Novo comentario adicionado.`);
+      console.log(`Novo comentario adicionado para ${fileName}.`);
     } else {
       const errorBody = await response.text();
       console.log(`Erro ao adicionar comentario. Status: ${response.status} ${response.statusText}`);
@@ -49,7 +106,7 @@ export async function deleteExistingComments(agent: http.Agent | https.Agent, bu
 
     console.log("Iniciando ...");
 
-  const threadsUrl = `${tl.getVariable('SYSTEM.TEAMFOUNDATIONCOLLECTIONURI')}${tl.getVariable('SYSTEM.TEAMPROJECTID')}/_apis/git/repositories/${tl.getVariable('Build.Repository.Name')}/pullRequests/${tl.getVariable('System.PullRequest.PullRequestId')}/threads?api-version=5.1`;
+  const threadsUrl = `${getApiBaseUrl()}/_apis/git/repositories/${tl.getVariable('Build.Repository.Name')}/pullRequests/${tl.getVariable('System.PullRequest.PullRequestId')}/threads?api-version=5.1`;
   const threadsResponse = await fetch(threadsUrl, {
     headers: { Authorization: `Bearer ${devopsPatToken}` },
     agent: agent
@@ -76,7 +133,7 @@ export async function deleteExistingComments(agent: http.Agent | https.Agent, bu
   const buildServiceName = `${tl.getVariable('SYSTEM.TEAMPROJECT')} Build Service (${collectionName})`;
 
   for (const thread of threadsWithContext as any[]) {
-    const commentsUrl = `${tl.getVariable('SYSTEM.TEAMFOUNDATIONCOLLECTIONURI')}${tl.getVariable('SYSTEM.TEAMPROJECTID')}/_apis/git/repositories/${tl.getVariable('Build.Repository.Name')}/pullRequests/${tl.getVariable('System.PullRequest.PullRequestId')}/threads/${thread.id}/comments?api-version=5.1`;
+    const commentsUrl = `${getApiBaseUrl()}/_apis/git/repositories/${tl.getVariable('Build.Repository.Name')}/pullRequests/${tl.getVariable('System.PullRequest.PullRequestId')}/threads/${thread.id}/comments?api-version=5.1`;
     const commentsResponse = await fetch(commentsUrl, {
       headers: { Authorization: `Bearer ${devopsPatToken}` },
       agent: agent
@@ -98,7 +155,7 @@ export async function deleteExistingComments(agent: http.Agent | https.Agent, bu
     for (const comment of comments.value.filter((comment: any) => 
       comment.author && comment.author.displayName === targetBuildServiceName
     ) as any[]) {
-      const removeCommentUrl = `${tl.getVariable('SYSTEM.TEAMFOUNDATIONCOLLECTIONURI')}${tl.getVariable('SYSTEM.TEAMPROJECTID')}/_apis/git/repositories/${tl.getVariable('Build.Repository.Name')}/pullRequests/${tl.getVariable('System.PullRequest.PullRequestId')}/threads/${thread.id}/comments/${comment.id}?api-version=5.1`;
+      const removeCommentUrl = `${getApiBaseUrl()}/_apis/git/repositories/${tl.getVariable('Build.Repository.Name')}/pullRequests/${tl.getVariable('System.PullRequest.PullRequestId')}/threads/${thread.id}/comments/${comment.id}?api-version=5.1`;
 
       const deleteResponse = await fetch(removeCommentUrl, {
         method: 'DELETE',
