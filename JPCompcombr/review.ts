@@ -182,10 +182,10 @@ promptInstructions = instructions; // Store the final prompt with instructions f
       }
 
       if (choices && choices.length > 0) {
-        const reviewOK = choices[0].message?.content;
+        const reviewOK = extractResponseText(choices[0]?.message?.content) ?? extractResponseText(choices[0]?.message) ?? extractResponseText(choices[0]);
 
         // Validate that content exists and is not empty
-        if (!reviewOK || typeof reviewOK !== 'string' || reviewOK.trim().length === 0) {
+        if (!reviewOK || reviewOK.trim().length === 0) {
           console.log(`Resposta vazia ou invalida do Azure OpenAI para arquivo ${fileName}.`);
           return noFeedbackMarker;
         }
@@ -282,20 +282,61 @@ promptInstructions = instructions; // Store the final prompt with instructions f
   }
 }
 
+export function extractResponseText(value: any): string | undefined {
+  if (typeof value === 'string') {
+    return value.trim().length > 0 ? value.trim() : undefined;
+  }
+
+  if (Array.isArray(value)) {
+    const chunks = value
+      .map((item) => extractResponseText(item))
+      .filter((item): item is string => !!item && item.trim().length > 0);
+
+    return chunks.length > 0 ? chunks.join('\n').trim() : undefined;
+  }
+
+  if (!value || typeof value !== 'object') {
+    return undefined;
+  }
+
+  if (typeof value.text === 'string' && value.text.trim().length > 0) {
+    return value.text.trim();
+  }
+
+  if (typeof value.content === 'string' && value.content.trim().length > 0) {
+    return value.content.trim();
+  }
+
+  if (Array.isArray(value.content)) {
+    const nested = extractResponseText(value.content);
+    if (nested) {
+      return nested;
+    }
+  }
+
+  if (value.message) {
+    const nested = extractResponseText(value.message);
+    if (nested) {
+      return nested;
+    }
+  }
+
+  if (value.output) {
+    const nested = extractResponseText(value.output);
+    if (nested) {
+      return nested;
+    }
+  }
+
+  if (typeof value.output_text === 'string' && value.output_text.trim().length > 0) {
+    return value.output_text.trim();
+  }
+
+  return undefined;
+}
+
 function getOutputTextFromResponseOutput(output: any): string | undefined {
-  if (!Array.isArray(output)) {
-    return undefined;
-  }
-
-  const messageItem = output.find((item: any) => item?.type === 'message');
-  if (!messageItem || !Array.isArray(messageItem.content)) {
-    return undefined;
-  }
-
-  const outputTextItem = messageItem.content.find((contentItem: any) => contentItem?.type === 'output_text');
-  const text = outputTextItem?.text;
-
-  return typeof text === 'string' ? text : undefined;
+  return extractResponseText(output);
 }
 
 export interface ReviewFeedbackItem {
@@ -303,6 +344,54 @@ export interface ReviewFeedbackItem {
   startLine?: number;
   endLine?: number;
   comment: string;
+}
+
+function extractItemsFromParsedArray(parsed: unknown, defaultFilePath?: string): ReviewFeedbackItem[] {
+  if (!Array.isArray(parsed)) {
+    return [];
+  }
+
+  const items: ReviewFeedbackItem[] = [];
+
+  for (const item of parsed) {
+    if (item && typeof item === 'object') {
+      const commentText = (item as any).comment || (item as any).description || (item as any).feedback || (item as any).text;
+      if (commentText && typeof commentText === 'string' && commentText.trim().length > 0) {
+        const filePath = (item as any).filePath || (item as any).filename || (item as any).file || defaultFilePath || '';
+        const startLine = typeof (item as any).startLine === 'number'
+          ? (item as any).startLine
+          : (typeof (item as any).line === 'number' ? (item as any).line : (typeof (item as any).start_line === 'number' ? (item as any).start_line : undefined));
+        const endLine = typeof (item as any).endLine === 'number'
+          ? (item as any).endLine
+          : (typeof (item as any).end_line === 'number' ? (item as any).end_line : startLine);
+
+        items.push({
+          filePath,
+          startLine,
+          endLine,
+          comment: commentText.trim()
+        });
+      }
+      continue;
+    }
+
+    if (typeof item === 'string') {
+      const candidate = item.trim();
+      if (candidate.startsWith('[') && candidate.endsWith(']')) {
+        try {
+          const nested = JSON.parse(candidate);
+          const nestedItems = extractItemsFromParsedArray(nested, defaultFilePath);
+          if (nestedItems.length > 0) {
+            items.push(...nestedItems);
+          }
+        } catch (err) {
+          // Ignore malformed nested payloads and continue.
+        }
+      }
+    }
+  }
+
+  return items;
 }
 
 export function parseReviewFeedback(reviewOutput: string, defaultFilePath?: string): ReviewFeedbackItem[] {
@@ -318,48 +407,50 @@ export function parseReviewFeedback(reviewOutput: string, defaultFilePath?: stri
     return [];
   }
 
+  const candidateJsonValues: string[] = [];
+
+  const jsonBlockMatch = trimmed.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
+  if (jsonBlockMatch) {
+    candidateJsonValues.push(jsonBlockMatch[1].trim());
+  }
+
+  const firstBracket = trimmed.indexOf('[');
+  const lastBracket = trimmed.lastIndexOf(']');
+  if (firstBracket !== -1 && lastBracket !== -1 && lastBracket > firstBracket) {
+    candidateJsonValues.push(trimmed.substring(firstBracket, lastBracket + 1).trim());
+  }
+
+  if (!candidateJsonValues.includes(trimmed) && trimmed.startsWith('[') && trimmed.endsWith(']')) {
+    candidateJsonValues.push(trimmed);
+  }
+
   // Tentar realizar parse de JSON caso exista bloco ou array JSON na resposta
   try {
-    let jsonStr = trimmed;
-    const jsonBlockMatch = trimmed.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
-    if (jsonBlockMatch) {
-      jsonStr = jsonBlockMatch[1].trim();
-    } else {
-      const firstBracket = trimmed.indexOf('[');
-      const lastBracket = trimmed.lastIndexOf(']');
-      if (firstBracket !== -1 && lastBracket !== -1 && lastBracket > firstBracket) {
-        jsonStr = trimmed.substring(firstBracket, lastBracket + 1).trim();
+    for (const candidate of candidateJsonValues) {
+      const normalizedCandidate = candidate.trim();
+      if (!normalizedCandidate || !(normalizedCandidate.startsWith('[') && normalizedCandidate.endsWith(']'))) {
+        continue;
       }
-    }
 
-    if (jsonStr.startsWith('[') && jsonStr.endsWith(']')) {
-      const parsed = JSON.parse(jsonStr);
-      if (Array.isArray(parsed)) {
-        const items: ReviewFeedbackItem[] = [];
-        for (const item of parsed) {
-          if (item && typeof item === 'object') {
-            const commentText = item.comment || item.description || item.feedback || item.text;
-            if (commentText && typeof commentText === 'string' && commentText.trim().length > 0) {
-              const filePath = item.filePath || item.filename || item.file || defaultFilePath || '';
-              const startLine = typeof item.startLine === 'number' ? item.startLine : (typeof item.line === 'number' ? item.line : (typeof item.start_line === 'number' ? item.start_line : undefined));
-              const endLine = typeof item.endLine === 'number' ? item.endLine : (typeof item.end_line === 'number' ? item.end_line : startLine);
-
-              items.push({
-                filePath,
-                startLine,
-                endLine,
-                comment: commentText.trim()
-              });
-            }
-          }
-        }
-        if (items.length > 0) {
-          return items;
-        }
+      const parsed = JSON.parse(normalizedCandidate);
+      const parsedItems = extractItemsFromParsedArray(parsed, defaultFilePath);
+      if (parsedItems.length > 0) {
+        return parsedItems;
       }
     }
   } catch (err) {
     // Caso de falha no parse JSON, segue para tratamento de texto livre/fallback
+  }
+
+  if (trimmed.startsWith('"[') && trimmed.endsWith(']"')) {
+    try {
+      const unwrapped = JSON.parse(trimmed);
+      if (typeof unwrapped === 'string') {
+        return parseReviewFeedback(unwrapped, defaultFilePath);
+      }
+    } catch (err) {
+      // Ignored; falls back to legacy handling below.
+    }
   }
 
   if (trimmed.includes(noFeedbackMarker) && trimmed.length < 50) {
