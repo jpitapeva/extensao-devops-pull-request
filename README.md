@@ -161,5 +161,7 @@ postman request POST 'https://RESOURCE_NAME.services.ai.azure.com/api/projects/X
 [JPCOMP](https://jpcomp.com.br/)
 
 ## Contributors
-- [João Bestetti](https://github.com/Joaopmb)
+<a href="https://github.com/jpitapeva/extensao-devops-pull-request/graphs/contributors">
+  <img src="https://contributors-img.web.app/image?repo=jpitapeva/extensao-devops-pull-request" />
+</a>
 
